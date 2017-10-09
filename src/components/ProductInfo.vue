@@ -1,5 +1,5 @@
 <template >
-    <el-row>
+    <el-row class="info-box">
         <el-col :span="5" class="select-info-box">
             <el-select v-model="value8" filterable placeholder="请选择">
                 <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
@@ -18,15 +18,24 @@
                 <span class="iconfont">&#xe7d3;</span> 删除
             </el-button>
         </el-col>
-        <el-table ref="multipleTable" :data="tableData3" border tooltip-effect="dark" style="width: 100%" @selection-change="handleSelectionChange">
-            <el-table-column type="selection" width="55">
+        <el-table class="info-table" ref="multipleTable" :data="tableData3" border tooltip-effect="dark" style="width: 100%" @selection-change="handleSelectionChange">
+            <el-table-column type="selection" width="55" align="center">
             </el-table-column>
-            <el-table-column label="日期" width="120">
-                <template scope="scope">{{ scope.row.date }}</template>
+            <el-table-column prop="orderNumber" label="序号" width="80" align="center" show-overflow-tooltip>
             </el-table-column>
-            <el-table-column prop="name" label="姓名" width="120">
+            <el-table-column label="产品名称" prop="name" align="center" width="120">
             </el-table-column>
-            <el-table-column prop="address" label="地址" show-overflow-tooltip>
+            <el-table-column prop="address" label="归属地" align="center" width="479">
+            </el-table-column>
+            <el-table-column prop="productionLink" label="生产环节(个)" width="165" align="center" show-overflow-tooltip>
+            </el-table-column>
+            <el-table-column prop="pluck" label="采收周期(天)" align="center" width="165" show-overflow-tooltip>
+            </el-table-column>
+            <el-table-column prop="germinate" label="发芽率%" align="center" width="165" show-overflow-tooltip>
+            </el-table-column>
+            <el-table-column prop="transplant" label="移栽成苗率%" align="center" width="165" show-overflow-tooltip>
+            </el-table-column>
+            <el-table-column prop="weight" label="单棵重g" align="center" width="165" show-overflow-tooltip>
             </el-table-column>
         </el-table>
         <el-row class="page-box">
@@ -73,8 +82,8 @@
                         <el-input style="display:none;" placeholder="请输入" v-model="domain.name_desc" class="link-name2"></el-input>
                     </el-form-item>
                     <el-form-item label="生产环节周期提醒" :label-width="formLabelWidth2">
-                        <el-input class="link-date" v-model="domain.day"></el-input>  天
-                        <el-input class="link-time" v-model="domain.hour"></el-input>  小时
+                        <el-input class="link-date" v-model="domain.day"></el-input> 天
+                        <el-input class="link-time" v-model="domain.hour"></el-input> 小时
                     </el-form-item>
                     <el-form-item label="安全间隔期提醒" v-show="isShowPeriod" :label-width="formLabelWidth2">
                         <el-input class="link-date" v-model="domain.day"></el-input> 天
@@ -128,46 +137,106 @@ export default {
             isShowPeriod: false,
             tableData3: [
                 {
-                    date: '2016-05-03',
+                    orderNumber: 1,
                     name: '王小虎',
-                    address: '上海市普陀区金沙江路 1518 弄'
-                }, {
-                    date: '2016-05-02',
+                    address: '上海市普陀区金沙江路 1518 弄',
+                    germinate: 85.2,
+                    transplant: 26.2,
+                    weight: 2,
+                    pluck: 88,
+                    productionLink: 5,
+                },
+                {
+                    orderNumber: 1,
                     name: '王小虎',
-                    address: '上海市普陀区金沙江路 1518 弄'
-                }, {
-                    date: '2016-05-04',
+                    address: '上海市普陀区金沙江路 1518 弄',
+                    germinate: 85.2,
+                    transplant: 26.2,
+                    weight: 2,
+                    pluck: 88,
+                    productionLink: 5,
+                },
+                {
+                    orderNumber: 1,
                     name: '王小虎',
-                    address: '上海市普陀区金沙江路 1518 弄'
-                }, {
-                    date: '2016-05-01',
+                    address: '上海市普陀区金沙江路 1518 弄',
+                    germinate: 85.2,
+                    transplant: 26.2,
+                    weight: 2,
+                    pluck: 88,
+                    productionLink: 5,
+                },
+                {
+                    orderNumber: 1,
                     name: '王小虎',
-                    address: '上海市普陀区金沙江路 1518 弄'
-                }, {
-                    date: '2016-05-08',
+                    address: '上海市普陀区金沙江路 1518 弄',
+                    germinate: 85.2,
+                    transplant: 26.2,
+                    weight: 2,
+                    pluck: 88,
+                    productionLink: 5,
+                },
+                {
+                    orderNumber: 1,
                     name: '王小虎',
-                    address: '上海市普陀区金沙江路 1518 弄'
-                }, {
-                    date: '2016-05-06',
+                    address: '上海市普陀区金沙江路 1518 弄',
+                    germinate: 85.2,
+                    transplant: 26.2,
+                    weight: 2,
+                    pluck: 88,
+                    productionLink: 5,
+                },
+                {
+                    orderNumber: 1,
                     name: '王小虎',
-                    address: '上海市普陀区金沙江路 1518 弄'
-                }, {
-                    date: '2016-05-07',
+                    address: '上海市普陀区金沙江路 1518 弄',
+                    germinate: 85.2,
+                    transplant: 26.2,
+                    weight: 2,
+                    pluck: 88,
+                    productionLink: 5,
+                },
+                {
+                    orderNumber: 1,
                     name: '王小虎',
-                    address: '上海市普陀区金沙江路 1518 弄'
-                }, {
-                    date: '2016-05-07',
+                    address: '上海市普陀区金沙江路 1518 弄',
+                    germinate: 85.2,
+                    transplant: 26.2,
+                    weight: 2,
+                    pluck: 88,
+                    productionLink: 5,
+                },
+                {
+                    orderNumber: 1,
                     name: '王小虎',
-                    address: '上海市普陀区金沙江路 1518 弄'
-                }, {
-                    date: '2016-05-07',
+                    address: '上海市普陀区金沙江路 1518 弄',
+                    germinate: 85.2,
+                    transplant: 26.2,
+                    weight: 2,
+                    pluck: 88,
+                    productionLink: 5,
+                },
+                {
+                    orderNumber: 1,
                     name: '王小虎',
-                    address: '上海市普陀区金沙江路 1518 弄'
-                }, {
-                    date: '2016-05-07',
+                    address: '上海市普陀区金沙江路 1518 弄',
+                    germinate: 85.2,
+                    transplant: 26.2,
+                    weight: 2,
+                    pluck: 88,
+                    productionLink: 5,
+                },
+                {
+                    orderNumber: 1,
                     name: '王小虎',
-                    address: '上海市普陀区金沙江路 1518 弄'
-                }],
+                    address: '上海市普陀区金沙江路 1518 弄',
+                    germinate: 85.2,
+                    transplant: 26.2,
+                    weight: 2,
+                    pluck: 88,
+                    productionLink: 5,
+                }
+            ],
             multipleSelection: [],
             form: {
                 name: '',
@@ -186,7 +255,7 @@ export default {
                         day: '',
                         hour: '',
                         leadingPeaplo: '',
-                        desc:''
+                        desc: ''
                     }
                 ]
             },
@@ -259,6 +328,11 @@ export default {
 }
 </script>
 <style lang="scss">
+.info-box,
+.info-table {
+    background-color: #fff;
+}
+
 .select-info-box {
     text-align: left;
 }

@@ -1,26 +1,28 @@
 <template>
     <header class="header-box">
         <el-row class="header">
-            <el-col :span="3">
-                <div class="logo-box">
-                    <span class="logo-icon">
-                        <i class="el-icon-menu"></i>
-                    </span>
-                    <span class="logo-txt" @click="toIndex">春沐源农业管理系统</span>
-                </div>
+            <el-col :span="3" style="height: 60px;">
+                <!-- <div class="logo-box">
+                                                        <span class="logo-icon">
+                                                            <i class="el-icon-menu"></i>
+                                                        </span>
+                                                        <span class="logo-txt" @click="toIndex">春沐源农业管理系统</span>
+                                                    </div> -->
             </el-col>
-            <el-col :span="13" class="emptry-box">
-                <el-input class="inp-box" placeholder="请输入关键字" icon="search" v-model="input2" :on-icon-click="handleIconClick">
-                </el-input>
+            <el-col :span="8" class="emptry-box">
+                <img src="./../assets/images/version.png" alt="">
+
             </el-col>
-            <el-col :span="6" class="nav-btn-box">
-                <el-col :span="24">
-                    <span class="icon-box set-icon-box">
-                        <i class="iconfont set-icon">&#xe7da;</i>
-                    </span>
-                    <span class=" icon-box msg-icon-box">
-                        <i class="iconfont msg-icon">&#xe779;</i>
-                    </span>
+            <el-col :span="11" class="nav-btn-box">
+                <el-col :span="24" class="">
+                    <el-input class="inp-box" placeholder="请输入关键字" icon="search" v-model="input2" :on-icon-click="handleIconClick">
+                    </el-input>
+                    <el-badge :value="15" class="badge-item">
+                        <span class=" icon-box msg-icon-box">
+                            <i class="iconfont msg-icon">&#xe779;</i>
+                        </span>
+                    </el-badge>
+
                     <el-dropdown>
                         <span class="el-dropdown-link dropdown-btn-box icon-box">
                             <i class="iconfont user-info-icon  el-icon--right">&#xe794;</i>
@@ -54,13 +56,16 @@ export default {
             this.$router.push('/login')
 
         },
-        handleIconClick: function () {
+        handleIconClick: function() {
 
         }
     }
 }
 </script>
-<style lang="scss" scoped>
+<style lang="scss">
+.right-content-box{
+    background-color: #f0f3fa;
+}
 .header-box {
     position: fixed;
     top: 0;
@@ -68,12 +73,13 @@ export default {
     width: 100%;
     height: 60px;
     z-index: 9;
+    border-bottom: 1px solid #ccc;
 }
 
 .header {
     width: 100%;
     height: 60px;
-    background: #35404d;
+    background: #fff;
 }
 
 .logo-box,
@@ -86,11 +92,18 @@ export default {
     height: 60px;
     text-align: left;
 }
-.inp-box{
-    width: 200px;
+
+.inp-box {
+    width: 320px;
     margin-top: 12px;
     margin-left: 20px;
+    border-radius: 20px;
+    .el-input__inner {
+        border-radius: 20px;
+        height: 40px !important;
+    }
 }
+
 
 .logo-box .logo-txt,
 .logo-box .logo-icon {
@@ -103,18 +116,6 @@ export default {
 .logo-box {
     text-align: left;
 }
-
-
-/* .nav-items {
-    height: 60px;
-    background-color: #35404d;
-}
-
-.nav-items .nav-item {
-    height: 60px;
-    line-height: 60px;
-}
-*/
 
 .nav-btn-box {
     text-align: right;
@@ -138,7 +139,8 @@ export default {
     .set-icon,
     .msg-icon {
         font-size: 22px;
-        color: #fff;
+        color: #4f535c;
+        cursor: pointer;
     }
 }
 
@@ -152,7 +154,16 @@ export default {
     line-height: 60px;
     .user-info-icon {
         font-size: 22px;
-        color: #fff;
+        color: #4f535c;
+        cursor: pointer;
+    }
+}
+
+.badge-item {
+    .el-badge__content.is-fixed {
+        top: 17px;
+        right: 30px;
+        padding: 0px 5px;
     }
 }
 </style>

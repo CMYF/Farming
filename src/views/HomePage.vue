@@ -5,7 +5,7 @@
             <el-col :span="3" class="left-nav-box left-nav-reset-bg">
                 <LeftNav></LeftNav>
             </el-col>
-            <el-col :span="21" :offset="3" class="right-content-box">
+            <el-col :span="24" class="right-content-box">
 
                 <router-view name="rightContent"></router-view>
 

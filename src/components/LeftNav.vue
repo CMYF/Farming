@@ -1,27 +1,32 @@
 <template>
-    <el-menu default-active="2" class="el-menu-vertical-demo left-nav-reset-bg left-nav-items" @open="handleOpen" @close="handleClose">
-        <div class="menu-box" v-for="(item, index) in navDatas" :key="item.id">
-            <el-menu-item :index="item.id" v-if="!item.subItems && !item.isHasSub">
-                <router-link :to="item.url">
-                    <i class="iconfont" v-html="item.menuicon"></i>{{item.name}}
-                </router-link>
-            </el-menu-item>
-            <div v-if="item.isHasSub">
-                <el-submenu :index="item.id" class="left-nav-reset-bg " :key="item.id">
-                    <template slot="title">
-                        <i class="iconfont" v-html="item.menuicon"> </i>{{ item.name }}
-                    </template>
-                    <div v-if="item.isHasSub && item.subItems">
-                        <el-menu-item-group v-for="(subItem, idx) in item.subItems" :key="subItem.id">
-                            <router-link :to="subItem.url">
-                                <el-menu-item :index="item.id + '-' + subItem.id">{{ subItem.name }}</el-menu-item>
-                            </router-link>
-                        </el-menu-item-group>
-                    </div>
-                </el-submenu>
-            </div>
+    <div>
+        <div class="logo-box">
+            <img src="./../assets/images/logo.jpg" alt="">
         </div>
-    </el-menu>
+        <el-menu default-active="2" class="el-menu-vertical-demo left-nav-reset-bg left-nav-items" @open="handleOpen" @close="handleClose">
+            <div class="menu-box" v-for="(item, index) in navDatas" :key="item.id">
+                <el-menu-item :index="item.id" v-if="!item.subItems && !item.isHasSub">
+                    <router-link :to="item.url">
+                        <i class="iconfont" v-html="item.menuicon"></i>{{item.name}}
+                    </router-link>
+                </el-menu-item>
+                <div v-if="item.isHasSub">
+                    <el-submenu :index="item.id" class="left-nav-reset-bg " :key="item.id">
+                        <template slot="title">
+                            <i class="iconfont" v-html="item.menuicon"> </i>{{ item.name }}
+                        </template>
+                        <div v-if="item.isHasSub && item.subItems">
+                            <el-menu-item-group v-for="(subItem, idx) in item.subItems" :key="subItem.id">
+                                <router-link :to="subItem.url">
+                                    <el-menu-item :index="item.id + '-' + subItem.id">{{ subItem.name }}</el-menu-item>
+                                </router-link>
+                            </el-menu-item-group>
+                        </div>
+                    </el-submenu>
+                </div>
+            </div>
+        </el-menu>
+    </div>
 </template>
 <script>
 import $ from 'jquery';
@@ -49,20 +54,20 @@ export default {
         subNavData: 'subNavData'
     }),
     mounted() {
-        var docH = $(document).height();
+        /* var docH = $(document).height();
         var headerH = $('.header').height();
         var h = docH - headerH;
         $('.left-nav-items').css({
             'max-height': h + 'px',
             'overflow-y': 'auto'
         });
-
+ */
     },
     beforeMount() {
         let token = localStorage.token;
         fetchNav(this.$store, token).then(() => {
-        var tempData = this.$store.getters.getNavData.data.resultObj[0];
-           this.navDatas = tempData.subItems;
+            var tempData = this.$store.getters.getNavData.data.resultObj[0];
+            this.navDatas = tempData.subItems;
         })
     },
     methods: {
@@ -72,19 +77,19 @@ export default {
 
         },
         getNavData: function() {
-            /*  fetchNav(this.$store).then(() => {
+             fetchNav(this.$store).then(() => {
                  console.log('点击导航有数据吗？');
                  console.log(this.$store);
                  this.navDatas = this.$store.getters.getNavData;
                  console.log(this.navDatas);
-             }) */
+             }) 
         },
         getSubNavById: function() {
             console.log('yes or no ?');
-            fetchSubNavById(this.$store, 2).then(() => {
+            /* fetchSubNavById(this.$store, 2).then(() => {
                 console.log('获取子导航有吗？');
                 console.log(this.$store);
-            });
+            }); */
         },
         toNavSix: function() {
             this.$router.push('/createuser')
