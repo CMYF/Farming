@@ -46,12 +46,12 @@ li {
 a {
   text-decoration: none;
   font-size: 14px;
-  color: #48576a;
 }
-
+/*
 a:hover {
   color: #ccc;
-}
+  color: #48576a;
+}*/
 
 #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;

@@ -71,7 +71,7 @@ export default {
 .left-nav-reset-bg
 {
 
-    background-color: #35404d;
+    background-color: #3f4551;
 }
 </style>
 

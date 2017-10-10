@@ -1,76 +1,78 @@
 <template>
     <el-row>
-        <el-col :span="5">
-            <h2 class="model-title">菜单管理</h2>
-            <div class="btn-box">
-                <el-button type="text" @click="addMenu($event)">
-                    <i class="iconfont">&#xe763;</i>
-                    <span>添加</span>
-                </el-button>
-                <el-button type="text" @click="delMenu($event)">
-                    <i class="iconfont">&#xe76c;</i>
-                    <span>删除</span>
-                </el-button>
-            </div>
-            <div class="show-menu-box">
-                <div class="edit-menu-box">
-                    <div class="menu-box-root">
-                        <i class="iconfont font-icon root-icon" @click="rootBoxClick($event)">&#xe76b;</i>
-                        <span class="root-txt" @click="rootSelect($event)">{{ this.rootDom.name }}</span>
-                        <input type="hidden" v-bind:data-level="1" :data-icon="rootDom.menuicon" v-bind:data-parentid="rootDom.id + '-' + rootDom.name" v-bind:data-info="rootDom.id + '-' + rootDom.name">
+        <el-col :span="20" :offset="3" class="add-menu-main-box">
+            <el-col :span="5">
+                <h2 class="model-title">菜单管理</h2>
+                <div class="btn-box">
+                    <el-button type="text" @click="addMenu($event)">
+                        <i class="iconfont">&#xe763;</i>
+                        <span>添加</span>
+                    </el-button>
+                    <el-button type="text" @click="delMenu($event)">
+                        <i class="iconfont">&#xe76c;</i>
+                        <span>删除</span>
+                    </el-button>
+                </div>
+                <div class="show-menu-box">
+                    <div class="edit-menu-box">
+                        <div class="menu-box-root">
+                            <i class="iconfont font-icon root-icon" @click="rootBoxClick($event)">&#xe76b;</i>
+                            <span class="root-txt" @click="rootSelect($event)">{{ this.rootDom.name }}</span>
+                            <input type="hidden" v-bind:data-level="1" :data-icon="rootDom.menuicon" v-bind:data-parentid="rootDom.id + '-' + rootDom.name" v-bind:data-info="rootDom.id + '-' + rootDom.name">
+                        </div>
+                        <ul class="menu-items">
+                            <li class="menu-item" v-for="(item, index) in menuDatas" :key="item.id">
+                                <!-- <i class="iconfont font-icon menu-item-icon" v-if="item.isHasSub" @click="subItemsClick($event)">&#xe76b;</i> -->
+                                <i class="iconfont font-icon menu-item-icon" @click="subItemsClick($event)">&#xe76b;</i>
+                                <span class="sub-txt" @click="showEditBox('item', $event)">{{ item.name }}</span>
+                                <input type="hidden" :data-icon="item.menuicon" v-bind:data-level="2" v-bind:data-parentid="item.parentid + '-' + item.parentname" v-bind:data-info="item.id + '-' + item.name + '-' + item.menusort + '-' + item.url + '-' + item.menudesc">
+                                <ul class="sub-menu-box" v-if="item.isHasSub" v-bind:data-parent="item.id + '-' + item.name">
+                                    <li class="sub-menu-item" v-for="(subItem, index) in item.subItems" :key="subItem.id" v-bind:data-id="subItem.id" @click="showEditBox('subItem', $event)">
+                                        <i class="iconfont font-icon sub-menu-icon">&#xe781;</i>
+                                        <span class="sub-item-txt">{{ subItem.name }}</span>
+                                        <input type="hidden" :data-icon="subItem.menuicon" v-bind:data-level="3" v-bind:data-parentid="subItem.parentid + '-' + subItem.parentname" v-bind:data-info="subItem.id + '-' + subItem.name + '-' + subItem.menusort + '-' + subItem.url + '-' + subItem.menudesc">
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
                     </div>
-                    <ul class="menu-items">
-                        <li class="menu-item" v-for="(item, index) in menuDatas" :key="item.id">
-                            <!-- <i class="iconfont font-icon menu-item-icon" v-if="item.isHasSub" @click="subItemsClick($event)">&#xe76b;</i> -->
-                            <i class="iconfont font-icon menu-item-icon"  @click="subItemsClick($event)">&#xe76b;</i>
-                            <span class="sub-txt" @click="showEditBox('item', $event)" >{{ item.name }}</span>
-                            <input type="hidden" :data-icon="item.menuicon" v-bind:data-level="2" v-bind:data-parentid="item.parentid + '-' + item.parentname" v-bind:data-info="item.id + '-' + item.name + '-' + item.menusort + '-' + item.url + '-' + item.menudesc">
-                            <ul class="sub-menu-box" v-if="item.isHasSub" v-bind:data-parent="item.id + '-' + item.name">
-                                <li class="sub-menu-item"  v-for="(subItem, index) in item.subItems" :key="subItem.id"  v-bind:data-id="subItem.id" @click="showEditBox('subItem', $event)">
-                                    <i class="iconfont font-icon sub-menu-icon">&#xe781;</i>
-                                    <span class="sub-item-txt">{{ subItem.name }}</span>
-                                    <input type="hidden" :data-icon="subItem.menuicon" v-bind:data-level="3" v-bind:data-parentid="subItem.parentid + '-' + subItem.parentname" v-bind:data-info="subItem.id + '-' + subItem.name + '-' + subItem.menusort + '-' + subItem.url + '-' + subItem.menudesc">
-                                </li>
-                            </ul>
-                        </li>
-                    </ul>
                 </div>
-            </div>
-        </el-col>
-        <el-col :span="8" v-if="this.isShowEdit">
-            <h2 class="model-title">编辑菜单</h2>
-            <div class="form-box">
-                <el-form :model="ruleForm"  ref="ruleForm" label-width="100px" class="menu-edit-form">
-                    <el-form-item label="菜单名称">
-                        <el-input v-model="ruleForm.name"></el-input>
-                    </el-form-item>
-                    <el-form-item label="父节点名称">
-                        <el-input v-model="ruleForm.parentName" :disabled="true"></el-input>
-                    </el-form-item>
-                    <el-form-item label="菜单路径">
-                        <el-input v-model="ruleForm.path"></el-input>
-                    </el-form-item>
-                    <el-form-item label="菜单排序">
-                        <el-input v-model="ruleForm.sore"></el-input>
-                    </el-form-item>
-                    <el-form-item label="菜单图标"  v-show="isShowIcon">
-                        <el-input v-model="ruleForm.menuicon"></el-input>
-                    </el-form-item>
-                    <el-form-item label="菜单描述">
-                        <el-input type="textarea" v-model="ruleForm.desc"></el-input>
-                    </el-form-item>
-                </el-form>
-                <div class="form-btn-box">
-                    <el-button type="primary" @click="saveMenu($event)" class="save-btn" v-bind:data-type="saveType">
-                        <i class="iconfont">&#xe79f;</i>
-                        保存
-                    </el-button>
-                    <el-button type="primary" @click="hideEditBox">
-                        <i class="iconfont">&#xe767;</i>
-                        取消
-                    </el-button>
+            </el-col>
+            <el-col :span="8" v-if="this.isShowEdit">
+                <h2 class="model-title">编辑菜单</h2>
+                <div class="form-box">
+                    <el-form :model="ruleForm" ref="ruleForm" label-width="100px" class="menu-edit-form">
+                        <el-form-item label="菜单名称">
+                            <el-input v-model="ruleForm.name"></el-input>
+                        </el-form-item>
+                        <el-form-item label="父节点名称">
+                            <el-input v-model="ruleForm.parentName" :disabled="true"></el-input>
+                        </el-form-item>
+                        <el-form-item label="菜单路径">
+                            <el-input v-model="ruleForm.path"></el-input>
+                        </el-form-item>
+                        <el-form-item label="菜单排序">
+                            <el-input v-model="ruleForm.sore"></el-input>
+                        </el-form-item>
+                        <el-form-item label="菜单图标" v-show="isShowIcon">
+                            <el-input v-model="ruleForm.menuicon"></el-input>
+                        </el-form-item>
+                        <el-form-item label="菜单描述">
+                            <el-input type="textarea" v-model="ruleForm.desc"></el-input>
+                        </el-form-item>
+                    </el-form>
+                    <div class="form-btn-box">
+                        <el-button type="primary" @click="saveMenu($event)" class="save-btn" v-bind:data-type="saveType">
+                            <i class="iconfont">&#xe79f;</i>
+                            保存
+                        </el-button>
+                        <el-button type="primary" @click="hideEditBox">
+                            <i class="iconfont">&#xe767;</i>
+                            取消
+                        </el-button>
+                    </div>
                 </div>
-            </div>
+            </el-col>
         </el-col>
     </el-row>
 </template>
@@ -81,13 +83,13 @@ import store from './../store/index'
 function fetchEditMenu(store) {
     return store.dispatch('FETCH_EDIT_MENU');
 }
-function fetchUpdateMenu(store, opts){
+function fetchUpdateMenu(store, opts) {
     return store.dispatch('UPDATE_MENU', opts);
 }
-function fetchAddMenu(store, opts){
+function fetchAddMenu(store, opts) {
     return store.dispatch('ADD_MENU', opts);
 }
-function fetchDelMenu(store, opts){
+function fetchDelMenu(store, opts) {
     return store.dispatch('DELETE_MENU', opts);
 };
 export default {
@@ -102,8 +104,8 @@ export default {
                 desc: '',
                 parentName: '',
                 menuStart: 1,
-                token:'',
-                id:'',
+                token: '',
+                id: '',
                 parentId: '',
                 menuicon: ''
             },
@@ -121,11 +123,11 @@ export default {
     beforeMount() {
         fetchEditMenu(this.$store).then(() => {
             var tempData = {};
-             tempData = this.$store.getters.getEditMenu;
-             if (tempData.resultCode === '1') {
-                 this.rootDom = tempData.resultObj[0];
-                 this.menuDatas = this.rootDom.subItems;
-             }
+            tempData = this.$store.getters.getEditMenu;
+            if (tempData.resultCode === '1') {
+                this.rootDom = tempData.resultObj[0];
+                this.menuDatas = this.rootDom.subItems;
+            }
 
         })
     },
@@ -146,24 +148,24 @@ export default {
             _j('.sub-menu-item').removeClass('menu-active');
             _j('.root-txt').removeClass('menu-active');
             _that.addClass('menu-active');
-            
+
             let infoDom = _that.children('input');
             if (level === 'item') {
                 infoDom = _that.siblings('input');
             }
             let idAndName = infoDom.attr('data-info'),
-            parentInfo = infoDom.attr('data-parentid'),
-            numLevel = infoDom.attr('data-level'),
-            tempArr = idAndName.split('-'),
-            tempParentArr = parentInfo.split('-'),
-            icon = infoDom.attr('data-icon'),
-            id = tempArr[0],  // 菜单ID
-            name=tempArr[1],  // 菜单名字
-            parentId = tempParentArr[0], // 父元素ID
-            menusort = tempArr[2],  // 菜单排序
-            menuurl = tempArr[3],   // 菜单URL
-            menudesc = tempArr[4],  // 菜单说明
-            parentName = tempParentArr[1];  // 父元素名字
+                parentInfo = infoDom.attr('data-parentid'),
+                numLevel = infoDom.attr('data-level'),
+                tempArr = idAndName.split('-'),
+                tempParentArr = parentInfo.split('-'),
+                icon = infoDom.attr('data-icon'),
+                id = tempArr[0],  // 菜单ID
+                name = tempArr[1],  // 菜单名字
+                parentId = tempParentArr[0], // 父元素ID
+                menusort = tempArr[2],  // 菜单排序
+                menuurl = tempArr[3],   // 菜单URL
+                menudesc = tempArr[4],  // 菜单说明
+                parentName = tempParentArr[1];  // 父元素名字
             if (numLevel === '3' || numLevel === '1') {
                 this.isShowIcon = false;
             } else {
@@ -189,29 +191,29 @@ export default {
         },
         // 添加菜单
         addMenu(e) {
-           let activeDom = _j('.edit-menu-box').find('.menu-active');
-           if (activeDom.length <=0) {
-            this._showMessage('error', '请选择要添加的父节点！');
-            return;
-           }
-           let infoDom = activeDom.children('input');
-           if (infoDom.length <= 0) {
+            let activeDom = _j('.edit-menu-box').find('.menu-active');
+            if (activeDom.length <= 0) {
+                this._showMessage('error', '请选择要添加的父节点！');
+                return;
+            }
+            let infoDom = activeDom.children('input');
+            if (infoDom.length <= 0) {
                 infoDom = activeDom.siblings('input');
-           }
-           let idAndName = infoDom.attr('data-info'),
-            parentInfo = infoDom.attr('data-parentid'),
-            icon = infoDom.attr('data-icon'),
-            level = infoDom.attr('data-level'),
-            tempArr = idAndName.split('-'),
-            tempParentArr = parentInfo.split('-'),
-            id = tempArr[0],  // 菜单ID
-            name = tempArr[1],  // 菜单名字
-            parentId = tempParentArr[0], // 父元素ID
-            menusort = tempArr[2],  // 菜单排序
-            menuurl = tempArr[3],   // 菜单URL
-            menudesc = tempArr[4],  // 菜单说明
-            parentName = tempParentArr[1],  // 父元素名字
-            isHasSub = true;
+            }
+            let idAndName = infoDom.attr('data-info'),
+                parentInfo = infoDom.attr('data-parentid'),
+                icon = infoDom.attr('data-icon'),
+                level = infoDom.attr('data-level'),
+                tempArr = idAndName.split('-'),
+                tempParentArr = parentInfo.split('-'),
+                id = tempArr[0],  // 菜单ID
+                name = tempArr[1],  // 菜单名字
+                parentId = tempParentArr[0], // 父元素ID
+                menusort = tempArr[2],  // 菜单排序
+                menuurl = tempArr[3],   // 菜单URL
+                menudesc = tempArr[4],  // 菜单说明
+                parentName = tempParentArr[1],  // 父元素名字
+                isHasSub = true;
             this.ruleForm.parentName = parentName;
             this.ruleForm.parentId = parentId;
             if (level === '2') {
@@ -222,9 +224,9 @@ export default {
             this.ruleForm.name = '';
             this.ruleForm.path = '';
             this.ruleForm.sore = '';
-            this.ruleForm.desc  = '';
+            this.ruleForm.desc = '';
             this.saveType = 'add';
-            if (!this.isShowEdit){
+            if (!this.isShowEdit) {
                 this.isShowEdit = true;
             }
         },
@@ -257,24 +259,24 @@ export default {
             if (targetDom.hasClass('nc-hide')) {
                 targetDom.removeClass('nc-hide');
                 targetDom.html('&#xe76b;');
-                 menuBoxDom.animate({
+                menuBoxDom.animate({
                     'height': '600px'
-                }, 300, function () {
+                }, 300, function() {
                     menuBoxDom.css({
                         height: 'auto'
                     });
-                }); 
+                });
                 return;
             }
             targetDom.addClass('nc-hide');
             targetDom.html('&#xe762;');
-             menuBoxDom.animate({
+            menuBoxDom.animate({
                 'height': '30px'
             }, 300, function() {
-                 menuBoxDom.css({
+                menuBoxDom.css({
                     'overflow': 'hidden'
-                }); 
-            }); 
+                });
+            });
 
         },
         // 显示或者隐藏子菜单
@@ -309,7 +311,7 @@ export default {
                 // 编辑菜单
                 fetchUpdateMenu(this.$store, this.ruleForm).then(() => {
                     let updateMenuDatas = this.$store.getters.getUpdateMenuDatas;
-                    
+
                     if (updateMenuDatas.resultCode === '1') {
                         this._showMessage('success', '更新成功！');
                     } else {
@@ -329,6 +331,11 @@ export default {
 }
 </script>
 <style lang="scss">
+.add-menu-main-box{
+    background-color: #fff;
+    padding-bottom: 20px;
+    margin-top: 20px;
+}
 .model-title {
     width: 97%;
     text-align: left;
@@ -384,9 +391,11 @@ export default {
         color: #ccc;
     }
 }
-.menu-active{
+
+.menu-active {
     color: #20a0ff;
 }
+
 .hide-menu-box {
     height: 30px;
     overflow: hidden;

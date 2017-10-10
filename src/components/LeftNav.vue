@@ -3,17 +3,21 @@
         <div class="logo-box">
             <img src="./../assets/images/logo.jpg" alt="">
         </div>
-        <el-menu default-active="2" class="el-menu-vertical-demo left-nav-reset-bg left-nav-items" @open="handleOpen" @close="handleClose">
+        <div class="user-pic-box">
+            <span class="iconfont user-pic-icon">&#xe794;</span>
+            <span class="user-name">Cattle</span>
+        </div>
+        <el-menu :unique-opened="true" default-active="2" class="el-menu-vertical-demo left-nav-reset-bg left-nav-items" @open="handleOpen" @close="handleClose">
             <div class="menu-box" v-for="(item, index) in navDatas" :key="item.id">
                 <el-menu-item :index="item.id" v-if="!item.subItems && !item.isHasSub">
                     <router-link :to="item.url">
-                        <i class="iconfont" v-html="item.menuicon"></i>{{item.name}}
+                        <i class="iconfont nav-icon" v-html="item.menuicon"></i>{{item.name}}
                     </router-link>
                 </el-menu-item>
                 <div v-if="item.isHasSub">
                     <el-submenu :index="item.id" class="left-nav-reset-bg " :key="item.id">
                         <template slot="title">
-                            <i class="iconfont" v-html="item.menuicon"> </i>{{ item.name }}
+                            <i class="iconfont nav-icon" v-html="item.menuicon"> </i>{{ item.name }}
                         </template>
                         <div v-if="item.isHasSub && item.subItems">
                             <el-menu-item-group v-for="(subItem, idx) in item.subItems" :key="subItem.id">
@@ -77,12 +81,12 @@ export default {
 
         },
         getNavData: function() {
-             fetchNav(this.$store).then(() => {
-                 console.log('点击导航有数据吗？');
-                 console.log(this.$store);
-                 this.navDatas = this.$store.getters.getNavData;
-                 console.log(this.navDatas);
-             }) 
+            fetchNav(this.$store).then(() => {
+                console.log('点击导航有数据吗？');
+                console.log(this.$store);
+                this.navDatas = this.$store.getters.getNavData;
+                console.log(this.navDatas);
+            })
         },
         getSubNavById: function() {
             console.log('yes or no ?');
@@ -98,21 +102,17 @@ export default {
     }
 }
 </script>
-<style lang="scss" scoped>
+<style lang="scss" >
 .left-nav-reset-bg,
 .left-nav-reset-bg .el-menu {
 
-    background-color: #35404d;
+    background-color: #3f4551;
 }
 
 .left-nav-items {
     border-radius: 0;
 }
 
-.el-menu--horizontal.el-menu--dark .el-submenu .el-menu-item.is-active,
-.el-menu-item.is-active {
-    color: #20a0ff;
-}
 
 .el-menu--horizontal .el-submenu .el-submenu__title {
     height: 50px;
@@ -122,8 +122,67 @@ export default {
 .el-menu-item,
 .el-submenu__title,
 .el-submenu .el-submenu__title {
-    height: 40px !important;
-    line-height: 40px !important;
+    border-left: 6px solid transparent;
+}
+.el-menu-item,
+.el-menu-item a,
+.el-submenu__title,
+.el-submenu .el-submenu__title {
+    height: 50px !important;
+    line-height: 50px !important;
     text-align: left !important;
+    color: #fff !important;
+    font-size: 16px;
+}
+.el-menu-item a{
+    display: inline-block;
+
+}
+.el-submenu .el-menu-item{
+    padding-left: 55px !important;
+}
+.el-menu--horizontal.el-menu--dark .el-submenu .el-menu-item:hover,
+.el-menu--horizontal.el-menu--dark .el-submenu .el-submenu-title:hover,
+.el-menu-item:hover,
+.el-submenu__title:hover,
+.el-submenu .el-menu-item:hover,
+.el-submenu__title:hover {
+    background-color: #2a2e36;
+}
+.el-submenu.is-opened .el-submenu__title{}
+
+.el-menu--horizontal.el-menu--dark .el-submenu .el-menu-item.is-active,
+.el-menu-item.is-active,  {
+    background-color: #2a2e36;
+    border-left: 6px solid #02bdad;
+    color: #fff;
+}
+.el-menu-item-group__title{
+    padding-top: 0px;
+}
+.user-pic-box {
+    width: 100%;
+    text-align: center;
+    height: 160px;
+    margin-top: 20px;
+    .user-pic-icon {
+        width: 107px;
+        line-height: 107px;
+        height: 107px;
+        display: block;
+        font-size: 85px;
+        color: #fff;
+        margin: 0px auto;
+    }
+    .user-name {
+        width: 100%;
+        font-size: 16px;
+        font-weight: 800;
+        color: #02bdad;
+    }
+}
+.nav-icon{
+    font-size: 19px;
+    margin-right: 15px;
 }
 </style>
