@@ -1,11 +1,11 @@
 <template >
     <el-row class="info-box">
         <el-col :span="5" class="select-info-box">
-            <el-select v-model="value8" filterable placeholder="请选择">
-                <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
+            <el-select v-model="productInfo" @change="filterProductInfo" filterable placeholder="请选择">
+                <el-option v-for="item in productNameIds" :key="item.value" :label="item.label" :value="item.id + ':' + item.value">
                 </el-option>
             </el-select>
-            <el-button type="success">筛选</el-button>
+            <el-button type="success" @click="filterProducts">筛选</el-button>
         </el-col>
         <el-col :span="15">
             <div style="height:60px;"></div>
@@ -18,14 +18,14 @@
                 <span class="iconfont">&#xe7d3;</span> 删除
             </el-button>
         </el-col>
-        <el-table class="info-table" ref="multipleTable" :data="tableData3" border tooltip-effect="dark" style="width: 100%" @selection-change="handleSelectionChange">
+        <el-table class="info-table" ref="multipleTable" :data="productInfos" border tooltip-effect="dark" style="width: 100%" @selection-change="handleSelectionChange">
             <el-table-column type="selection" width="55" align="center">
             </el-table-column>
-            <el-table-column prop="orderNumber" label="序号" width="80" align="center" show-overflow-tooltip>
+            <el-table-column type="index" label="序号" width="80" align="center" show-overflow-tooltip>
             </el-table-column>
-            <el-table-column label="产品名称" prop="name" align="center" width="120">
+            <el-table-column label="产品名称" prop="name" align="center" width="200">
             </el-table-column>
-            <el-table-column prop="address" label="归属地" align="center" width="479">
+            <el-table-column prop="address" label="归属地" align="center" width="399">
             </el-table-column>
             <el-table-column prop="productionLink" label="生产环节(个)" width="165" align="center" show-overflow-tooltip>
             </el-table-column>
@@ -48,10 +48,11 @@
                     <el-input v-model="form.name" auto-complete="off" placeholder="请输入产品名称"></el-input>
                 </el-form-item>
                 <el-form-item label="归属地" :label-width="formLabelWidth" prop="address">
-                    <el-select v-model="form.address" placeholder="请选择活动区域">
-                        <el-option label="区域一" value="shanghai"></el-option>
-                        <el-option label="区域二" value="beijing"></el-option>
-                    </el-select>
+                    <!--<el-select v-model="form.address" placeholder="请选择活动区域">
+                                            <el-option label="区域一" value="shanghai"></el-option>
+                                            <el-option label="区域二" value="beijing"></el-option>
+                                        </el-select>-->
+                    <el-cascader :options="options" v-model="selectedOptions" @change="handleKuaidialChange"></el-cascader>
                 </el-form-item>
                 <el-form-item label="发芽率%" :label-width="formLabelWidth" prop="germinate">
                     <el-input v-model="form.germinate" auto-complete="off" placeholder="请输入发芽率"></el-input>
@@ -90,7 +91,7 @@
                     </el-form-item>
                     <el-form-item label="此环节责任人" :label-width="formLabelWidth">
                         <el-select v-model="domain.leadingPeaplo" placeholder="请选择">
-                            <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
+                            <el-option v-for="item in productInfo" :key="item.value" :label="item.label" :value="item.value">
                             </el-option>
                         </el-select>
                     </el-form-item>
@@ -105,138 +106,62 @@
     </el-row>
 </template>
 <script>
+function fetchGetProducts(store, opts) {
+    return store.dispatch('GET_PRODUCT_INFO', opts);
+}
+function fetchKuaidials(store, opts) {
+    return store.dispatch('GET_KUAIDIALS', {
+        token: localStorage.token
+    });
+}
+import store from './../store/index'
 import _j from 'jquery'
 export default {
     name: 'ProductInfo',
+    store,
     data() {
         return {
-            options: [
-                {
-                    value: '选项1',
-                    label: '黄金糕'
-                }, {
-                    value: '选项2',
-                    label: '双皮奶'
-                }, {
-                    value: '选项3',
-                    label: '蚵仔煎'
-                }, {
-                    value: '选项4',
-                    label: '龙须面'
-                }, {
-                    value: '选项5',
-                    label: '北京烤鸭'
-                }],
+            productNameIds: [],
             currentPage1: 5,
             currentPage2: 5,
             currentPage3: 5,
             currentPage4: 4,
-            value8: '',
+            productInfo: '',
             vaule9: '',
-            vaule10: '',
-            isShowPeriod: false,
-            tableData3: [
+            selectedOptions: [],
+            options: [
                 {
-                    orderNumber: 1,
-                    name: '王小虎',
-                    address: '上海市普陀区金沙江路 1518 弄',
-                    germinate: 85.2,
-                    transplant: 26.2,
-                    weight: 2,
-                    pluck: 88,
-                    productionLink: 5,
-                },
-                {
-                    orderNumber: 1,
-                    name: '王小虎',
-                    address: '上海市普陀区金沙江路 1518 弄',
-                    germinate: 85.2,
-                    transplant: 26.2,
-                    weight: 2,
-                    pluck: 88,
-                    productionLink: 5,
-                },
-                {
-                    orderNumber: 1,
-                    name: '王小虎',
-                    address: '上海市普陀区金沙江路 1518 弄',
-                    germinate: 85.2,
-                    transplant: 26.2,
-                    weight: 2,
-                    pluck: 88,
-                    productionLink: 5,
-                },
-                {
-                    orderNumber: 1,
-                    name: '王小虎',
-                    address: '上海市普陀区金沙江路 1518 弄',
-                    germinate: 85.2,
-                    transplant: 26.2,
-                    weight: 2,
-                    pluck: 88,
-                    productionLink: 5,
-                },
-                {
-                    orderNumber: 1,
-                    name: '王小虎',
-                    address: '上海市普陀区金沙江路 1518 弄',
-                    germinate: 85.2,
-                    transplant: 26.2,
-                    weight: 2,
-                    pluck: 88,
-                    productionLink: 5,
-                },
-                {
-                    orderNumber: 1,
-                    name: '王小虎',
-                    address: '上海市普陀区金沙江路 1518 弄',
-                    germinate: 85.2,
-                    transplant: 26.2,
-                    weight: 2,
-                    pluck: 88,
-                    productionLink: 5,
-                },
-                {
-                    orderNumber: 1,
-                    name: '王小虎',
-                    address: '上海市普陀区金沙江路 1518 弄',
-                    germinate: 85.2,
-                    transplant: 26.2,
-                    weight: 2,
-                    pluck: 88,
-                    productionLink: 5,
-                },
-                {
-                    orderNumber: 1,
-                    name: '王小虎',
-                    address: '上海市普陀区金沙江路 1518 弄',
-                    germinate: 85.2,
-                    transplant: 26.2,
-                    weight: 2,
-                    pluck: 88,
-                    productionLink: 5,
-                },
-                {
-                    orderNumber: 1,
-                    name: '王小虎',
-                    address: '上海市普陀区金沙江路 1518 弄',
-                    germinate: 85.2,
-                    transplant: 26.2,
-                    weight: 2,
-                    pluck: 88,
-                    productionLink: 5,
-                },
-                {
-                    orderNumber: 1,
-                    name: '王小虎',
-                    address: '上海市普陀区金沙江路 1518 弄',
-                    germinate: 85.2,
-                    transplant: 26.2,
-                    weight: 2,
-                    pluck: 88,
-                    productionLink: 5,
+                    value: 'zhinan',
+                    label: '指南',
+                    children: [
+                        {
+                            value: 'zhinan',
+                            label: '指南',
+                            children: [
+                                {
+                                    value: 'zhinan',
+                                    label: '指南',
+                                    children: [
+                                        {
+                                            value: 'zhinan',
+                                            label: '指南'
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
                 }
             ],
+            vaule10: '',
+            getProducts: {
+                currentPage: 1,
+                pageSize: 12,
+                productName: '',
+                productId: ''
+            },
+            isShowPeriod: false,
+            productInfos: [],
             multipleSelection: [],
             form: {
                 name: '',
@@ -264,7 +189,7 @@ export default {
                     { required: true, message: '请输入产品名称', trigger: 'blur' }
                 ],
                 address: [
-                    { required: true, message: '请选择归属地', trigger: 'change' }
+                   // { required: true, message: '请选择归属地', trigger: 'change' }
                 ],
                 germinate: [
                     { required: true, message: '请输入发芽率', trigger: 'blur' }
@@ -284,6 +209,15 @@ export default {
             formLabelWidth2: '150px'
         }
     },
+    beforeMount() {
+        fetchGetProducts(this.$store, this.getProducts).then(() => {
+            this.dec_data();
+        });
+        fetchKuaidials(this.$store).then(() => {
+            console.log('归属地有吗？');
+            console.log(this.$store);
+        })
+    },
     methods: {
         toggleSelection(rows) {
             if (rows) {
@@ -292,6 +226,35 @@ export default {
                 });
             } else {
                 this.$refs.multipleTable.clearSelection();
+            }
+        },
+        dec_data() {
+            let tempDatas = this.$store.getters.getProductInfos;
+            if (tempDatas.resultCode === '1') {
+                let tempItem = {};
+                let baseObj = tempDatas.basePageObj;
+                let tempInfos = baseObj.dataList;
+                if (tempInfos.length > 0) {
+                    const len = tempInfos.length;
+                    for (let i = 0; i < len; i++) {
+                        tempItem = tempInfos[i];
+                        this.productInfos.push({
+                            orderNumber: 1,
+                            name: tempItem.chanpmc,
+                            address: tempItem.guisd,
+                            germinate: tempItem.fayl,
+                            transplant: tempItem.yizcml,
+                            weight: tempItem.dankz,
+                            pluck: tempItem.caiszq,
+                            productionLink: tempItem.linksNum,
+                        });
+                        this.productNameIds.push({
+                            value: tempItem.chanpmc,
+                            label: tempItem.chanpmc,
+                            id: tempItem.chanpid
+                        });
+                    }
+                }
             }
         },
         handleSelectionChange(val) {
@@ -323,6 +286,19 @@ export default {
         saveProductLinkInfo() {
             console.log(this.dyProductLink.domains);
             this.dialogFormVisible = false;
+        },
+        filterProductInfo() {
+            let tempArr = this.productInfo.split(':');
+            this.getProducts.productId = tempArr[0];
+            this.getProducts.productName = tempArr[1];
+        },
+        filterProducts() {
+            fetchGetProducts(this.$store, this.getProducts).then(() => {
+                this.dec_data();
+            });
+        },
+        handleKuaidialChange(value) {
+            console.log(value);
         }
     }
 }

@@ -33,7 +33,7 @@
                             </el-button>
                         </div>
                     </div>
-                    <ul class="sub-items-box hide" v-if="root.isHasSub">
+                    <ul class="sub-items-box" v-if="root.isHasSub">
                         <li class="posi-item" v-for="(levTwo, idx) in root.subItems" :key="idx">
                             <div class="le-ri-box">
                                 <div class="left-box" v-bind:data-info="levTwo.id + ':' + levTwo.name">

@@ -132,3 +132,17 @@ export function fetchUpdateById(opts) {
         menuIds: opts.roleIds
     }));
 }
+
+export function fetchGetProducts(opts) {
+    return Vue.axios.post('http://10.1.2.151/ctower-mall-c/agriculture/productInfo/queryProductInfoList.do', qs.stringify({
+        'queryProductInfoListRequest.page_number': opts.currentPage,
+        'queryProductInfoListRequest.page_size': opts.pageSize,
+        'queryProductInfoListRequest.productName': opts.productName,
+        'queryProductInfoListRequest.productId': opts.productId
+    }));
+}
+export function fetchKuaidials(opts) {
+    return Vue.axios.post('http://10.1.2.151/ctower-mall-c/agriculture/column/dataGrid.do', qs.stringify({
+        loginedtoken: opts.token
+    }));
+}
