@@ -141,8 +141,28 @@ export function fetchGetProducts(opts) {
         'queryProductInfoListRequest.productId': opts.productId
     }));
 }
+export function fetchSaveProductLinks(opts) {
+    console.log('opts是什么？');
+   console.log(opts);
+    return Vue.axios.post('http://10.1.2.151/ctower-mall-c/agriculture/productInfo/addProductInfo.do', qs.stringify({
+        'addProductInfoRequest.chanpmc': opts.name,
+        'addProductInfoRequest.guisd': opts.address,
+        'addProductInfoRequest.fayl': opts.germinate,
+        'addProductInfoRequest.yizcml': opts.transplant,
+        'addProductInfoRequest.dankz': opts.weight,
+        'addProductInfoRequest.caiszq': opts.pluck,
+        'addProductInfoRequest.linksInfoJsonArray': opts.links,
+        
+    }));
+}
 export function fetchKuaidials(opts) {
     return Vue.axios.post('http://10.1.2.151/ctower-mall-c/agriculture/column/dataGrid.do', qs.stringify({
         loginedtoken: opts.token
+    }));
+}
+
+export function fetchLinkTemp(opts){
+    return Vue.axios.post('http://10.1.2.151/ctower-mall-c/agriculture/productInfo/queryWorkLink.do', qs.stringify({
+        'queryWorkLinkRequest.preLinkId': opts.linkId
     }));
 }
