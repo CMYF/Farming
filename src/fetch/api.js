@@ -132,3 +132,12 @@ export function fetchUpdateById(opts) {
         menuIds: opts.roleIds
     }));
 }
+
+export function fetchTask(opts) {
+    return Vue.axios.post('http://10.1.2.151/ctower-mall-c/agriculture/taskInfo/queryTaskInfoLists.do', qs.stringify({
+        'queryTaskInfoListsRequest.page_number': opts.num,
+        'queryTaskInfoListsRequest.page_size': opts.size,
+        'queryTaskInfoListsRequest.taskStatus': opts.states
+    }));
+}
+
