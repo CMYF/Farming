@@ -6,7 +6,9 @@
         </el-breadcrumb>
         <el-col :span="20" :offset="3" class="pro-content">
             <el-tabs v-model="activeName2" type="card" @tab-click="handleClick">
-                <el-tab-pane label="产品分类" name="productType">产品分类</el-tab-pane>
+                <el-tab-pane label="归属地" name="productType">
+                    <BelongToPosi></BelongToPosi>
+                </el-tab-pane>
                 <el-tab-pane label="产品信息" name="info">
                     <ProductInfo> </ProductInfo>
                 </el-tab-pane>
@@ -16,9 +18,11 @@
 </template>
 <script>
 import ProductInfo from './../components/ProductInfo'
+import BelongToPosi from './../components/BelongToPosi'
 export default {
     components: {
-        ProductInfo
+        ProductInfo,
+        BelongToPosi
     },
     data() {
         return {
