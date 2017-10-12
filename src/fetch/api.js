@@ -133,6 +133,14 @@ export function fetchUpdateById(opts) {
     }));
 }
 
+export function fetchTask(opts) {
+    return Vue.axios.post('http://10.1.2.151/ctower-mall-c/agriculture/taskInfo/queryTaskInfoLists.do', qs.stringify({
+        'queryTaskInfoListsRequest.page_number': opts.num,
+        'queryTaskInfoListsRequest.page_size': opts.size,
+        'queryTaskInfoListsRequest.taskStatus': opts.states
+    }));
+}
+
 export function fetchGetProducts(opts) {
     return Vue.axios.post('http://10.1.2.151/ctower-mall-c/agriculture/productInfo/queryProductInfoList.do', qs.stringify({
         'queryProductInfoListRequest.page_number': opts.currentPage,
@@ -166,3 +174,4 @@ export function fetchLinkTemp(opts){
         'queryWorkLinkRequest.preLinkId': opts.linkId
     }));
 }
+

@@ -7,6 +7,8 @@ import HomePage from './modules/homepage'
 import Login from './modules/login'
 import UserAdmin from './modules/useradmin'
 import RoleManagement from './modules/rolemanagement'
+import TaskList from './modules/TaskList'
+import TaskGet from './modules/TaskGet'
 import product from './modules/product'
 Vue.use(Vuex)
 export default new Vuex.Store({
@@ -27,6 +29,8 @@ export default new Vuex.Store({
        Login,
        UserAdmin,
        RoleManagement,
+       TaskList,
+       TaskGet,
        product
     }
 })

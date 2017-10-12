@@ -8,8 +8,8 @@ import RoleManagement from '@/views/RoleManagement'
 import AddMenu from '@/views/addMenu'
 import UserAdmin from '@/views/userAdmin'
 import SetProduct from '@/views/setproduct'
-import TaskList from '@/views/taskList'
-import GetTasks from '@/views/taskGet'
+import TaskList from '@/views/TaskList'
+import GetTasks from '@/views/TaskGet'
 import ProductAdmin from '@/views/productAdmin'
 
 Vue.use(Router)
