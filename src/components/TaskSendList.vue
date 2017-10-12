@@ -22,7 +22,10 @@
             </el-form>
             <div class="product-tab-box">
                 <el-table ref="singleTable" border :data="tableData" style="width: 100%" @cell-click="showSend">
-                	<el-table-column type="selection" width="55" align="center" className="plan-send-td" >
+                	<el-table-column  width="55" align="center" className="plan-send-td" >
+                		<template scope="scope">
+                                  <el-radio class="radio" v-model="radio" :label="scope.$index"></el-radio>
+                        </template>
             		</el-table-column>
                     <el-table-column type="index" label="序号" width="70">
                     </el-table-column>
@@ -161,11 +164,13 @@ export default {
 	store,
     data() {
         return {
+        	radio: '',
         	page:{
         		page_number: 1,
                 page_size: 10,
                 taskStates:10
         	},
+        	
         	ruleForm: {
 	          name: '',
 	          region: '',
