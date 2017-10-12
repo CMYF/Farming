@@ -39,7 +39,7 @@
             </el-table-column>
         </el-table>
         <el-row class="page-box">
-            <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage4" :page-sizes="[100, 200, 300, 400]" :page-size="100" layout="total, sizes, prev, pager, next, jumper" :total="400">
+            <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="this.getProducts.currentPage" :page-sizes="[10, 20, 30, 40, 50]" :page-size="this.getProducts.pageSize" layout="total, sizes, prev, pager, next, jumper" :total="this.getProducts.totalRows">
             </el-pagination>
         </el-row>
         <el-dialog class="dialog-box" title="收货地址" :visible.sync="dialogFormVisible">
@@ -49,10 +49,10 @@
                 </el-form-item>
                 <el-form-item label="归属地" :label-width="formLabelWidth" prop="address">
                     <!--<el-select v-model="form.address" placeholder="请选择活动区域">
-                                            <el-option label="区域一" value="shanghai"></el-option>
-                                            <el-option label="区域二" value="beijing"></el-option>
-                                        </el-select>-->
-                    <el-cascader :options="options" v-model="selectedOptions" @change="handleKuaidialChange"></el-cascader>
+                                                                                                    <el-option label="区域一" value="shanghai"></el-option>
+                                                                                                    <el-option label="区域二" value="beijing"></el-option>
+                                                                                                </el-select>-->
+                    <el-cascader :options="options" v-model="form.address" @change="handleKuaidialChange"></el-cascader>
                 </el-form-item>
                 <el-form-item label="发芽率%" :label-width="formLabelWidth" prop="germinate">
                     <el-input v-model="form.germinate" auto-complete="off" placeholder="请输入发芽率"></el-input>
@@ -75,22 +75,23 @@
             <el-form :inline="true" class="product-form product-link-form">
                 <div class="product-link-box" v-for="(domain, index) in dyProductLink.domains" :key="index">
                     <el-form-item label="生产环节名称" :label-width="formLabelWidth">
-                        <el-select v-model="domain.name" class="link-name" placeholder="请选择环节名称">
-                            <el-option label="苗期管理" value="1"></el-option>
-                            <el-option label="植保" value="2"></el-option>
-                            <el-option label="定植后管理" value="3"></el-option>
+                        <el-select v-model="domain.name" class="link-name" @change="changeLink(index)" placeholder="请选择环节名称">
+                            <el-option label="苗期管理" value="1|苗期管理"></el-option>
+                            <el-option label="植保" value="2|植保"></el-option>
+                            <el-option label="定植后管理" value="3|定植后管理"></el-option>
+                            <el-option label="防治" value="4|防治"></el-option>
                         </el-select>
                         <el-input style="display:none;" placeholder="请输入" v-model="domain.name_desc" class="link-name2"></el-input>
                     </el-form-item>
-                    <el-form-item label="生产环节周期提醒" :label-width="formLabelWidth2">
-                        <el-input class="link-date" v-model="domain.day"></el-input> 天
-                        <el-input class="link-time" v-model="domain.hour"></el-input> 小时
+                    <el-form-item label="生产环节周期提醒" :label-width="formLabelWidth2" v-show="isShowPeriod">
+                        <el-input class="link-date" v-model="domain.days"></el-input> 天
+                        <el-input class="link-time" v-model="domain.hours"></el-input> 小时
                     </el-form-item>
-                    <el-form-item label="安全间隔期提醒" v-show="isShowPeriod" :label-width="formLabelWidth2">
-                        <el-input class="link-date" v-model="domain.day"></el-input> 天
+                    <el-form-item label="安全间隔期提醒" v-show="!isShowPeriod" :label-width="formLabelWidth2">
+                        <el-input class="link-date" v-model="domain.days"></el-input> 天
                     </el-form-item>
                     <el-form-item label="此环节责任人" :label-width="formLabelWidth">
-                        <el-select v-model="domain.leadingPeaplo" placeholder="请选择">
+                        <el-select v-model="domain.liablePerson" placeholder="请选择">
                             <el-option v-for="item in productInfo" :key="item.value" :label="item.label" :value="item.value">
                             </el-option>
                         </el-select>
@@ -114,6 +115,12 @@ function fetchKuaidials(store, opts) {
         token: localStorage.token
     });
 }
+function fetchSaveProductLink(store, opts) {
+    return store.dispatch('SAVE_PRODUCT_LINKS', opts)
+}
+function fetchLinkTemplate(store, opts) {
+    return store.dispatch('GET_LINK_TEMP', opts);
+}
 import store from './../store/index'
 import _j from 'jquery'
 export default {
@@ -122,50 +129,29 @@ export default {
     data() {
         return {
             productNameIds: [],
-            currentPage1: 5,
-            currentPage2: 5,
-            currentPage3: 5,
-            currentPage4: 4,
             productInfo: '',
             vaule9: '',
             selectedOptions: [],
             options: [
-                {
-                    value: 'zhinan',
-                    label: '指南',
-                    children: [
-                        {
-                            value: 'zhinan',
-                            label: '指南',
-                            children: [
-                                {
-                                    value: 'zhinan',
-                                    label: '指南',
-                                    children: [
-                                        {
-                                            value: 'zhinan',
-                                            label: '指南'
-                                        }
-                                    ]
-                                }
-                            ]
-                        }
-                    ]
-                }
+
             ],
             vaule10: '',
             getProducts: {
                 currentPage: 1,
-                pageSize: 12,
+                pageSize: 10,
+                totalRows: 0,
+                totalPage: '',
+                hasNextpage: true,
                 productName: '',
-                productId: ''
+                productId: '',
+                beginPage: 1
             },
-            isShowPeriod: false,
+            isShowPeriod: true,
             productInfos: [],
             multipleSelection: [],
             form: {
                 name: '',
-                address: '',
+                address: [],
                 germinate: '',
                 transplant: '',
                 weight: '',
@@ -177,10 +163,12 @@ export default {
                         value: '',
                         name_desc: '',
                         name: '',
-                        day: '',
-                        hour: '',
-                        leadingPeaplo: '',
-                        desc: ''
+                        days: '',
+                        hours: '',
+                        liablePerson: '',
+                        desc: '',
+                        linkId: '',
+                        linkIdName: '',
                     }
                 ]
             },
@@ -189,7 +177,7 @@ export default {
                     { required: true, message: '请输入产品名称', trigger: 'blur' }
                 ],
                 address: [
-                   // { required: true, message: '请选择归属地', trigger: 'change' }
+                    { required: true, message: '请选择归属地', trigger: 'blur' }
                 ],
                 germinate: [
                     { required: true, message: '请输入发芽率', trigger: 'blur' }
@@ -214,8 +202,7 @@ export default {
             this.dec_data();
         });
         fetchKuaidials(this.$store).then(() => {
-            console.log('归属地有吗？');
-            console.log(this.$store);
+            this.dec_kuaidialDatas();
         })
     },
     methods: {
@@ -233,7 +220,12 @@ export default {
             if (tempDatas.resultCode === '1') {
                 let tempItem = {};
                 let baseObj = tempDatas.basePageObj;
+               // this.pageins.currentPage = baseObj.currentPage;
+               // this.pageins.pageSize = baseObj.pageSize;
+               // this.pageins.totalRows = baseObj.totalRows;
                 let tempInfos = baseObj.dataList;
+                this.getProducts.totalRows = baseObj.totalRows;
+                this.productInfos.length = 0;
                 if (tempInfos.length > 0) {
                     const len = tempInfos.length;
                     for (let i = 0; i < len; i++) {
@@ -261,10 +253,16 @@ export default {
             this.multipleSelection = val;
         },
         handleSizeChange(val) {
-            console.log(`每页 ${val} 条`);
+            this.getProducts.pageSize = val;
+            fetchGetProducts(this.$store, this.getProducts).then(() => {
+                this.dec_data();
+            });
         },
         handleCurrentChange(val) {
-            console.log(`当前页: ${val}`);
+            this.getProducts.currentPage = val;
+            fetchGetProducts(this.$store, this.getProducts).then(() => {
+                this.dec_data();
+            });
         },
         addProductInfo() {
             this.dyProductLink.domains.length = 0;
@@ -272,33 +270,155 @@ export default {
         },
         addProductLinkInfo(e) {
             let dom = _j(e.currentTarget)
-            dom.parent('div.add-product-link').addClass('line');
             this.dyProductLink.domains.push({
                 value: '',
                 name_desc: '',
                 name: '',
-                day: '',
-                hour: '',
-                leadingPeaplo: '',
-                desc: ''
+                days: '',
+                hours: '',
+                liablePerson: '',
+                desc: '',
+                linkId: '',
+                linkIdName: '',
+            });
+        },
+        changeLink(index) {
+            const linkId = this.dyProductLink.domains[index].name;
+            const linkArr = linkId.split('|');
+            this.dyProductLink.domains[index].linkId = linkArr[0];
+            this.dyProductLink.domains[index].linkName = linkArr[1];
+
+            if (linkArr[0] === '4') {
+                this.isShowPeriod = false;
+            } else {
+                this.isShowPeriod = true;
+            }
+            fetchLinkTemplate(this.$store, { linkId: linkArr[0] }).then(() => {
+                console.log('能获以到环节模版吗？');
+                console.log(this.$store);
             });
         },
         saveProductLinkInfo() {
             console.log(this.dyProductLink.domains);
+            console.log(this.form);
+            let tempDomains = this.dyProductLink.domains,
+                tempLinks = [],
+                tempLinkItem = {
+
+                },
+                tempItem = {},
+                len = tempDomains.length;
+            if (len > 0) {
+                for (let i = 0; i < len; i++) {
+                    tempItem = tempDomains[i];
+                    tempLinkItem = {
+                        "linkId": tempItem.linkId,
+                        "linkName": tempItem.linkName,
+                        "days": tempItem.days,
+                        "hours": tempItem.hours,
+                        "liablePerson": tempItem.liablePerson,
+                        "beizhu": tempItem.desc,
+                        "linkTempleId": tempItem.linkTempleId + '1'
+                    }
+                    tempLinks.push(tempLinkItem);
+                }
+            }
+            let tempLinksToStr = JSON.stringify(tempLinks);
+            let tempKua = this.form.address.join(',');
+            let opts = {
+                name: this.form.name,
+                address: tempKua,
+                germinate: this.form.germinate,
+                transplant: this.form.transplant,
+                weight: this.form.weight,
+                pluck: this.form.pluck,
+                links: tempLinksToStr
+            }
+            fetchSaveProductLink(this.$store, opts).then(() => {
+                console.log(this.$store);
+            })
             this.dialogFormVisible = false;
         },
+        // filter product link
         filterProductInfo() {
             let tempArr = this.productInfo.split(':');
             this.getProducts.productId = tempArr[0];
             this.getProducts.productName = tempArr[1];
         },
+        // filter product link Fetch
         filterProducts() {
             fetchGetProducts(this.$store, this.getProducts).then(() => {
                 this.dec_data();
             });
         },
         handleKuaidialChange(value) {
-            console.log(value);
+            console.log(value.join(','));
+        },
+        // dec kuaidial data
+        dec_kuaidialDatas() {
+            let tempObj = this.$store.getters.getKuaidialInfos;
+            if (tempObj.resultCode === '1') {
+                let tempDatas = tempObj.resultObj;
+                let len = tempDatas.length;
+                let tempItem = {};
+                let tempKua = {
+                    value: '',
+                    id: '',
+                    label: '',
+                    children: []
+                }
+                if (len > 0) {
+                    for (let i = 0; i < len; i++) {
+                        tempItem = tempDatas[i];
+                        tempKua = {
+                            value: tempItem.id + '-' + tempItem.names,
+                            label: tempItem.names,
+                            id: tempItem.id
+                        }
+
+                        this.options.push(tempKua);
+                        if (tempItem.isSub) {
+                            this.options[i].children = []; // two level
+                            let tempSItem = {};
+                            for (let j = 0, sLen = tempItem.subItem.length; j < sLen; j++) {
+                                tempSItem = tempItem.subItem[j];
+                                tempKua = {
+                                    value: tempSItem.id + '-' + tempSItem.names,
+                                    label: tempSItem.names,
+                                    id: tempSItem.id
+                                }
+                                this.options[i].children.push(tempKua);
+                                if (tempSItem.isSub) {
+                                    this.options[i].children[j].children = []; // three level
+                                    let tempSSItem = {};
+                                    for (let h = 0, ssLen = tempSItem.subItem.length; h < ssLen; h++) {
+                                        tempSSItem = tempSItem.subItem[h];
+                                        tempKua = {
+                                            value: tempSSItem.id + '-' + tempSSItem.names,
+                                            label: tempSSItem.names,
+                                            id: tempSSItem.id
+                                        }
+                                        this.options[i].children[j].children.push(tempKua);
+                                        if (tempSSItem.isSub) {
+                                            this.options[i].children[j].children[h].children = []; // four level
+                                            let tempSSSItem = {};
+                                            for (let k = 0, ssLen = tempSSItem.subItem.length; k < ssLen; k++) {
+                                                tempSSSItem = tempSSItem.subItem[k];
+                                                tempKua = {
+                                                    value: tempSSSItem.id + '-' + tempSSSItem.names,
+                                                    label: tempSSSItem.names,
+                                                    id: tempSSSItem.id
+                                                }
+                                                this.options[i].children[j].children[h].children.push(tempKua);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 }
@@ -383,7 +503,9 @@ export default {
     }
     .product-link-box {
         text-align: left;
-        margin-top: 20px;
+        padding-top: 20px;
+        margin-bottom: 20px;
+        border-top: 1px solid #ccc;
     }
     .link-name {
         //width: 165px !important;
