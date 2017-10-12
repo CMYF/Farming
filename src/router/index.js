@@ -15,7 +15,7 @@ import ProductAdmin from '@/views/productAdmin'
 Vue.use(Router)
 
 export default new Router({
- // base: '/html/agriculture/',
+ //base: '/html/agriculture/',
   routes: [
     {
       path: '/',
