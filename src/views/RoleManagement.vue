@@ -69,7 +69,7 @@ export default {
     return {
       currentPage4: 4,
       dialogFormVisible: false,
-      isShowLoading: false,
+      isShowLoading: true,
       opts: {
         token: localStorage.token,
         beginPage: 1,
@@ -100,6 +100,7 @@ export default {
     fetchAllRoles(this.$store, this.opts).then(() => {
       let tempData = this.$store.getters.getAllRoles;
       this.decDatas(tempData);
+      this.isShowLoading = false;
     });
 
   },

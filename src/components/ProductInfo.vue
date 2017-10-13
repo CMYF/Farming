@@ -14,11 +14,11 @@
             <el-button class="add-product-info" @click="addProductInfo">
                 <span class="iconfont">&#xe622;</span>新增
             </el-button>
-            <el-button class="del-product-info">
+            <el-button class="del-product-info" @click="delProductInfo">
                 <span class="iconfont">&#xe7d3;</span> 删除
             </el-button>
         </el-col>
-        <el-table class="info-table" ref="multipleTable" :data="productInfos" border tooltip-effect="dark" style="width: 100%" @selection-change="handleSelectionChange">
+        <el-table class="info-table" ref="multipleTable" v-loading="isShowLoading" element-loading-text="加载中..." :data="productInfos" border tooltip-effect="dark" style="width: 100%" @selection-change="handleSelectionChange">
             <el-table-column type="selection" width="55" align="center">
             </el-table-column>
             <el-table-column type="index" label="序号" width="80" align="center" show-overflow-tooltip>
@@ -47,11 +47,7 @@
                 <el-form-item label="产品名称" :label-width="formLabelWidth" prop="name">
                     <el-input v-model="form.name" auto-complete="off" placeholder="请输入产品名称"></el-input>
                 </el-form-item>
-                <el-form-item label="归属地" :label-width="formLabelWidth" prop="address">
-                    <!--<el-select v-model="form.address" placeholder="请选择活动区域">
-                                                                                                    <el-option label="区域一" value="shanghai"></el-option>
-                                                                                                    <el-option label="区域二" value="beijing"></el-option>
-                                                                                                </el-select>-->
+                <el-form-item label="归属地" :label-width="formLabelWidth" prop="address"> </el-select>
                     <el-cascader :options="options" v-model="form.address" @change="handleKuaidialChange"></el-cascader>
                 </el-form-item>
                 <el-form-item label="发芽率%" :label-width="formLabelWidth" prop="germinate">
@@ -74,29 +70,35 @@
             </div>
             <el-form :inline="true" class="product-form product-link-form">
                 <div class="product-link-box" v-for="(domain, index) in dyProductLink.domains" :key="index">
-                    <el-form-item label="生产环节名称" :label-width="formLabelWidth">
-                        <el-select v-model="domain.name" class="link-name" @change="changeLink(index)" placeholder="请选择环节名称">
-                            <el-option label="苗期管理" value="1|苗期管理"></el-option>
-                            <el-option label="植保" value="2|植保"></el-option>
-                            <el-option label="定植后管理" value="3|定植后管理"></el-option>
-                            <el-option label="防治" value="4|防治"></el-option>
-                        </el-select>
-                        <el-input style="display:none;" placeholder="请输入" v-model="domain.name_desc" class="link-name2"></el-input>
-                    </el-form-item>
-                    <el-form-item label="生产环节周期提醒" :label-width="formLabelWidth2" v-show="isShowPeriod">
-                        <el-input class="link-date" v-model="domain.days"></el-input> 天
-                        <el-input class="link-time" v-model="domain.hours"></el-input> 小时
-                    </el-form-item>
-                    <el-form-item label="安全间隔期提醒" v-show="!isShowPeriod" :label-width="formLabelWidth2">
-                        <el-input class="link-date" v-model="domain.days"></el-input> 天
-                    </el-form-item>
-                    <el-form-item label="此环节责任人" :label-width="formLabelWidth">
-                        <el-select v-model="domain.liablePerson" placeholder="请选择">
-                            <el-option v-for="item in productInfo" :key="item.value" :label="item.label" :value="item.value">
-                            </el-option>
-                        </el-select>
-                    </el-form-item>
-                    <el-input type="textarea" v-model="domain.desc" :rows="4" placeholder="请输入内容"></el-input>
+                    <div>
+                        <el-form-item label="生产环节名称" :label-width="formLabelWidth">
+                            <el-select v-model="domain.name" class="link-name" @change="changeLink(index)" placeholder="请选择环节名称">
+
+                                <el-option v-for="(item, idx) in linkNames" :key="idx" :label="item.name" :value="item.id + '|' + item.name"></el-option>
+                            </el-select>
+                            <el-input style="display:none;" placeholder="请输入" v-model="domain.name_desc" class="link-name2"></el-input>
+                        </el-form-item>
+                        <el-form-item label="生产环节周期提醒" :label-width="formLabelWidth2" v-show="domain.isShowPeriod">
+                            <el-input class="link-date" v-model="domain.days"></el-input> 天
+                            <el-input class="link-time" v-model="domain.hours"></el-input> 小时
+                        </el-form-item>
+                        <el-form-item label="安全间隔期提醒" v-show="!domain.isShowPeriod" :label-width="formLabelWidth2">
+                            <el-input class="link-date" v-model="domain.days"></el-input> 天
+                        </el-form-item>
+                        <el-form-item label="此环节责任人" :label-width="formLabelWidth">
+                            <el-select v-model="domain.liablePerson" placeholder="请选择">
+                                <el-option v-for="item in productInfo" :key="item.value" :label="item.label" :value="item.value">
+                                </el-option>
+                            </el-select>
+                        </el-form-item>
+                        <el-input type="textarea" v-model="domain.desc" :rows="4" placeholder="请输入内容"></el-input>
+                        <ul class="temp-items-box" v-for="(temp, i) in domain.linkByTemps" :key="i">
+                            <li class="temp-item" v-for="(subTemp, j) in temp.subTemps" :key="j">
+                                <span class="tmep-item-tip">{{ subTemp.text }}</span>
+                            </li>
+                        </ul>
+
+                    </div>
                 </div>
             </el-form>
             <div slot="footer" class="dialog-footer dialog-footer-box">
@@ -121,6 +123,12 @@ function fetchSaveProductLink(store, opts) {
 function fetchLinkTemplate(store, opts) {
     return store.dispatch('GET_LINK_TEMP', opts);
 }
+function fetchLinkNames(store) {
+    return store.dispatch('GET_LINK_NAMES');
+}
+function fetchDelProductInfo(store, opts) {
+    return store.dispatch('DELETE_PRODUCT_INFO', opts);
+}
 import store from './../store/index'
 import _j from 'jquery'
 export default {
@@ -130,13 +138,9 @@ export default {
         return {
             productNameIds: [],
             productInfo: '',
-            vaule9: '',
             selectedOptions: [],
-            options: [
-
-            ],
-            vaule10: '',
-            getProducts: {
+            options: [],  // 归属地
+            getProducts: { // 产品数据
                 currentPage: 1,
                 pageSize: 10,
                 totalRows: 0,
@@ -146,10 +150,10 @@ export default {
                 productId: '',
                 beginPage: 1
             },
-            isShowPeriod: true,
+            isShowLoading: false,
             productInfos: [],
             multipleSelection: [],
-            form: {
+            form: { // 新增字段
                 name: '',
                 address: [],
                 germinate: '',
@@ -157,18 +161,22 @@ export default {
                 weight: '',
                 pluck: ''
             },
-            dyProductLink: {
+            linkNames: [],
+            dyProductLink: { // 环节
                 domains: [
                     {
                         value: '',
                         name_desc: '',
                         name: '',
                         days: '',
+                        isShowPeriod: true,
                         hours: '',
                         liablePerson: '',
                         desc: '',
                         linkId: '',
                         linkIdName: '',
+                        linkTempleId: '',
+                        linkByTemps: []
                     }
                 ]
             },
@@ -206,6 +214,7 @@ export default {
         })
     },
     methods: {
+        // select rows
         toggleSelection(rows) {
             if (rows) {
                 rows.forEach(row => {
@@ -215,17 +224,17 @@ export default {
                 this.$refs.multipleTable.clearSelection();
             }
         },
+        // dec product data
         dec_data() {
             let tempDatas = this.$store.getters.getProductInfos;
             if (tempDatas.resultCode === '1') {
                 let tempItem = {};
                 let baseObj = tempDatas.basePageObj;
-               // this.pageins.currentPage = baseObj.currentPage;
-               // this.pageins.pageSize = baseObj.pageSize;
-               // this.pageins.totalRows = baseObj.totalRows;
                 let tempInfos = baseObj.dataList;
                 this.getProducts.totalRows = baseObj.totalRows;
                 this.productInfos.length = 0;
+
+                let tempNameIds = [];
                 if (tempInfos.length > 0) {
                     const len = tempInfos.length;
                     for (let i = 0; i < len; i++) {
@@ -237,70 +246,159 @@ export default {
                             germinate: tempItem.fayl,
                             transplant: tempItem.yizcml,
                             weight: tempItem.dankz,
+                            id: tempItem.chanpid,
                             pluck: tempItem.caiszq,
                             productionLink: tempItem.linksNum,
                         });
-                        this.productNameIds.push({
+                        tempNameIds.push({
                             value: tempItem.chanpmc,
                             label: tempItem.chanpmc,
                             id: tempItem.chanpid
                         });
                     }
                 }
+                this.productNameIds = tempNameIds;
+                this.isShowLoading = false;
             }
+        },
+        delProductInfo() {
+            let productIds = this.multipleSelection;
+            if (productIds.length > 1) {
+                this._showMessage('error', '删除除失败，目前只支持一次一条数据');
+                return;
+            }
+            console.log('=================');
+            console.log(this.selectedOptions);
+            let proId = productIds[0].id;
+            fetchDelProductInfo(this.$store, { id: proId }).then(() => {
+                console.log('删除成功了吗？');
+                let tempData = this.$store.getters.delProductInfo;
+                if (tempData.resultCode === '1') {
+                    this._showMessage('success', '删除产品信息成功！');
+                } else {
+                    this._showMessage('error', tempData.resultMsg);
+                }
+            });
         },
         handleSelectionChange(val) {
             this.multipleSelection = val;
+            console.log(this.multipleSelection);
         },
         handleSizeChange(val) {
+            this.isShowLoading = true;
             this.getProducts.pageSize = val;
             fetchGetProducts(this.$store, this.getProducts).then(() => {
                 this.dec_data();
             });
+
         },
         handleCurrentChange(val) {
+            this.isShowLoading = true;
             this.getProducts.currentPage = val;
             fetchGetProducts(this.$store, this.getProducts).then(() => {
                 this.dec_data();
             });
+
         },
+        // add product info show dialog
         addProductInfo() {
             this.dyProductLink.domains.length = 0;
+            this.linkNames.length = 0;
+            this.form = { // 新增字段
+                name: '',
+                address: [],
+                germinate: '',
+                transplant: '',
+                weight: '',
+                pluck: ''
+            };
+            fetchLinkNames(this.$store).then(() => {
+                let tempData = this.$store.getters.getLinkNames;
+                if (tempData.resultCode === '1') {
+                    let tempLinkNames = tempData.resultObj,
+                        len = tempLinkNames.length,
+                        tempItem = {};
+                    for (let i = 0; i < len; i++) {
+                        tempItem = tempLinkNames[i];
+                        this.linkNames.push({
+                            id: tempItem.linkId,
+                            name: tempItem.linkName
+                        });
+                    }
+                }
+            });
             this.dialogFormVisible = true;
         },
+        // add link 
         addProductLinkInfo(e) {
-            let dom = _j(e.currentTarget)
+            let dom = _j(e.currentTarget);
             this.dyProductLink.domains.push({
                 value: '',
                 name_desc: '',
                 name: '',
                 days: '',
+                isShowPeriod: true,
                 hours: '',
                 liablePerson: '',
                 desc: '',
                 linkId: '',
                 linkIdName: '',
+                linkTempleId: '',
+                linkByTemps: []
             });
         },
+        // chenage link
         changeLink(index) {
+            const idx = index;
             const linkId = this.dyProductLink.domains[index].name;
             const linkArr = linkId.split('|');
             this.dyProductLink.domains[index].linkId = linkArr[0];
             this.dyProductLink.domains[index].linkName = linkArr[1];
-
-            if (linkArr[0] === '4') {
-                this.isShowPeriod = false;
+            if (linkArr[0] === 'T001') {
+                this.dyProductLink.domains[idx].isShowPeriod = false;
             } else {
-                this.isShowPeriod = true;
+                this.dyProductLink.domains[idx].isShowPeriod = true;
             }
+            this.dyProductLink.domains[idx].linkByTemps.length = 0;
             fetchLinkTemplate(this.$store, { linkId: linkArr[0] }).then(() => {
-                console.log('能获以到环节模版吗？');
-                console.log(this.$store);
+                let tempData = this.$store.getters.getLinkTemps;
+                if (tempData.resultCode === '1') {
+                    let linkTemp = tempData.resultObj.agriTemplatelink,
+                        len = linkTemp.length,
+                        tempItem = {},
+                        temp = {},
+                        subTempItem = {},
+                        subTemps = [];
+                    for (let i = 0; i < len; i++) {
+                        tempItem = linkTemp[i];
+                        temp = {
+                            desc: tempItem.describ,
+                            id: tempItem.id,
+                            link: tempItem.link,
+                            isHasTemp: false,
+                            subTemps: []
+                        }
+                        this.dyProductLink.domains[idx].linkByTemps.push(temp);
+                        this.dyProductLink.domains[idx].linkTempleId = tempItem.id;
+                        subTemps = tempItem.agriTemplateform;
+                        if (subTemps.length > 0) {
+                            this.dyProductLink.domains[idx].linkByTemps[i].isHasTemp = true;
+                            for (let j = 0, sLen = subTemps.length; j < sLen; j++) {
+                                subTempItem = subTemps[j];
+                                this.dyProductLink.domains[idx].linkByTemps[i].subTemps.push({
+                                    id: subTempItem.id,
+                                    text: subTempItem.text,
+                                    name: subTempItem.name
+                                });
+                            }
+                        }
+                    }
+                }
+
             });
         },
+        // save link info
         saveProductLinkInfo() {
-            console.log(this.dyProductLink.domains);
-            console.log(this.form);
             let tempDomains = this.dyProductLink.domains,
                 tempLinks = [],
                 tempLinkItem = {
@@ -318,7 +416,7 @@ export default {
                         "hours": tempItem.hours,
                         "liablePerson": tempItem.liablePerson,
                         "beizhu": tempItem.desc,
-                        "linkTempleId": tempItem.linkTempleId + '1'
+                        "linkTempleId": tempItem.linkTempleId
                     }
                     tempLinks.push(tempLinkItem);
                 }
@@ -335,7 +433,12 @@ export default {
                 links: tempLinksToStr
             }
             fetchSaveProductLink(this.$store, opts).then(() => {
-                console.log(this.$store);
+                let tempData = this.$store.getters.getSaveProLink;
+                if (tempData.resultCode === '1') {
+                    this._showMessage('success', '保存成功！');
+                } else {
+                    this._showMessage('error', tempData.resultMsg);
+                }
             })
             this.dialogFormVisible = false;
         },
@@ -351,6 +454,7 @@ export default {
                 this.dec_data();
             });
         },
+        // chnage kuaidial
         handleKuaidialChange(value) {
             console.log(value.join(','));
         },
@@ -419,6 +523,14 @@ export default {
                     }
                 }
             }
+        },
+        // show success or error message
+        _showMessage(type, msg) {
+            this.$message({
+                showClose: true,
+                message: msg,
+                type: type
+            });
         }
     }
 }
@@ -500,6 +612,19 @@ export default {
     .el-dialog__body {
         max-height: 530px;
         overflow-y: auto;
+    }
+    .el-textarea__inner {
+        width: 800px;
+        margin: 0px auto;
+    }
+    .temp-items-box {
+        width: 780px;
+        margin: 0px auto;
+        border: 1px solid #ccc;
+        background-color: #ddd;
+        padding-left: 20px;
+        padding-bottom: 15px;
+        margin-top: 10px;
     }
     .product-link-box {
         text-align: left;

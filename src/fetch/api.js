@@ -166,3 +166,13 @@ export function fetchLinkTemp(opts){
         'queryWorkLinkRequest.preLinkId': opts.linkId
     }));
 }
+
+export function fetchLinkNames () {
+    return Vue.axios.post('http://10.1.2.151/ctower-mall-c/agriculture/linkInfo/queryLinks.do');
+}
+ 
+export function delProductInfo(opts) {
+    return Vue.axios.post('http://10.1.2.151/ctower-mall-c/agriculture/productInfo/deleteProductInfo.do', qs.stringify({
+        'deleteProductInfoRequest.productID': opts.id
+    }));
+}
