@@ -1,4 +1,13 @@
-import { fetchGetProducts, fetchKuaidials, fetchSaveProductLinks, delProductInfo, fetchLinkTemp, fetchLinkNames } from './../../fetch/api'
+import {
+    fetchGetProducts,
+    fetchKuaidials,
+    fetchSaveProductLinks,
+    delProductInfo,
+    fetchLinkTemp,
+    fetchLinkNames,
+    fetchProductLists,
+    fetchProductDetail
+} from './../../fetch/api'
 
 const state = {
     productInfos: {},
@@ -6,7 +15,9 @@ const state = {
     saveProLink: {},
     linkTemp: {},
     linkNameObj: {},
-    delProductInfo: {}
+    delProductInfo: {},
+    proList: {},
+    proDetail: {}
 }
 
 const actions = {
@@ -27,6 +38,13 @@ const actions = {
     },
     DELETE_PRODUCT_INFO: ({ commit, state }, opts) => {
         return delProductInfo(opts).then(delProduct => commit('DEL_PRO_INFO', { delProduct }));
+    },
+    // 生产管理
+    GET_PRODUCT_List: ({ commit, state }, opts) =>　{
+        return fetchProductLists(opts).then( productList => commit('GET_PRODUCT_LISTS', { productList }) );
+    },
+    GET_PRODUCT_BY_NO: ( { commit, state }, opts ) => {
+        return fetchProductDetail(opts).then( proDetail => commit ( 'GET_PRO_DETAIL_BY_NO', { proDetail }))
     }
 }
 
@@ -48,6 +66,13 @@ const mutations = {
     },
     DEL_PRO_INFO: (state, { delProduct }) => {
         state.delProductInfo = delProduct.data;
+    },
+    // 生产管理
+    GET_PRODUCT_LISTS: ( state, { productList }) => {
+        state.proList = productList.data;
+    },
+    GET_PRO_DETAIL_BY_NO: ( state, { proDetail }) => {
+        state.proDetail = proDetail.data;
     }
 }
 
@@ -69,6 +94,13 @@ const getters = {
     },
     delProductInfo(state) {
         return state.delProductInfo;
+    },
+    // 生产管理
+    getProductLists(state) {
+        return state.proList;
+    },
+    getProductDetail(state) {
+        return state.proDetail;
     }
 }
 

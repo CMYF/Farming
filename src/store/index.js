@@ -7,7 +7,8 @@ import HomePage from './modules/homepage'
 import Login from './modules/login'
 import UserAdmin from './modules/useradmin'
 import RoleManagement from './modules/rolemanagement'
-import product from './modules/product'
+import Product from './modules/product'
+import Kuaidial from './modules/kuaidial'
 Vue.use(Vuex)
 export default new Vuex.Store({
     state: {
@@ -27,6 +28,7 @@ export default new Vuex.Store({
        Login,
        UserAdmin,
        RoleManagement,
-       product
+       Product,
+       Kuaidial
     }
 })

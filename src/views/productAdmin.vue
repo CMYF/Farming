@@ -27,7 +27,7 @@
                 </el-form-item>
             </el-form>
             <div class="product-tab-box">
-                <el-table ref="singleTable" border :data="tableData" style="width: 100%" @cell-click="showPlanInfo">
+                <el-table ref="singleTable" border :data="this.proDatas.datas" style="width: 100%" @cell-click="showPlanInfo">
                     <el-table-column type="index" label="序号" width="70">
                     </el-table-column>
                     <el-table-column property="planName" label="计划名称" width="409" className="plan-name-td">
@@ -49,7 +49,7 @@
                     <el-table-column property="taskState" label="任务状态" width="100">
                     </el-table-column>
                 </el-table>
-                <el-pagination class="page-box" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage4" :page-sizes="[100, 200, 300, 400]" :page-size="100" layout="total, sizes, prev, pager, next, jumper" :total="400">
+                <el-pagination class="page-box" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="this.proDatas.currentPage" :page-sizes="[10, 20, 30, 40, 50]" :page-size="this.proDatas.pageSize" layout="total, sizes, prev, pager, next, jumper" :total="this.proDatas.totalRows">
                 </el-pagination>
             </div>
         </el-col>
@@ -116,14 +116,25 @@
 </template>
 <script>
 import _j from 'jquery'
+import store from './../store/index'
+function fetchProductList(store, opts) {
+    return store.dispatch('GET_PRODUCT_List', opts);
+}
+function fetchProductByNo(store, opts) {
+    return store.dispatch('GET_PRODUCT_BY_NO', opts);
+}
 export default {
+    store,
     data() {
         return {
             screenForm: {
                 no: '',
                 name: '',
                 link: '',
-                state: ''
+                state: '',
+                token: localStorage.token,
+                beginPage: 1,
+                pageSize: 10
             },
             planForm: {
                 name: '',
@@ -133,22 +144,34 @@ export default {
                 weight: '',
                 pluck: ''
             },
+            proDatas: {
+                beginPage: 1,
+                currentPage: 1,
+                pageSize: 10,
+                totalRows: 0,
+                totalPage: 0,
+                datas: []
+            },
             isDisabled: true,
             formLabelWidth: '120px',
             currentPage4: 4,
             isShowPlanDailog: false,
             taskStates: [
                 {
-                    label: '处理中',
-                    value: 1
-                },
-                {
-                    label: '已完成',
-                    value: 2
+                    label: '待派发',
+                    value: 10
                 },
                 {
                     label: '已派发',
-                    value: 3
+                    value: 20
+                },
+                {
+                    label: '处理中',
+                    value: 30
+                },
+                {
+                    label: '已完成',
+                    value: 40
                 }
             ],
             tableData: [
@@ -286,17 +309,26 @@ export default {
                     taskState: '已完成'
                 }
             ],
+            endLinks: []
         }
+    },
+    beforeMount() {
+        this.getProductInfo();
     },
     methods: {
         screenProduct() {
-
+            console.log('查询数据：');
+            console.log(this.screenForm);
+            this.getProductInfo();
         },
         handleSizeChange(val) {
-            console.log(`每页 ${val} 条`);
+            this.proDatas.pageSize = val;
+            this.getProductInfo();
         },
         handleCurrentChange(val) {
-            console.log(`当前页: ${val}`);
+            this.proDatas.beginPage = val;
+            this.proDatas.currentPage = val;
+            this.getProductInfo();
         },
         showPlanInfo(row, column, cell, event) {
             let currRowData = row;
@@ -304,6 +336,46 @@ export default {
             if (!dom.hasClass('plan-name-td')) {
                 return;
             }
+            let planNo = currRowData.planNo;
+            fetchProductByNo(this.$store, { no: planNo }).then(()=> {
+                 let tempData = this.$store.getters.getProductDetail;
+                 console.log('--------------------------');
+                 console.log(this.$store);
+                 if (tempData.resultCode === '1') {
+                    let dataObj = tempData.resultObj;
+                    let proInfo = dataObj.productInfo;
+                    let links = dataObj.linkInfo;
+                    this.planForm.id = proInfo.chanpid;
+                    this.planForm.germinate = proInfo.fayl;
+                    this.planForm.transplant = proInfo.yizcml;
+                    this.planForm.weight = proInfo.dankz;
+                    this.planForm.name = proInfo.chanpmc;
+                    this.planForm.pluck = proInfo.caiszq;
+                    this.planForm.planType = proInfo.guisdname;
+                    let tempLink = {}, lLen = links.length, tempLinkData = {};
+                    for (let i = 0; i < lLen; i++) {
+                        tempLink = links[i];
+                        tempLinkData = {
+                            linkName: '',
+                            state: '',
+                            startTime: '',
+                            endTime: '',
+                            desc: '',
+                            isHasDescs: false
+                        };
+                        let tempDescs = tempLink.templateform;
+                        console.log(tempDescs);
+                        this.endLinks.push(tempLinkData);
+                        if (tempDescs.length > 0) {
+                            this.endLinks[i].linkDescs = [];
+                            this.endLinks[i].isHasDescs = true;
+                            
+                        }
+                    }
+                    console.log('环节有吗？');
+                    console.log(this.links);
+                 }
+            });
             this.isShowPlanDailog = true;
             _j('.plan-name-td').removeClass('plan-name-active');
             dom.addClass('plan-name-active');
@@ -331,6 +403,37 @@ export default {
             subInfoBoxDom.slideDown('500', function() {
                 subInfoBoxDom.removeClass('hide').addClass('show')
             })
+        },
+        getProductInfo() {
+            fetchProductList(this.$store, this.screenForm).then(() => {
+                console.log('获取产品列表：');
+                let tempData = this.$store.getters.getProductLists;
+                if (tempData.resultCode === '1') {
+                    let dataObj = tempData.basePageObj;
+                    this.proDatas.currentPage = dataObj.currentPage;
+                    this.proDatas.totalPage = dataObj.totalPage;
+                    this.proDatas.totalRows = dataObj.totalRows;
+                    let tempList = dataObj.dataList;
+                    let len = tempList.length;
+                    let tempItem = {};
+                    this.proDatas.datas.length = 0;
+                    for (let i = 0; i < len; i++) {
+                        tempItem = tempList[i];
+                        this.proDatas.datas.push({
+                            id: tempItem.chanpinid,
+                            planName: tempItem.jihuamc,
+                            planNo: tempItem.picibianh,
+                            proName: tempItem.chanpinmc,
+                            proLink: tempItem.linkidname,
+                            planStarTime: tempItem.jihuajsrq,
+                            planEndTime: tempItem.jihuaksrq,
+                            factStarTime: tempItem.shijienddatetime,
+                            factEndTime: tempItem.shijistartdatetime,
+                            taskState: tempItem.zhixingzt
+                        });
+                    }
+                }
+            });
         }
     }
 }

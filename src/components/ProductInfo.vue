@@ -267,6 +267,10 @@ export default {
                 this._showMessage('error', '删除除失败，目前只支持一次一条数据');
                 return;
             }
+            if (productIds.length <=0 ) {
+                this._showMessage('error', '请选中要删除的数据！');
+                return;
+            }
             console.log('=================');
             console.log(this.selectedOptions);
             let proId = productIds[0].id;
