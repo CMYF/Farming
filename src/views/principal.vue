@@ -1,6 +1,6 @@
 <template>
     <el-row>
-        <el-col :span="20" :offset="3" class="pro-content">
+        <el-col :span="23"  class="pro-content">
             <el-row class="chart-header-box">
                 <el-col :span="6" class="title-box">
                     <h1>预估产量</h1>
@@ -36,7 +36,7 @@
             </el-row>
 
         </el-col>
-        <el-col :span="20" :offset="3" class="task-table-box">
+        <el-col :span="23"  class="task-table-box">
             <el-row>
                 <div class="title-box product-title-box">
                     <h1>生产总览</h1>
@@ -51,7 +51,7 @@
                 </el-tabs>
             </el-row>
         </el-col>
-        <el-col :span="20" :offset="3" class="task-table-box">
+        <el-col :span="23"  class="task-table-box">
             <el-row>
                 <div class="title-box product-title-box">
                     <h1>批次进度表</h1>

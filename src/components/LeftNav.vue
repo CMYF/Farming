@@ -113,7 +113,16 @@ export default {
     border-radius: 0;
 }
 
+.logo-box{
+    width: 100%;
+    min-width: 100%;
+    img{
+        min-width: 100%;
+        max-width: 100%;
+        height: 60px;
 
+    }
+}
 .el-menu--horizontal .el-submenu .el-submenu__title {
     height: 50px;
     line-height: 50px;
