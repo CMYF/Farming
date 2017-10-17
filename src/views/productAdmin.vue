@@ -336,7 +336,8 @@ export default {
             if (!dom.hasClass('plan-name-td')) {
                 return;
             }
-            let planNo = currRowData.planNo;
+           // let planNo = currRowData.planNo;
+            let planNo = 'b9de97a4fab5489899738f23bc7feabf';
             fetchProductByNo(this.$store, { no: planNo }).then(()=> {
                  let tempData = this.$store.getters.getProductDetail;
                  console.log('--------------------------');
@@ -364,7 +365,6 @@ export default {
                             isHasDescs: false
                         };
                         let tempDescs = tempLink.templateform;
-                        console.log(tempDescs);
                         this.endLinks.push(tempLinkData);
                         if (tempDescs.length > 0) {
                             this.endLinks[i].linkDescs = [];

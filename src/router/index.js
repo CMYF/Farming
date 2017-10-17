@@ -3,7 +3,7 @@ import Router from 'vue-router'
 // import Hello from '@/components/Hello'
 import HomePage from '@/views/HomePage'
 import Login from '@/views/Login'
-import About from '@/views/about'
+import Principal from '@/views/principal'
 import RoleManagement from '@/views/RoleManagement'
 import AddMenu from '@/views/addMenu'
 import UserAdmin from '@/views/userAdmin'
@@ -29,7 +29,7 @@ export default new Router({
           path: '/',
           name: 'User',
           components: {
-            rightContent: About
+            rightContent: Principal
           }
         },
          {
