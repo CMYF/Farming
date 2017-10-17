@@ -1,48 +1,50 @@
 <template>
   <el-row>
-    <h1 class="form-title">角色查询</h1>
-    <el-form :inline="true" :model="opts" class="demo-form-inline form-box">
-      <el-form-item label="角色名称">
-        <el-input v-model="opts.roleName" placeholder="请输入关键字"></el-input>
-      </el-form-item>
-      <el-form-item>
-        <el-button type="primary" @click="selectRole">查询</el-button>
-        <el-button type="primary" @click="resetRoleName">重置</el-button>
-      </el-form-item>
-    </el-form>
-    <h1 class="form-title">角色列表</h1>
-    <div class="btn-box">
-      <el-button type="text" @click="shwoDialog('add', $event)">
-        <i class="iconfont">&#xe763;</i>  
-        <span>添加</span>
-      </el-button>
-      <el-button type="text" @click="delRoles">
-        <i class="iconfont">&#xe76c;</i>
-        <span>删除</span>
-      </el-button>
-    </div>
-    <el-table ref="multipleTable" class="table-box" v-loading="isShowLoading" element-loading-text="加载中..." :default-sort="{prop: 'date', order: 'descending'}" :data="roles" max-height="550" border tooltip-effect="dark" style="width: 100%" @selection-change="handleSelectionChange">
-      <el-table-column type="selection" width="55" style="padding-right:0;">
-      </el-table-column>
-      <el-table-column label="操作" width="120">
-        <template scope="scope">
-          <el-button type="text" size="small" @click="shwoDialog('edit', $event)">
-            <i class="iconfont">&#xe7c3;</i>
-          </el-button>
-        </template>
-      </el-table-column>
-      <el-table-column label="ID" width="120" prop="id" sortable>
-      </el-table-column>
-      <el-table-column label="角色名称" width="120" prop="name" sortable>
-      </el-table-column>
-      <el-table-column prop="roleStatus" label="角色状态" sortable width="120">
-      </el-table-column>
-      <el-table-column prop="roleEx" label="角色描述" show-overflow-tooltip>
-      </el-table-column>
-    </el-table>
-    <el-pagination class="pagination-box" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="this.opts.currentPage" :page-sizes="[10, 20, 30, 40, 50]" :page-size="this.opts.pageSize" layout="total, sizes, prev, pager, next, jumper" :total="this.opts.totalRows">
-    </el-pagination>
-  <RMPup :isShow="dialogFormVisible" @on-hide-dialog=""></RMPup>
+    <el-col :span="20" :offset="3" class="role-main-box">
+      <h1 class="form-title">角色查询</h1>
+      <el-form :inline="true" :model="opts" class="demo-form-inline form-box">
+        <el-form-item label="角色名称">
+          <el-input v-model="opts.roleName" placeholder="请输入关键字"></el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="selectRole">查询</el-button>
+          <el-button type="primary" @click="resetRoleName">重置</el-button>
+        </el-form-item>
+      </el-form>
+      <h1 class="form-title">角色列表</h1>
+      <div class="btn-box">
+        <el-button type="text" @click="shwoDialog('add', $event)">
+          <i class="iconfont">&#xe763;</i>
+          <span>添加</span>
+        </el-button>
+        <el-button type="text" @click="delRoles">
+          <i class="iconfont">&#xe76c;</i>
+          <span>删除</span>
+        </el-button>
+      </div>
+      <el-table ref="multipleTable" class="table-box" v-loading="isShowLoading" element-loading-text="加载中..." :default-sort="{prop: 'date', order: 'descending'}" :data="roles" max-height="550" border tooltip-effect="dark" style="width: 100%" @selection-change="handleSelectionChange">
+        <el-table-column type="selection" width="55" style="padding-right:0;">
+        </el-table-column>
+        <el-table-column label="操作" width="120">
+          <template scope="scope">
+            <el-button type="text" size="small" @click="shwoDialog('edit', $event)">
+              <i class="iconfont">&#xe7c3;</i>
+            </el-button>
+          </template>
+        </el-table-column>
+        <el-table-column label="ID" width="120" prop="id" sortable>
+        </el-table-column>
+        <el-table-column label="角色名称" width="120" prop="name" sortable>
+        </el-table-column>
+        <el-table-column prop="roleStatus" label="角色状态" sortable width="120">
+        </el-table-column>
+        <el-table-column prop="roleEx" label="角色描述" show-overflow-tooltip>
+        </el-table-column>
+      </el-table>
+      <el-pagination class="pagination-box" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="this.opts.currentPage" :page-sizes="[10, 20, 30, 40, 50]" :page-size="this.opts.pageSize" layout="total, sizes, prev, pager, next, jumper" :total="this.opts.totalRows">
+      </el-pagination>
+      <RMPup :isShow="dialogFormVisible" @on-hide-dialog=""></RMPup>
+    </el-col>
   </el-row>
 </template>
 <script>
@@ -89,7 +91,7 @@ export default {
     }
   },
   created() {
-     
+
   },
   computed: mapGetters({
     roleDatas: 'roleDatas'
@@ -99,20 +101,20 @@ export default {
       let tempData = this.$store.getters.getAllRoles;
       this.decDatas(tempData);
     });
-    
+
   },
   methods: {
     selectRole() {
       let self = this;
       this.isShowLoading = true;
-      window.setTimeout(function () {
+      window.setTimeout(function() {
         fetchAllRoles(self.$store, self.opts).then(() => {
-        let tempData = self.$store.getters.getAllRoles;
-        self.decDatas(tempData);
-      }, 600)
-    })
+          let tempData = self.$store.getters.getAllRoles;
+          self.decDatas(tempData);
+        }, 600)
+      })
     },
-    delRoles(){
+    delRoles() {
       if (!this.opts.roleIds) {
         this._showMessage('error', '请选择要删除的角色！');
         return;
@@ -136,21 +138,21 @@ export default {
     handleSizeChange(val) {
       this.isShowLoading = true;
       this.opts.pageSize = val;
-       fetchAllRoles(this.$store, this.opts).then(() => {
+      fetchAllRoles(this.$store, this.opts).then(() => {
         let tempData = this.$store.getters.getAllRoles;
         this.decDatas(tempData);
       })
     },
     handleCurrentChange(val) {
       this.isShowLoading = true;
-      this.pagins.beginPage = val;  
-       this.opts.beginPage = val;
-       fetchAllRoles(this.$store, this.opts).then(() => {
+      this.pagins.beginPage = val;
+      this.opts.beginPage = val;
+      fetchAllRoles(this.$store, this.opts).then(() => {
         let tempData = this.$store.getters.getAllRoles;
         this.decDatas(tempData);
       })
     },
-    shwoDialog: function (type, e) {
+    shwoDialog: function(type, e) {
       if (type === 'add') {
         bus.$emit('is-show-rm-pup', 'add');
       } else {
@@ -158,34 +160,34 @@ export default {
         let id = dom.parents('td').next('td').find('.cell').text();
         bus.$emit('is-show-rm-pup', 'edit', id);
       }
-     
+
     },
     decDatas(data, opts) {
       let tempData = data;
       if (tempData.resultCode === '1') {
-          let beseObj = tempData.basePageObj;
-          let tempItem = {}, datas = beseObj.dataList;
-          let tempRoles = [];
-          for (let i = 0, len = datas.length; i < len; i++){
-            tempItem = datas[i];
-            tempRoles.push({
-              id:　tempItem.ids,
-              name: tempItem.rolename,
-              roleStatus: tempItem.rolestatus === '1' ?　'有效' : '无效',
-              roleEx: tempItem.roledesc
-            });
-          }
-          this.roles = tempRoles;
-          this.opts.totalRows = beseObj.totalRows;
-          this.pagins = {
-            totalRows: beseObj.totalRows,
-            totalPages: beseObj.totalPages,
-            currentPage: beseObj.currentPage,
-            currentRow: beseObj.currentRow,
-            hasNextPage: beseObj.hasNextPage,
-            beginPage: 1
-          }
-          this.isShowLoading = false;
+        let beseObj = tempData.basePageObj;
+        let tempItem = {}, datas = beseObj.dataList;
+        let tempRoles = [];
+        for (let i = 0, len = datas.length; i < len; i++) {
+          tempItem = datas[i];
+          tempRoles.push({
+            id: tempItem.ids,
+            name: tempItem.rolename,
+            roleStatus: tempItem.rolestatus === '1' ? '有效' : '无效',
+            roleEx: tempItem.roledesc
+          });
+        }
+        this.roles = tempRoles;
+        this.opts.totalRows = beseObj.totalRows;
+        this.pagins = {
+          totalRows: beseObj.totalRows,
+          totalPages: beseObj.totalPages,
+          currentPage: beseObj.currentPage,
+          currentRow: beseObj.currentRow,
+          hasNextPage: beseObj.hasNextPage,
+          beginPage: 1
+        }
+        this.isShowLoading = false;
       }
     },
     getRoleIds(roles) {
@@ -213,6 +215,11 @@ export default {
 }
 </script>
 <style lang="scss">
+.role-main-box{
+  background-color: #fff;
+  padding-bottom: 20px;
+  margin-top: 20px;
+}
 .form-box {
   text-align: left;
   padding-top: 20px;
@@ -251,8 +258,9 @@ export default {
   text-align: right;
   margin-top: 20px;
 }
-.btn-box{
-  width:97%;
+
+.btn-box {
+  width: 97%;
   text-align: left;
   margin-left: 20px;
 }

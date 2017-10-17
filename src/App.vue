@@ -3,7 +3,7 @@
     <!--<img src="./assets/logo.png">-->
     <router-view name="Login"></router-view>
     <router-view name="Home"></router-view>
-    
+
   </div>
 </template>
 
@@ -13,39 +13,45 @@ import $ from 'jquery'
 export default {
   name: 'app',
   components: {
-    
+
   },
   mounted() {
-    var docH = $(document).height();
+    /* var docH = $(document).height();
     var headerH = $('.header').height();
     var h = docH - headerH;
     $('.left-nav-box').css({
       'height': h + 'px',
       'top': headerH
     });
-
+ */
 
   }
 }
 </script>
 
 <style>
+
 * {
   margin: 0px;
   padding: 0px;
   border: none;
 }
-li{
+body{
+  background-color: #f0f3fa;
+}
+li {
   list-style: none;
 }
-a{
+
+a {
   text-decoration: none;
   font-size: 14px;
+}
+/*
+a:hover {
+  color: #ccc;
   color: #48576a;
-}
-a:hover{
-  color:#ccc;
-}
+}*/
 
 #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
@@ -54,26 +60,32 @@ a:hover{
   text-align: center;
   color: #2c3e50;
 }
-@font-face {font-family: 'iconfont';
-    src: url('./assets/fonts/iconfont.eot');
-    src: url('./assets/fonts/iconfont.eot?#iefix') format('embedded-opentype'),
-    url('./assets/fonts/iconfont.woff') format('woff'),
-    url('./assets/fonts/iconfont.ttf') format('truetype'),
-    url('./assets/fonts/iconfont.svg#iconfont') format('svg');
+
+@font-face {
+  font-family: 'iconfont';
+  src: url('./assets/fonts/iconfont.eot');
+  src: url('./assets/fonts/iconfont.eot?#iefix') format('embedded-opentype'),
+  url('./assets/fonts/iconfont.woff') format('woff'),
+  url('./assets/fonts/iconfont.ttf') format('truetype'),
+  url('./assets/fonts/iconfont.svg#iconfont') format('svg');
 }
-.iconfont{
-    font-family:"iconfont" !important;
-    font-size:16px;
-    font-style:normal;
-    -webkit-font-smoothing: antialiased;
-    -webkit-text-stroke-width: 0.2px;
-    -moz-osx-font-smoothing: grayscale;}
+
+.iconfont {
+  font-family: "iconfont" !important;
+  font-size: 16px;
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  -webkit-text-stroke-width: 0.2px;
+  -moz-osx-font-smoothing: grayscale;
+}
 
 .left-nav-box {
   height: 100%;
   overflow: hidden;
   position: fixed;
-  top: 60px;
+  width: 220px;
+  top: 0px;
+  z-index: 10;
   left: 0;
 }
 
@@ -83,7 +95,10 @@ a:hover{
   overflow: hidden;
   margin-top: 60px;
 }
-.hide{
+
+.hide {
   display: none;
 }
+
+
 </style>

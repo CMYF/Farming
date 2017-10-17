@@ -7,6 +7,10 @@ import About from '@/views/about'
 import RoleManagement from '@/views/RoleManagement'
 import AddMenu from '@/views/addMenu'
 import UserAdmin from '@/views/userAdmin'
+import SetProduct from '@/views/setproduct'
+import TaskList from '@/views/TaskList'
+import GetTasks from '@/views/TaskGet'
+import ProductAdmin from '@/views/productAdmin'
 
 Vue.use(Router)
 
@@ -47,6 +51,34 @@ export default new Router({
           name: 'User',
           components: {
             rightContent: AddMenu
+          }
+        },
+         {
+          path: '/setproduct',
+          name: 'Product',
+          components: {
+            rightContent: SetProduct
+          }
+        },
+        {
+          path: '/tasklists',
+          name: 'Task',
+          components: {
+            rightContent: TaskList
+          }
+        },
+        {
+          path: '/gettasks',
+          name: 'Task',
+          components: {
+            rightContent: GetTasks
+          }
+        },
+        {
+          path: '/productadmin',
+          name: 'Product',
+          components: {
+            rightContent: ProductAdmin
           }
         }
       ]

@@ -14,6 +14,7 @@ const actions = {
 const mutations = {
     GET_LOGIN_DATA: (state, { loginpage }) => {
         console.log('数据不见了？');
+        console.log(state)
         console.log(loginpage);
         state.LoginPage.resultData = loginpage.data;
     }
