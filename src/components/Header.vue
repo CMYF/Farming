@@ -1,14 +1,6 @@
 <template>
     <header class="header-box">
         <el-row class="header">
-            <!-- <el-col :span="3" style="height: 60px;">
-                        <!-- <div class="logo-box">
-                                                                <span class="logo-icon">
-                                                                    <i class="el-icon-menu"></i>
-                                                                </span>
-                                                                <span class="logo-txt" @click="toIndex">春沐源农业管理系统</span>
-                                                            </div> 
-                    </el-col> -->
             <el-col :span="8" class="emptry-box">
                 <img src="./../assets/images/version.png" alt="">
 

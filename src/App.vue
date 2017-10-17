@@ -96,7 +96,7 @@ a:hover {
   overflow: hidden;
   margin-top: 60px;
   width: 86.5%;
-  min-width: 1190px; 
+  min-width: 1150px; 
   margin-left: 13.3%;
 }
 

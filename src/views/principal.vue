@@ -417,9 +417,9 @@ export default {
         }
     }
     .vf-type-box {
-        width: 1506px;
+        width: 98.5%;
         clear: both;
-        padding-left: 20px;
+        //padding-left: 20px;
         height: 30px;
         border: 1px solid #ccc;
 
@@ -430,7 +430,7 @@ export default {
         }
         .type-item-box {
             float: left;
-            width: 800px;
+            width: 60%;
             height: 30px;
             text-align: left;
             overflow: hidden;
