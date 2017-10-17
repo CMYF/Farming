@@ -69,13 +69,12 @@ export default {
     height: 60px;
     z-index: 9;
     border-bottom: 1px solid #ccc;
-     background: #fff;
+    background: #fff;
 }
 
 .header {
     width: 100%;
     height: 60px;
-   
 }
 
 .logo-box,
@@ -160,6 +159,12 @@ export default {
         top: 17px;
         right: 30px;
         padding: 0px 5px;
+    }
+}
+
+@media (max-width: 1420px) {
+    .header-box {
+        padding-left: 14.3%;
     }
 }
 </style>

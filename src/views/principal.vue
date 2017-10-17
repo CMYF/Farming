@@ -483,4 +483,7 @@ export default {
         padding-left: 20px;
     }
 }
+@media (max-width: 1420px){
+
+}
 </style>

@@ -104,5 +104,10 @@ a:hover {
   display: none;
 }
 
-
+@media (max-width: 1420px){
+  .right-content-box{
+    width: 85.3%;
+    margin-left: 14.3%;
+  }
+}
 </style>
