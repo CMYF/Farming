@@ -10,6 +10,8 @@ import RoleManagement from './modules/rolemanagement'
 import TaskList from './modules/TaskList'
 import TaskGet from './modules/TaskGet'
 import product from './modules/product'
+import Product from './modules/product'
+import Kuaidial from './modules/kuaidial'
 Vue.use(Vuex)
 export default new Vuex.Store({
     state: {
@@ -31,6 +33,8 @@ export default new Vuex.Store({
        RoleManagement,
        TaskList,
        TaskGet,
-       product
+       product,
+       Product,
+       Kuaidial
     }
 })
