@@ -231,3 +231,21 @@ export function fetchDelKuaidial(opts) {
     }));
 }
 // ##------------------------------------------------------------------------------------------------------------------------------
+
+//----------------------------------------------------主页----------------------------------------------------------------------------
+export function fetchLinkData(opts) {
+    return Vue.axios.post('http://10.1.2.151/ctower-mall-c/agriculture/index/output.do', qs.stringify({
+        loginedtoken: opts.token,
+        _lk_createtime: opts.startTime,
+         _gk_createtime: opts.endTime,
+         spaceday: opts.day,
+         chanpids: opts.productIds
+    }));
+}
+export function fetchProducts(opts) {
+    return Vue.axios.post('http://10.1.2.151/ctower-mall-c/agriculture/index/queryProductInfo.do ', qs.stringify({
+        loginedtoken: opts.token
+    }));
+}
+// ##------------------------------------------------------------------------------------------------------------------------------------
+

@@ -7,13 +7,17 @@
                 </el-col>
                 <el-col :span="16" class="mack-box">
                     <div class="date-box">
-                        <el-date-picker v-model="value1" type="date" placeholder="选择开始日期" :picker-options="pickerOptions0"></el-date-picker>
+                        <el-date-picker v-model="params.beginTime"  @change="startChange" format="yyyy-MM-dd" type="date" placeholder="选择开始日期" ></el-date-picker>
                         -
-                        <el-date-picker v-model="value2" type="date" placeholder="选择结束日期" :picker-options="pickerOptions0"> </el-date-picker>
+                        <el-date-picker v-model="params.finishTime"   @change="endChange" type="date" placeholder="选择结束日期" > </el-date-picker>
+                        <el-button class="select-btn" @click="getProductLines()">
+                            查询
+                        </el-button>
+                      <!--  :picker-options="pickerOptions0"-->
                         <div class="day-box">
-                            <span class="day-item day-item-day">日</span>
-                            <span class="day-item day-item-thrday day-item-active">三天</span>
-                            <span class="day-item day-item-week">周</span>
+                            <span class="day-item day-item-day" @click="selectPluckDay('1', $event)">日</span>
+                            <span class="day-item day-item-thrday day-item-active" @click="selectPluckDay('3', $event)">三天</span>
+                            <span class="day-item day-item-week" @click="selectPluckDay('7', $event)">周</span>
                         </div>
                     </div>
 
@@ -21,20 +25,23 @@
                 <div class="vf-type-box">
                     <div class="type-ex">选择产品：</div>
                     <div class="type-item-box">
-                        <!--<el-checkbox-group v-model="chnageTypes" @change="typeChange">-->
-                        <el-checkbox v-for="(item, index) in vfTypes" :key="index" text-color="#02bdad" :label="item.label" :true-label="item.id">{{ item.label }}</el-checkbox>
-                        <!--   </el-checkbox-group>-->
+                        <el-checkbox-group v-model="chnageTypes" @change="typeChange" :max="5">
+                            <el-checkbox v-for="(item, idx) in vfTypes" :label="item.label" :key="idx">{{item.label}}</el-checkbox>
+                            <!--<el-checkbox v-for="(item, index) in vfTypes" :key="index" :data-id="item.id " @change="selectProducts(item.id, $event)" :label="item.label" :true-label="item.id">{{ item.label }}
+                                                                </el-checkbox>-->
+
+                        </el-checkbox-group>
                     </div>
-                    <div class="show-all-box">
+                    <div class="show-all-box" @click="showProductNames($event)">
                         <span class="show-all-txt">展开选项</span>
                         <span class="iconfont show-icon ">&#xe7cc;</span>
                     </div>
                 </div>
-                <div class="ctx-box">
-                    <canvas id="myCanvas" width="1202" height="300"></canvas>
-                </div>
-            </el-row>
 
+            </el-row>
+            <div class="ctx-box">
+                <canvas id="myCanvas" width="1202" height="300"></canvas>
+            </div>
         </el-col>
         <el-col :span="23" class="task-table-box">
             <el-row>
@@ -116,6 +123,12 @@ import _j from 'jquery'
 import Chart from 'chart.js'
 import SameDay from './../components/SameDay'
 import TomorrowTask from './../components/TomorrowTask'
+function fetchGetLinePicData(store, opts) {
+    return store.dispatch('GET_LINE_DATAS', opts);
+}
+function fetchGetProductInfo(store) {
+    return store.dispatch('GET_PRODUCTS', { token: localStorage.token });
+}
 export default {
     components: {
         SameDay,
@@ -128,234 +141,72 @@ export default {
                     return (time.getTime()) > Date.now() - 8.64e7;
                 }
             },
+            params: {
+                beginTime: '',
+                finishTime: '',
+                pluckDay: 3,
+                productIds: ''
+            },
             value1: '',
             value2: '',
             activeName2: 'now',
             vfTypes: [
-                {
-                    label: '番茄',
-                    id: 1
-                },
-                {
-                    label: '山菊',
-                    id: 2
-                },
-                {
-                    label: '黄瓜',
-                    id: 3
-                },
-                {
-                    label: '番茄',
-                    id: 1
-                },
-                {
-                    label: '山菊',
-                    id: 2
-                },
-                {
-                    label: '黄瓜',
-                    id: 3
-                },
-                {
-                    label: '番茄',
-                    id: 1
-                },
-                {
-                    label: '山菊',
-                    id: 2
-                },
-                {
-                    label: '黄瓜',
-                    id: 3
-                },
-                {
-                    label: '番茄',
-                    id: 1
-                },
-                {
-                    label: '山菊',
-                    id: 2
-                },
-                {
-                    label: '黄瓜',
-                    id: 3
-                },
-                {
-                    label: '番茄',
-                    id: 1
-                },
-                {
-                    label: '山菊',
-                    id: 2
-                },
-                {
-                    label: '黄瓜',
-                    id: 3
-                },
-                {
-                    label: '番茄',
-                    id: 1
-                },
-                {
-                    label: '山菊',
-                    id: 2
-                },
-                {
-                    label: '黄瓜',
-                    id: 3
-                },
-                {
-                    label: '番茄',
-                    id: 1
-                },
-                {
-                    label: '山菊',
-                    id: 2
-                },
-                {
-                    label: '黄瓜',
-                    id: 3
-                },
-                {
-                    label: '番茄',
-                    id: 1
-                },
-                {
-                    label: '山菊',
-                    id: 2
-                },
-                {
-                    label: '黄瓜',
-                    id: 3
-                },
-                {
-                    label: '番茄',
-                    id: 1
-                },
-                {
-                    label: '山菊',
-                    id: 2
-                },
-                {
-                    label: '黄瓜',
-                    id: 3
-                },
-                {
-                    label: '番茄',
-                    id: 1
-                },
-                {
-                    label: '山菊',
-                    id: 2
-                },
-                {
-                    label: '黄瓜',
-                    id: 3
-                },
-                {
-                    label: '番茄',
-                    id: 1
-                },
-                {
-                    label: '山菊',
-                    id: 2
-                },
-                {
-                    label: '黄瓜',
-                    id: 3
-                },
-                {
-                    label: '番茄',
-                    id: 1
-                },
-                {
-                    label: '山菊',
-                    id: 2
-                },
-                {
-                    label: '黄瓜',
-                    id: 3
-                },
-                {
-                    label: '番茄',
-                    id: 1
-                },
-                {
-                    label: '山菊',
-                    id: 2
-                },
-                {
-                    label: '黄瓜',
-                    id: 3
-                },
-                {
-                    label: '番茄',
-                    id: 1
-                },
-                {
-                    label: '山菊',
-                    id: 2
-                },
-                {
-                    label: '黄瓜',
-                    id: 3
-                },
-                {
-                    label: '番茄',
-                    id: 1
-                },
-                {
-                    label: '山菊',
-                    id: 2
-                },
-                {
-                    label: '黄瓜',
-                    id: 3
-                },
-                {
-                    label: '番茄',
-                    id: 1
-                },
-                {
-                    label: '山菊',
-                    id: 2
-                },
-                {
-                    label: '黄瓜',
-                    id: 3
-                },
-                {
-                    label: '番茄',
-                    id: 1
-                },
-                {
-                    label: '山菊',
-                    id: 2
-                },
-                {
-                    label: '黄瓜',
-                    id: 3
-                },
+
             ],
-            chnageTypes: [1, 2]
+            chnageTypes: []
         }
     },
+    beforeMount() {
+        this.loadProductLines();
+        fetchGetProductInfo(this.$store).then(() => {
+            console.log('获取所有产品名成功了吗？');
+            let tempData = this.$store.getters.getPrincipalNames;
+            if (tempData.resultCode === '1') {
+                let tempVFs = tempData.basePageObj.dataList;
+                let len = tempVFs.length;
+                let tempItem = {};
+                for (let i = 0; i < len; i++) {
+                    tempItem = tempVFs[i];
+                    this.vfTypes.push({
+                        label: tempItem.name,
+                        id: tempItem.chanpiid
+                    });
+                }
+
+            }
+        });
+
+    },
     mounted() {
-        //  window.setTimeout(function() {
+
         let ctx = _j('#myCanvas');
-        console.log(ctx);
-        let myChart = new Chart(ctx, {
+        let opts = {
+            scaleOverride: true,   //是否用硬编码重写y轴网格线
+            scaleSteps: 10,        //y轴刻度的个数
+            scaleStepWidth: 300,   //y轴每个刻度的宽度
+            scaleStartValue: 0,    //y轴的起始值
+            pointDot: true,        //是否显示点
+            pointDotRadius: 5,     //点的半径
+            pointDotStrokeWidth: 1,//点的线宽
+            datasetStrokeWidth: 3, //数据线的线宽
+            animation: true,       //是否有动画效果
+            animationSteps: 60    //动画的步数
+
+        }
+        let data = {
             type: 'line',
             data: {
-                labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
+                labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange", "Brown", "Black"],
                 datasets: [{
                     label: '# of Votes',
-                    data: [12, 19, 3, 5, 2, 3],
+                    data: [12, 19, 3, 5, 2, 3, 60, 80],
                     backgroundColor: [
                         'rgba(255, 99, 132, 0.2)',
                         'rgba(54, 162, 235, 0.2)',
                         'rgba(255, 206, 86, 0.2)',
                         'rgba(75, 192, 192, 0.2)',
+                        'rgba(153, 102, 255, 0.2)',
+                        'rgba(255, 159, 64, 0.2)',
                         'rgba(153, 102, 255, 0.2)',
                         'rgba(255, 159, 64, 0.2)'
                     ],
@@ -365,51 +216,135 @@ export default {
                         'rgba(255, 206, 86, 1)',
                         'rgba(75, 192, 192, 1)',
                         'rgba(153, 102, 255, 1)',
+                        'rgba(255, 159, 64, 1)',
+                        'rgba(153, 102, 255, 1)',
                         'rgba(255, 159, 64, 1)'
                     ],
                     borderWidth: 1
                 },
                 {
-                    //label: '# of aaa',
-                    data: [2, 22, 8, 5, 36, 12],
-                    /* backgroundColor: [
-                         'rgba(255, 99, 132, 0.2)',
-                         'rgba(54, 162, 235, 0.2)',
-                         'rgba(255, 240, 86, 0.2)',
-                         'rgba(75, 81, 192, 0.2)',
-                         'rgba(153, 222, 255, 0.2)',
-                         'rgba(255, 159, 64, 0.2)'
-                     ],
-                     borderColor: [
-                         'rgba(255,99,132,1)',
-                         'rgba(54, 162, 235, 1)',
-                         'rgba(255, 206, 86, 1)',
-                         'rgba(75, 192, 192, 1)',
-                         'rgba(153, 102, 255, 1)',
-                         'rgba(255, 159, 64, 1)'
-                     ],*/
+                    label: '# of Votes',
+                    data: [20, 30, 40, 50, 60, 70, 80, 500],
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.2)',
+                        'rgba(54, 162, 235, 0.2)',
+                        'rgba(255, 206, 86, 0.2)',
+                        'rgba(75, 192, 192, 0.2)',
+                        'rgba(153, 102, 255, 0.2)',
+                        'rgba(255, 159, 64, 0.2)',
+                        'rgba(153, 102, 255, 0.2)',
+                        'rgba(255, 159, 64, 0.2)'
+                    ],
+                    borderColor: [
+                        '#71bfff'
+                    ],
+                    borderWidth: 1
+                },
+                {
+                    label: '# of aaa',
+                    data: [2, 22, 8, 5, 36, 12, 200, 450],
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.2)',
+                        'rgba(54, 162, 235, 0.2)',
+                        'rgba(255, 240, 86, 0.2)',
+                        'rgba(75, 81, 192, 0.2)',
+                        'rgba(153, 222, 255, 0.2)',
+                        'rgba(255, 159, 64, 0.2)'
+                    ],
+                    borderColor: [
+                        'rgba(255,99,132,1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(75, 192, 192, 1)',
+
+                        'rgba(153, 102, 255, 1)',
+                        'rgba(255, 159, 64, 1)'
+                    ],
                     borderWidth: 1
                 }]
-            },
-            options: {
-                scales: {
-                    yAxes: [{
-                        ticks: {
-                            beginAtZero: false
-                        }
-                    }]
-                }
             }
-        });
-        //    }, 1000)
+        }
+        let myChart = new Chart(ctx, data, opts);
     },
     methods: {
         typeChange() {
-            console.log(this.chnageTypes);
+        },
+        startChange(d){
+            this.params.beginTime = d;
+        },
+        endChange(d) {
+            this.params.finishTime = d;
         },
         handleClick(tab, event) {
             console.log(tab, event);
-        }
+        },
+        selectPluckDay(day, e) {
+            let dom = _j(e.currentTarget);
+            dom.siblings('.day-item').removeClass('day-item-active');
+            dom.addClass('day-item-active');
+            this.params.pluckDay = day;
+        },
+        showProductNames(e) {
+            let dom = _j(e.currentTarget);
+            let productNameBox = _j('.type-item-box');
+            if (dom.hasClass('is-show')) {
+                productNameBox.animate({
+                    'min-height': '30px'
+                }, 500);
+                dom.children('.show-icon').removeClass('is-show');
+                dom.removeClass('is-show');
+                return;
+            }
+            dom.addClass('is-show');
+            dom.children('.show-icon').addClass('is-show');
+            productNameBox.animate({
+                'min-height': '150px',
+            }, 500);
+        },
+        selectProducts(id, event) {
+
+        },
+        getProductLines() {
+            this.decChnageProduct();
+            this.loadProductLines('yes');
+        },
+        decChnageProduct() {
+            let oldType = this.vfTypes;
+            let oLen = oldType.length;
+            let selectType = this.chnageTypes;
+            let sLen = selectType.length;
+            let ids = [];
+            for (let i = 0; i < sLen; i++) {
+                for (let j = 0; j < oLen; j++) {
+                    if (selectType[i] === oldType[j].label) {
+                        productIds.push(oldType[j].id);
+                    }
+                }
+            }
+            this.params.productIds = ids.join(',');
+        },
+        loadProductLines(isClick) {
+            let startTime = this.params.beginTime;
+            let endTime = this.params.finishTime;
+            if (isClick) {
+                if ((!startTime && endTime) || (!endTime && startTime)) {
+                    console.log('yes');
+                    return;
+                }
+            }
+            let opts = {
+                token: localStorage.token,
+                startTime: startTime,
+                endTime: endTime,
+                day: this.params.pluckDay,
+                productIds: this.params.productIds
+            }
+            fetchGetLinePicData(this.$store, opts).then(() => {
+                let tempData = this.$store.getters.getPrincipalLine;
+                console.log(tempData);
+            });
+        },
+
     }
 }
 </script>
@@ -435,8 +370,6 @@ export default {
 }
 
 .chart-header-box {
-    height: 62px;
-
     .mack-box {
         text-align: right;
         line-height: 62px;
@@ -449,7 +382,7 @@ export default {
             border: 1px solid #02bdad;
             height: 34px;
             border-radius: 4px;
-            width: 215px;
+            width: 210px;
             line-height: 34px;
             margin-left: 30px;
             margin-top: 13px;
@@ -466,11 +399,24 @@ export default {
                 color: #fff;
             }
         }
+        .select-btn {
+            float: right;
+            width: 100px;
+            height: 34px;
+            border: none;
+            color: #fff;
+            text-align: center;
+            font-size: 18px;
+            margin-top: 13px;
+            margin-left: 30px;
+            background-color: #02bdad;
+        }
     }
     .vf-type-box {
         width: 98.5%;
         clear: both; //padding-left: 20px;
-        height: 30px;
+        height: auto;
+        overflow: hidden;
         border: 1px solid #ccc;
 
         .type-ex {
@@ -508,11 +454,11 @@ export default {
                 -o-transform: all .3s;
             }
             .is-show {
-                transform: rotate(-270deg);
-                -webkit-transform: rotate(-270deg);
-                -moz-transform: rotate(-270deg);
-                -ms-transform: rotate(-270deg);
-                -o-transform: rotate(-270deg);
+                transform: rotate(90deg);
+                -webkit-transform: rotate(90deg);
+                -moz-transform: rotate(90deg);
+                -ms-transform: rotate(90deg);
+                -o-transform: rotate(90deg);
             }
         }
     }
@@ -524,7 +470,8 @@ export default {
     width: 100%;
 }
 
-.task-table-box, .progress-table-box {
+.task-table-box,
+.progress-table-box {
     background-color: #fff;
     margin-top: 10px;
     padding-top: 20px;
@@ -533,10 +480,12 @@ export default {
         padding-left: 20px;
     }
 }
-.progress-table-box{
+
+.progress-table-box {
     padding-bottom: 40px;
     margin-bottom: 80px;
 }
+
 .progress-box {
     padding-left: 20px;
     padding-right: 20px;
@@ -552,14 +501,13 @@ export default {
             float: left;
             color: #999;
         }
-        .sign-box{
+        .sign-box {
             position: relative;
             .sign {
                 position: absolute;
                 right: -18px;
                 bottom: -9px;
             }
-            
         }
     }
     .batch-name-box {
@@ -579,14 +527,13 @@ export default {
             color: #999;
             padding-left: 5px;
         }
-        .line{
+        .line {
             position: absolute;
             top: 0px;
             left: 50%;
             width: 1px;
             height: 100%;
             border-left: 1px dashed red;
-            
         }
     }
     .batch-name-box,
