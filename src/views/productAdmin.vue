@@ -6,7 +6,7 @@
             </el-breadcrumb-item>
             <el-breadcrumb-item>生产管理</el-breadcrumb-item>
         </el-breadcrumb>
-        <el-col :span="20" :offset="3" class="product-box">
+        <el-col :span="23" class="product-box">
             <el-form :inline="true" :model="screenForm" class="screen-form">
                 <el-form-item>
                     <el-input v-model="screenForm.no" placeholder="请输入批次号"></el-input>
@@ -78,10 +78,10 @@
             </el-form>
             <div class="link-info-box">
                 <ul class="link-info-items">
-                    <li class="info-item">
+                    <li class="info-item" v-for="(item, index) in endLinks" :key="index">
                         <div class="collapse-title">
                             <label class="el-form-item__label">生产环节名称</label>
-                            <el-input :disabled="this.isDisabled"></el-input>
+                            <el-input :disabled="item.isDisabled" v-model="item.linkName"></el-input>
                         </div>
                         <div class="collapse-ex" @click="showLinkDetail">
                             <span> 展开详情</span>
@@ -91,22 +91,32 @@
                             <li class="sub-link-item">
                                 <div class="collapse-title">
                                     <label class="el-form-item__label">任务状态</label>
-                                    <el-input :disabled="this.isDisabled"></el-input>
+                                    <el-input :disabled="item.isDisabled" v-model="item.state"></el-input>
                                 </div>
                             </li>
                             <li class="sub-link-item">
                                 <div class="collapse-title">
                                     <label class="el-form-item__label">实际开始时间</label>
-                                    <el-input :disabled="this.isDisabled"></el-input>
+                                    <el-input :disabled="item.isDisabled" v-model="item.startTime"></el-input>
                                 </div>
                             </li>
                             <li class="sub-link-item">
                                 <div class="collapse-title">
                                     <label class="el-form-item__label">实际结束时间</label>
-                                    <el-input :disabled="this.isDisabled"></el-input>
+                                    <el-input :disabled="item.isDisabled" v-model="item.endTime"></el-input>
                                 </div>
                             </li>
-                            <el-input type="textarea" class="link-desc" :disabled="this.isDisabled" :rows="5"></el-input>
+                            <li>
+                                <el-input type="textarea" class="link-desc" v-model="item.desc" :disabled="item.isDisabled" :rows="5"></el-input>
+                            </li>
+                            <li class="sub-link-item link-temp-box">
+                                <ul class="temp-items-box" v-if="item.isHasDescs">
+                                    <li class="temp-item" v-for="(temp,idx) in item.linkDescs" :key="idx">
+                                        <span>{{ temp.key }}</span>：
+                                        <span>{{ temp.value }}</span>
+                                    </li>
+                                </ul>
+                            </li>
                         </ul>
                     </li>
                 </ul>
@@ -127,7 +137,7 @@ export default {
     store,
     data() {
         return {
-            screenForm: {
+            screenForm: { // 搜索产品数据
                 no: '',
                 name: '',
                 link: '',
@@ -136,7 +146,7 @@ export default {
                 beginPage: 1,
                 pageSize: 10
             },
-            planForm: {
+            planForm: { // 弹层产品数据
                 name: '',
                 planType: '',
                 germinate: '',
@@ -144,7 +154,7 @@ export default {
                 weight: '',
                 pluck: ''
             },
-            proDatas: {
+            proDatas: { // 产品列表数据
                 beginPage: 1,
                 currentPage: 1,
                 pageSize: 10,
@@ -156,7 +166,7 @@ export default {
             formLabelWidth: '120px',
             currentPage4: 4,
             isShowPlanDailog: false,
-            taskStates: [
+            taskStates: [ // 计划状态
                 {
                     label: '待派发',
                     value: 10
@@ -336,13 +346,13 @@ export default {
             if (!dom.hasClass('plan-name-td')) {
                 return;
             }
-           // let planNo = currRowData.planNo;
+            // let planNo = currRowData.planNo;
             let planNo = 'b9de97a4fab5489899738f23bc7feabf';
-            fetchProductByNo(this.$store, { no: planNo }).then(()=> {
-                 let tempData = this.$store.getters.getProductDetail;
-                 console.log('--------------------------');
-                 console.log(this.$store);
-                 if (tempData.resultCode === '1') {
+            fetchProductByNo(this.$store, { no: planNo }).then(() => {
+                let tempData = this.$store.getters.getProductDetail;
+                console.log('--------------------------');
+                console.log(this.$store);
+                if (tempData.resultCode === '1') {
                     let dataObj = tempData.resultObj;
                     let proInfo = dataObj.productInfo;
                     let links = dataObj.linkInfo;
@@ -357,24 +367,37 @@ export default {
                     for (let i = 0; i < lLen; i++) {
                         tempLink = links[i];
                         tempLinkData = {
-                            linkName: '',
-                            state: '',
-                            startTime: '',
-                            endTime: '',
-                            desc: '',
+                            linkName: tempLink.linkIdName,
+                            state: tempLink.status,
+                            startTime: tempLink.receivetime,
+                            endTime: tempLink.finishtime,
+                            desc: tempLink.desc,
+                            isDisabled: true,
                             isHasDescs: false
                         };
                         let tempDescs = tempLink.templateform;
                         this.endLinks.push(tempLinkData);
-                        if (tempDescs.length > 0) {
+                        console.log('=============================');
+                        console.log(tempDescs);
+                        if (tempDescs && tempDescs.length > 0) {
                             this.endLinks[i].linkDescs = [];
                             this.endLinks[i].isHasDescs = true;
-                            
+                            let tLen = tempDescs.length;
+                            let tTempItem = {};
+                            for (let j = 0; j < tLen; j++) {
+                                tTempItem = tempDescs[j];
+                                if (tTempItem) {
+                                    this.endLinks[i].linkDescs.push({
+                                        key: tTempItem.resourceskey,
+                                        value: tTempItem.resources
+                                    });
+                                }
+                            }
                         }
                     }
                     console.log('环节有吗？');
                     console.log(this.links);
-                 }
+                }
             });
             this.isShowPlanDailog = true;
             _j('.plan-name-td').removeClass('plan-name-active');
@@ -623,6 +646,22 @@ export default {
 
     .el-input {
         width: 250px;
+    }
+}
+
+.temp-items-box {
+    margin-left: 32px;
+    margin-top: 15px;
+    width: 750px;
+    border: 1px solid #ccc;
+    background-color: #ccc;
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-top: 15px;
+    padding-bottom: 15px;
+    .temp-item{
+        height: 25px;
+        line-height: 25px;
     }
 }
 </style>

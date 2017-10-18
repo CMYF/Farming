@@ -1,6 +1,6 @@
 <template>
     <el-row>
-        <el-col :span="23"  class="pro-content">
+        <el-col :span="23" class="pro-content">
             <el-row class="chart-header-box">
                 <el-col :span="6" class="title-box">
                     <h1>预估产量</h1>
@@ -36,7 +36,7 @@
             </el-row>
 
         </el-col>
-        <el-col :span="23"  class="task-table-box">
+        <el-col :span="23" class="task-table-box">
             <el-row>
                 <div class="title-box product-title-box">
                     <h1>生产总览</h1>
@@ -51,11 +51,62 @@
                 </el-tabs>
             </el-row>
         </el-col>
-        <el-col :span="23"  class="task-table-box">
+        <el-col :span="23" class="progress-table-box">
             <el-row>
                 <div class="title-box product-title-box">
                     <h1>批次进度表</h1>
                 </div>
+                <el-row class="progress-box">
+                    <div class="progress-items">
+                        <span class="progress-item">10</span>
+                        <span class="progress-item">20</span>
+                        <span class="progress-item">30</span>
+                        <span class="progress-item">40</span>
+                        <span class="progress-item">50</span>
+                        <span class="progress-item">60</span>
+                        <span class="progress-item">70</span>
+                        <span class="progress-item">80</span>
+                        <span class="progress-item">90</span>
+                        <span class="progress-item sign-box">100
+                            <span class="sign">%</span>
+                        </span>
+                    </div>
+                    <div class="clear-float"></div>
+                    <el-col :span="2">
+                        <ul class="batch-name-box">
+                            <li class="batch-item">第一批次</li>
+                            <li class="batch-item">第一批次</li>
+                            <li class="batch-item">第一批次</li>
+                            <li class="batch-item">第一批次</li>
+                            <li class="batch-item">第一批次</li>
+                        </ul>
+                    </el-col>
+                    <el-col :span="20">
+                        <ul class="batch-table">
+                            <li class="batch-bar-item">
+                                <span class="batch-bar bar-item gobj-progress" style="width:80%"></span>
+                                <span class="batch-txt bar-item">80%</span>
+                            </li>
+                            <li class="batch-bar-item">
+                                <span class="batch-bar bar-item not-gobj-progress" style="width: 40%"></span>
+                                <span class="batch-txt bar-item">40%</span>
+                            </li>
+                            <li class="batch-bar-item">
+                                <span class="batch-bar bar-item gobj-progress" style="width: 65%"></span>
+                                <span class="batch-txt bar-item">65%</span>
+                            </li>
+                            <li class="batch-bar-item">
+                                <span class="batch-bar bar-item gobj-progress" style="width: 75%"></span>
+                                <span class="batch-txt bar-item">75%</span>
+                            </li>
+                            <li class="batch-bar-item">
+                                <span class="batch-bar bar-item not-gobj-progress" style="width: 12%"></span>
+                                <span class="batch-txt bar-item">12%</span>
+                            </li>
+                            <span class="line"></span>
+                        </ul>
+                    </el-col>
+                </el-row>
             </el-row>
         </el-col>
     </el-row>
@@ -418,8 +469,7 @@ export default {
     }
     .vf-type-box {
         width: 98.5%;
-        clear: both;
-        //padding-left: 20px;
+        clear: both; //padding-left: 20px;
         height: 30px;
         border: 1px solid #ccc;
 
@@ -474,7 +524,7 @@ export default {
     width: 100%;
 }
 
-.task-table-box {
+.task-table-box, .progress-table-box {
     background-color: #fff;
     margin-top: 10px;
     padding-top: 20px;
@@ -483,7 +533,91 @@ export default {
         padding-left: 20px;
     }
 }
-@media (max-width: 1420px){
-
+.progress-table-box{
+    padding-bottom: 40px;
+    margin-bottom: 80px;
 }
+.progress-box {
+    padding-left: 20px;
+    padding-right: 20px;
+    .progress-items {
+        width: 83.33333%;
+        float: left;
+        margin-left: 8.33333%;
+        border-bottom: 1px solid #ccc;
+        .progress-item {
+            width: 10%;
+            display: inline-block;
+            text-align: right;
+            float: left;
+            color: #999;
+        }
+        .sign-box{
+            position: relative;
+            .sign {
+                position: absolute;
+                right: -18px;
+                bottom: -9px;
+            }
+            
+        }
+    }
+    .batch-name-box {
+        text-align: right;
+    }
+    .batch-table {
+        text-align: left; //border-top: 1px solid #ccc;
+        border-left: 1px solid #ccc;
+        position: relative;
+        .bar-item {
+            display: inline-block;
+            height: 30px;
+            line-height: 30px;
+            float: left;
+        }
+        .batch-txt {
+            color: #999;
+            padding-left: 5px;
+        }
+        .line{
+            position: absolute;
+            top: 0px;
+            left: 50%;
+            width: 1px;
+            height: 100%;
+            border-left: 1px dashed red;
+            
+        }
+    }
+    .batch-name-box,
+    .batch-table {
+        clear: both;
+        padding-top: 20px;
+        li {
+            height: 30px;
+            line-height: 30px;
+            margin-top: 15px;
+        }
+    }
+    .batch-name-box {
+        li {
+            padding-right: 10px;
+            color: #999999;
+        }
+    }
+    .gobj-progress {
+        background-color: #71bfff;
+        color: #71bfff;
+    }
+    .not-gobj-progress {
+        background-color: #ffd75d;
+        color: #ffd75d;
+    }
+}
+
+.clear-float {
+    clear: both;
+}
+
+@media (max-width: 1420px) {}
 </style>
