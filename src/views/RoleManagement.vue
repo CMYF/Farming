@@ -1,6 +1,6 @@
 <template>
   <el-row>
-    <el-col :span="20" :offset="3" class="role-main-box">
+    <el-col :span="23" class="role-main-box">
       <h1 class="form-title">角色查询</h1>
       <el-form :inline="true" :model="opts" class="demo-form-inline form-box">
         <el-form-item label="角色名称">
@@ -69,7 +69,7 @@ export default {
     return {
       currentPage4: 4,
       dialogFormVisible: false,
-      isShowLoading: false,
+      isShowLoading: true,
       opts: {
         token: localStorage.token,
         beginPage: 1,
@@ -100,6 +100,7 @@ export default {
     fetchAllRoles(this.$store, this.opts).then(() => {
       let tempData = this.$store.getters.getAllRoles;
       this.decDatas(tempData);
+      this.isShowLoading = false;
     });
 
   },

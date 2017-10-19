@@ -1,6 +1,6 @@
 <template>
   <el-row>
-    <el-col :span="20" :offset="3" class="user-main-box">
+    <el-col :span="23" class="user-main-box">
       <h1 class="form-title">角色查询</h1>
       <el-form :inline="true" :model="opts" class="demo-form-inline form-box">
         <el-form-item label="登录帐号">

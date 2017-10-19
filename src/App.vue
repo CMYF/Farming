@@ -83,7 +83,8 @@ a:hover {
   height: 100%;
   overflow: hidden;
   position: fixed;
-  width: 220px;
+   width: 12.5%; 
+   min-width:180px;
   top: 0px;
   z-index: 10;
   left: 0;
@@ -94,11 +95,19 @@ a:hover {
   height: auto;
   overflow: hidden;
   margin-top: 60px;
+  width: 86.5%;
+  min-width: 1150px; 
+  margin-left: 13.3%;
 }
 
 .hide {
   display: none;
 }
 
-
+@media (max-width: 1420px){
+  .right-content-box{
+    width: 85.3%;
+    margin-left: 14.3%;
+  }
+}
 </style>

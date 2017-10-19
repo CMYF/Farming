@@ -1,14 +1,6 @@
 <template>
     <header class="header-box">
         <el-row class="header">
-            <el-col :span="3" style="height: 60px;">
-                <!-- <div class="logo-box">
-                                                        <span class="logo-icon">
-                                                            <i class="el-icon-menu"></i>
-                                                        </span>
-                                                        <span class="logo-txt" @click="toIndex">春沐源农业管理系统</span>
-                                                    </div> -->
-            </el-col>
             <el-col :span="8" class="emptry-box">
                 <img src="./../assets/images/version.png" alt="">
 
@@ -63,23 +55,26 @@ export default {
 }
 </script>
 <style lang="scss">
-.right-content-box{
+.right-content-box {
     background-color: #f0f3fa;
 }
+
 .header-box {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
+    min-width: 1190px;
+    padding-left: 13.3%;
     height: 60px;
     z-index: 9;
     border-bottom: 1px solid #ccc;
+    background: #fff;
 }
 
 .header {
     width: 100%;
     height: 60px;
-    background: #fff;
 }
 
 .logo-box,
@@ -164,6 +159,12 @@ export default {
         top: 17px;
         right: 30px;
         padding: 0px 5px;
+    }
+}
+
+@media (max-width: 1420px) {
+    .header-box {
+        padding-left: 14.3%;
     }
 }
 </style>
