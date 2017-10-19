@@ -1,30 +1,30 @@
 <template >
     <el-row class="info-box">
     	<el-col  class="product-box">
-            <el-form :inline="true" :model="screenForm" class="screen-form">
+            <el-form :inline="true" :model="page" class="screen-form">
                 <el-form-item>
-                    <el-input v-model="screenForm.no" placeholder="请输入批次号"></el-input>
+                    <el-input v-model="page.page_pici" placeholder="请输入批次号"></el-input>
                 </el-form-item>
                 <el-form-item>
-                    <el-input v-model="screenForm.name" placeholder="请输入产品名称"></el-input>
+                    <el-input v-model="page.page_proName" placeholder="请输入产品名称"></el-input>
                 </el-form-item>
                 <el-form-item>
-                    <el-select v-model="screenForm.state" placeholder="请选择计划状态">
+                    <el-select v-model="page.page_proName" placeholder="请选择生产环节">
                         <el-option v-for="(opt, index) in this.taskStates" :key="index" :label="opt.label" :value="opt.value"></el-option>
                     </el-select>
                 </el-form-item>
                 <el-form-item>
-                    <el-button class="screen-btn" @click="screenProduct">筛选</el-button>
+                    <el-button class="screen-btn" @click="selectPiCi($event)">筛选</el-button>
                 </el-form-item>
                 <el-form-item style="float: right;">
-                    <el-button class="screen-btn" @click="sendplan">派发</el-button>
+                    <el-button class="screen-btn" @click="sendplan($event)"  v-bind:disabled="isTrue" >派发</el-button>
                 </el-form-item>
             </el-form>
             <div class="product-tab-box">
                 <el-table ref="singleTable" border :data="tableData" style="width: 100%" @cell-click="showSend">
-                	<el-table-column  width="55" align="center" className="plan-send-td" >
+                	<el-table-column width="55" align="center" className="plan-send-td" >
                 		<template scope="scope">
-                                  <el-radio class="radio" v-model="radio" :label="scope.$index"></el-radio>
+                            <el-radio class="radio" v-model="radio" :label="scope.$index" ></el-radio>
                         </template>
             		</el-table-column>
                     <el-table-column type="index" label="序号" width="70">
@@ -55,98 +55,46 @@
         
         
         <el-dialog class="dialog-box1"   title="派发任务" :visible.sync="isShowPlanDailog1">
-        	<el-form :model="planForm" :inline="true"  ref="form" class="plan-form">
-                <el-form-item label="生产环节" >
-				    <el-input v-model="ruleForm.name"></el-input>
+        	<el-form :model="planForm" :inline="true"  ref="planForm" class="plan-form">
+                <el-form-item label="生产环节">
+				     <el-select v-model="value" placeholder="请选择" @change="selectChange($event)">
+					    <el-option
+					      v-for="item in options"
+					      :key="item.linkId"
+					      :label="item.linkName"
+					      :value="item.linkId">
+					    </el-option>
+					  </el-select>
 				</el-form-item>
 				<el-form-item :inline="true" label="此环节对接人"  class="colperson">
 					<el-col :span="10">
-				    	<el-input v-model="ruleForm.name"></el-input>
+				    	<el-input v-model.trim="task_abutmentOne"></el-input>
 				   </el-col>
 				   <el-col :span="10" :offset="1">
-				     <el-input v-model="ruleForm.name"></el-input>
+				     <el-input v-model.trim="task_abutmentTwo"></el-input>
 				    </el-col>
 				</el-form-item>
-				<el-form-item label="筛选资源" prop="region">
-				    <el-select v-model="ruleForm.region" placeholder="请选择活动区域">
-				      <el-option label="区域一" value="shanghai"></el-option>
-				      <el-option label="区域二" value="beijing"></el-option>
-				    </el-select>
+				<el-form-item label="筛选资源" v-if="zyDisable">
+					  <el-checkbox-group  v-model="checkedCities1">
+					    <el-checkbox v-for="ziyuan in ziyuanId"  :label="ziyuan.id" :key="ziyuan.id"    @change="selets(ziyuan.id,ziyuan.names,$event)">{{ziyuan.names}}</el-checkbox>
+					  </el-checkbox-group>
 				</el-form-item>
 				<el-form-item label="预估工时" >
-				    <el-input v-model="ruleForm.name"></el-input>
+				    <el-input v-model="planForm.task_hourTime"></el-input>
 				</el-form-item>
 				
             </el-form>
         	<el-row class="TaskBtn">
         		<el-col :span="6" :offset="4">
-				    <el-button type="success">确定</el-button>
+				    <el-button type="success" @click="sendTaskComplete($event)">确定</el-button>
 			    </el-col>
 			    <el-col :span="6" :offset="4">
-			    	<el-button class="BtnCancel">取消</el-button>
+			    	<el-button class="BtnCancel"  @click="isShowPlanDailog1 = false">取消</el-button>
 			    </el-col>
         	</el-row>
         </el-dialog>
         
-        <el-dialog class="dialog-box" title="收货地址" :visible.sync="isShowPlanDailog">
-            <el-form :model="planForm" :inline="true" ref="form" class="plan-form">
-                <el-form-item label="产品名称" :label-width="formLabelWidth">
-                    <el-input v-model="planForm.name" :disabled="this.isDisabled" auto-complete="off"></el-input>
-                </el-form-item>
-                <el-form-item label="所属分类" :label-width="formLabelWidth">
-                    <el-input v-model="planForm.planType" :disabled="this.isDisabled" auto-complete="off"></el-input>
-                </el-form-item>
-
-                </el-form-item>
-                <el-form-item label="发芽率%" :label-width="formLabelWidth">
-                    <el-input v-model="planForm.germinate" :disabled="this.isDisabled" auto-complete="off"></el-input>
-                </el-form-item>
-                <el-form-item label="移栽成苗率%" :label-width="formLabelWidth">
-                    <el-input v-model="planForm.transplant" :disabled="this.isDisabled" auto-complete="off"></el-input>
-                </el-form-item>
-                <el-form-item label="单棵重g" :label-width="formLabelWidth">
-                    <el-input v-model="planForm.weight" :disabled="this.isDisabled" auto-complete="off"></el-input>
-                </el-form-item>
-                <el-form-item label="采摘周期" :label-width="formLabelWidth">
-                    <el-input v-model="planForm.pluck" :disabled="this.isDisabled" auto-complete="off"></el-input>
-                </el-form-item>
-            </el-form>
-            <div class="link-info-box">
-                <ul class="link-info-items">
-                    <li class="info-item">
-                        <div class="collapse-title">
-                            <label class="el-form-item__label">生产环节名称</label>
-                            <el-input :disabled="this.isDisabled"></el-input>
-                        </div>
-                        <div class="collapse-ex" @click="showLinkDetail">
-                            <span> 展开详情</span>
-                            <span class="iconfont detail-icon">&#xe7cc;</span>
-                        </div>
-                        <ul class="sub-link-info-box" style="display:none;">
-                            <li class="sub-link-item">
-                                <div class="collapse-title">
-                                    <label class="el-form-item__label">任务状态</label>
-                                    <el-input :disabled="this.isDisabled"></el-input>
-                                </div>
-                            </li>
-                            <li class="sub-link-item">
-                                <div class="collapse-title">
-                                    <label class="el-form-item__label">实际开始时间</label>
-                                    <el-input :disabled="this.isDisabled"></el-input>
-                                </div>
-                            </li>
-                            <li class="sub-link-item">
-                                <div class="collapse-title">
-                                    <label class="el-form-item__label">实际结束时间</label>
-                                    <el-input :disabled="this.isDisabled"></el-input>
-                                </div>
-                            </li>
-                            <el-input type="textarea" class="link-desc" :disabled="this.isDisabled" :rows="5"></el-input>
-                        </ul>
-                    </li>
-                </ul>
-            </div>
-        </el-dialog>
+        
     </el-row>
 </template>
 <script>
@@ -157,48 +105,104 @@ function fetchTask(store, opt) {
     return store.dispatch('TASKLIST', {
        num: opt.page_number,
        size: opt.page_size,
-       states: opt.taskStates
+       states: opt.taskStates,
+       pici: opt.page_pici,
+       operater: opt.page_operater,
+       proName: opt.page_proName
     });
 }
+
+function fetchSendTask(store, opt) {
+    return store.dispatch('SENDTASKLIST', {
+       picNum: opt.task_number,
+       sorts: opt.task_sorts,
+       linkIds: opt.task_linkIds,
+       linkIdNames: opt.task_linkIdNames,
+       hourTime: opt.task_hourTime,
+       abutments: opt.task_abutments,
+       resoureinfos: opt.task_resoureinfos
+    });
+}
+
+function fetchTaskCircle(store, opt) {
+    return store.dispatch('TASKCIRCLE', {
+       pcbh: opt.circles_num
+    });
+}
+
+function fetchTaskZiyuan(store, opt) {
+    return store.dispatch('TASKZIYUAN', {
+      	zyType: opt.AllzyType,
+        zyName: opt.AllzyName,
+        zyStatus: opt.AllzyStatus,
+		zyPage: opt.AllzyPage,
+		zyPageSize: opt.AllzyPageSize
+    })
+}
+
+
+
 export default {
 	store,
     data() {
         return {
         	radio: '',
+        	checkedCities1: [],
+        	ziyuanId:[],
+        	ziyuanAll:[],
+        	options:[],
+        	circleNames: '',
+        	task_abutmentOne:'',
+        	task_abutmentTwo:'',
+        	value: '',
+        	zyDisable: true,
+        	circles: {
+        		circles_num:''
+        	},
         	page:{
         		page_number: 1,
                 page_size: 10,
-                taskStates:10
+                taskStates:10,
+                page_pici: '',
+                page_operater: '',
+                page_proName: ''
         	},
         	
         	ruleForm: {
 	          name: '',
-	          region: '',
-	          date1: '',
-	          date2: '',
+	          joinPerson: '',
+	          time:'',
 	          delivery: false,
 	          type: [],
 	          resource: '',
 	          desc: ''
 	        },
-            screenForm: {
-                no: '',
-                name: '',
-                link: '',
-                state: ''
-            },
+	        
+	        ziYuanDate:{
+		        AllzyType: '',
+		        AllzyName: '',
+		        AllzyStatus: 0,
+				AllzyPage: '',
+				AllzyPageSize: ''
+	        },
+	        piciNum: {
+	        	num:'',
+	        	name:'',
+	        	circle:''
+	        },
+            
             planForm: {
-                name: '',
-                planType: '',
-                germinate: '',
-                transplant: '',
-                weight: '',
-                pluck: ''
+                task_number:'',
+                task_sorts: '',
+                task_linkIds: '',
+                task_linkIdNames: '',
+                task_hourTime: '',
+                task_abutments: [],
+                task_resoureinfos: []
             },
             isDisabled: true,
             formLabelWidth: '120px',
             currentPage4: 1,
-            isShowPlanDailog: false,
             isShowPlanDailog1: false,
             taskStates: [
                 {
@@ -214,27 +218,123 @@ export default {
                     value: 3
                 }
             ],
-            tableData: []
-            
+            tableData: [],
+            isTrue: true
         }
     },
     computed: mapGetters({
         taskListData: 'TaskListData'
     }), 
     beforeMount() {
+    	
+    	if(localStorage.taskArray == ''){
+        		this.isTrue =false;
+        }
+    	
     	fetchTask(this.$store, this.page).then(() => {
-               this.lgd = this.$store.getters.TaskListData.resultData;
-               if (this.lgd.resultCode === '1') {
-                  this.tableData = this.lgd.basePageObj.dataList;
-               	}else{
-               		this.titleNotice=this.lgd.resultMsg;
-               	}
-            });
+           this.lgd = this.$store.getters.TaskListData.resultData;
+           if (this.lgd.resultCode === '1') {
+              this.tableData = this.lgd.basePageObj.dataList;
+           	}else{
+           		this.titleNotice=this.lgd.resultMsg;
+           	}
+        });
     },
     methods: {
-    	formatter(row, column) {
-	        return row.picibianhName;
+    	sendTaskComplete(e){
+    		this.planForm.task_number = JSON.parse(localStorage.taskArray).picibianh;
+            this.planForm.task_sorts = JSON.parse(localStorage.taskArray).sort;
+            this.planForm.task_linkIds = JSON.parse(localStorage.taskArray).linkId;
+            this.planForm.task_linkIdNames = this.circleNames;
+            this.planForm.task_resoureinfos = JSON.stringify(this.ziyuanAll);
+            if(this.task_abutmentOne != ''){
+            	this.planForm.task_abutments.push(this.task_abutmentOne);
+            }
+            if(this.task_abutmentTwo != ''){
+            	 this.planForm.task_abutments.push(this.task_abutmentTwo);
+            }
+            
+            if( this.task_abutmentTwo == '' && this.task_abutmentOne == ''){
+            	alert("请输入对接人")
+            	return;
+            }
+            console.log(this.value)
+           
+            this.planForm.task_abutments=JSON.stringify(this.planForm.task_abutments);
+            console.log(this.planForm)
+	  		fetchSendTask(this.$store, this.planForm).then(() => {
+	           this.sem = this.$store.getters.TaskCircleData.resultData;
+	           if (this.sem.resultCode === '1') {
+					
+	            	this.isShowPlanDailog1 = false;
+	           }else{	           		
+	           		this.titleNotice=this.sem.resultMsg;
+	           	}
+	        });
 	    },
+    	
+    	selectPiCi(e){
+    		fetchTask(this.$store, this.page).then(() => {
+           this.lgd = this.$store.getters.TaskListData.resultData;
+           if (this.lgd.resultCode === '1') {
+              this.tableData = this.lgd.basePageObj.dataList;
+           	}else{
+           		this.titleNotice=this.lgd.resultMsg;
+           	}
+        });
+    	},
+    	
+    	
+    	selectChange(e){
+    		this.checkedCities1=[];
+    		this.task_abutmentOne = '';
+        	this.task_abutmentTwo = '';
+    		this.planForm.task_hourTime = '';
+    		this.options.forEach((items) =>{
+    			if(e == items.linkId ){
+    				this.circleNames=items.linkName;
+    			}
+    		})
+    		if(e == 'T001'){
+    			this.zyDisable = false;
+    			this.planForm.task_resoureinfos = [] ;
+    			this.ziyuanAll =[];
+    			console.log(this.planForm.task_resoureinfos)
+    		}else{
+    			this.zyDisable = true;
+	    		this.ziYuanDate.AllzyType = this.value;
+	    		fetchTaskZiyuan(this.$store, this.ziYuanDate).then(() => {
+		           this.allzy = this.$store.getters.TaskZiyuanData.resultData;
+		           if (this.allzy.resultCode === '1') {
+		           //	let $this =this;
+		           this.ziyuanId=[];
+		           this.allzy.basePageObj.dataList.forEach((value) => {
+					    this.ziyuanId.push({id:value.id,names:value.names})
+					})
+					console.log(this.ziyuanId)    
+		           	}else{
+		           		this.titleNotice=this.allzy.resultMsg;
+		           	}
+		        });
+    		}
+    	},
+    	
+    	selets(ids,names,e){
+    		if(e.target.checked == true){
+    			this.ziyuanAll.push({id:ids,name:names})
+    		}else{
+    			this.ziyuanAll.forEach((item,index)=>{
+    				if(item.id == ids){
+	    				this.ziyuanAll.splice(index,1)
+	    				console.log(this.ziyuanAll)
+    				}
+    			})
+    			
+    			
+    		}
+    		
+    	},
+    	
     	
         screenProduct() {
 
@@ -246,38 +346,47 @@ export default {
             console.log(`当前页: ${val}`);
         },
         sendplan(e){
+        	this.circles.circles_num = JSON.parse(localStorage.taskArray).picibianh;
         	this.isShowPlanDailog1 = true;
+        	console.log(this.options)// 1
+        	this.task_abutmentOne = '';
+        	this.task_abutmentTwo = '';
+        	this.planForm.task_abutments =[];
+    		this.planForm.task_hourTime = '';
+    		this.ziyuanAll = [];
+        	fetchTaskCircle(this.$store, this.circles).then(() => {
+	           this.pcm = this.$store.getters.TaskCircleData.resultData;
+	           if (this.pcm.resultCode === '1') {
+	           	this.options = [];
+	           	this.value = '';
+	           	this.ziyuanId=[];
+	           	this.pcm.resultObj.queryDistributeTaskLinks.forEach((value) => {
+				    if(value.status == "1"){
+				    	console.log(value)
+				    	this.options.push(value);
+				    }
+			  
+				})
+	           	}else{
+	           		this.titleNotice=this.pcm.resultMsg;
+	           	}
+	        });
+        	
+        	
+        	
         },
-        
+       
         showSend(row, column, cell, event){
-        	console.log(row.picibianhName)
-        	console.log(column)
-        	console.log(cell)
-            let currRowData = row;
             let dom = _j(cell);
-            let taskArray=[{piCiBianH:row.picibianh},{sort:row.sort},{linkId:row.productinfodetailid}]
+            let taskArray = row;
             localStorage.taskArray = JSON.stringify(taskArray); 
-            if (!dom.hasClass('plan-send-td')) {
-                return;
-            }
-            
-            _j('.plan-send-td').removeClass('plan-send-active');
-            dom.addClass('plan-send-active');
+			this.isTrue =false;
+
         },
         
-        showPlanInfo(row, column, cell, event) {
-        	console.log(row.picibianhName)
-        	console.log(column)
-        	console.log(cell)
-            let currRowData = row;
-            let dom = _j(cell);
-            if (!dom.hasClass('plan-name-td')) {
-                return;
-            }
-            this.isShowPlanDailog = true;
-            _j('.plan-name-td').removeClass('plan-name-active');
-            dom.addClass('plan-name-active');
-        },
+        
+        
+        
         showLinkDetail(e) {
             let dom = _j(e.target);
             let subInfoBoxDom = '';

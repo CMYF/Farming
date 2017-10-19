@@ -137,7 +137,87 @@ export function fetchTask(opts) {
     return Vue.axios.post('http://10.1.2.151/ctower-mall-c/agriculture/taskInfo/queryTaskInfoLists.do', qs.stringify({
         'queryTaskInfoListsRequest.page_number': opts.num,
         'queryTaskInfoListsRequest.page_size': opts.size,
-        'queryTaskInfoListsRequest.taskStatus': opts.states
+        'queryTaskInfoListsRequest.taskStatus': opts.states,
+        'queryTaskInfoListsRequest.piCiBianH': opts.pici,
+        'queryTaskInfoListsRequest.linkOperater': opts.operater,
+        'queryTaskInfoListsRequest.productName': opts.proName
+        
+    }));
+}
+
+export function fetchSendTask(opts) {
+    return Vue.axios.post('http://10.1.2.151/ctower-mall-c/agriculture/taskInfo/distributeTaskInfo.do', qs.stringify({
+        'distributeTaskInfoRequest.piCiBianH': opts.picNum,
+        'distributeTaskInfoRequest.sort': opts.sorts,
+        'distributeTaskInfoRequest.linkId': opts.linkIds,
+        'distributeTaskInfoRequest.linkIdName': opts.linkIdNames,
+        'distributeTaskInfoRequest.hours': opts.hourTime,
+        'distributeTaskInfoRequest.abutment': opts.abutments,
+        'distributeTaskInfoRequest.resoureinfo': opts.resoureinfos
+    }));
+}
+
+export function fetchTaskCircle(opts) {
+    return Vue.axios.post('http://10.1.2.151/ctower-mall-c/agriculture/taskInfo/queryDistributeTaskLinks.do', qs.stringify({
+        'queryDistributeTaskLinksRequest.piCiBianH': opts.pcbh,
+    }));
+}
+
+export function fetchTaskZiyuan(opts) {
+    return Vue.axios.post('http://10.1.2.151/ctower-mall-c/agriculture/resource/dataGrid.do', qs.stringify({
+        _in_type: opts.zyType,
+        _lk_names: opts.zyName,
+        status: opts.zyStatus,
+		beginPage: opts.zyPage,
+		pageSize: opts.zyPageSize
+    }));
+}
+
+export function fetchPlanList(opts) {
+    return Vue.axios.post('http://10.1.2.151/ctower-mall-c/agriculture/planInfo/queryPlanInfoList.do', qs.stringify({
+       'queryPlanInfoListRequest.page_number': opts.jhPageNum,
+       'queryPlanInfoListRequest.page_size': opts.jhPageSize,
+       'queryPlanInfoListRequest.picibianh': opts.jhPiCi,
+	   'queryPlanInfoListRequest.jihuamc': opts.jhName,
+	   'queryPlanInfoListRequest.zhixingzt': opts.jhStatus
+    }));
+}
+
+export function fetchPlanNew(opts) {
+    return Vue.axios.post('http://10.1.2.151/ctower-mall-c/agriculture/planInfo/addPlanInfo.do', qs.stringify({
+        'addPlanInfoRequest.jihuamc': opts.jhNames,
+        'addPlanInfoRequest.guishud': opts.jhLandId,
+        'addPlanInfoRequest.guishudName': opts.jhLandName,
+		'addPlanInfoRequest.chanpinid': opts.jhProductId,
+		'addPlanInfoRequest.chanpinmc': opts.jhProductName,
+		'addPlanInfoRequest.mubiaocaijil': opts.jhTarget,
+		'addPlanInfoRequest.xuanzeyumiaoc': opts.jhBed,
+		'addPlanInfoRequest.dingzhis': opts.jhDingZhi,
+		'addPlanInfoRequest.yumiaopans': opts.jhYuMiaoNum,
+		'addPlanInfoRequest.jihuaksrq': opts.jhStartTime,
+		'addPlanInfoRequest.jihuajsrq': opts.jhEndTime
+		
+    }));
+}
+
+export function fetchDelPlan(opts) {
+    return Vue.axios.post('http://10.1.2.151/ctower-mall-c/agriculture/planInfo/deletePlanInfo.do', qs.stringify({
+       'deletePlanInfoRequest.piCiBianH': opts.picis
+    }));
+}
+
+export function fetchProductList(opts) {
+    return Vue.axios.post('http://10.1.2.151/ctower-mall-c/agriculture/productInfo/queryProductInfoList.do', qs.stringify({
+       'queryProductInfoListRequest.page_number': opts.cpPageNum,
+       'queryProductInfoListRequest.page_size': opts.cpPageSize,
+       'queryProductInfoListRequest.productName': opts.cpName,
+	   'queryProductInfoListRequest.productId': opts.cpId
+    }));
+}
+
+export function fetchOwnLand(opts) {
+    return Vue.axios.post('http://10.1.2.151/ctower-mall-c/agriculture/column/dataGrid.do', qs.stringify({
+       loginedtoken: opts.landtToken
     }));
 }
 
