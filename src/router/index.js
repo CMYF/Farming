@@ -11,7 +11,8 @@ import SetProduct from '@/views/setproduct'
 import TaskList from '@/views/TaskList'
 import GetTasks from '@/views/TaskGet'
 import ProductAdmin from '@/views/productAdmin'
-
+import NewPlanTask from '@/views/newPlan'
+import ResourceConfig from '@/views/resourceConfig'
 Vue.use(Router)
 
 export default new Router({
@@ -79,6 +80,20 @@ export default new Router({
           name: 'Product',
           components: {
             rightContent: ProductAdmin
+          }
+        },
+        {
+          path: '/newPlan',
+          name: 'Plan',
+          components: {
+            rightContent: NewPlanTask
+          }
+        },
+        {
+          path: '/resourceConfig',
+          name: 'Resource',
+          components: {
+            rightContent: ResourceConfig
           }
         }
       ]
