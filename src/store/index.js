@@ -36,7 +36,7 @@ export default new Vuex.Store({
        TaskGet,
        Product,
        Kuaidial,
-       Principal
+       Principal,
        NewPlans,
     }
 })
