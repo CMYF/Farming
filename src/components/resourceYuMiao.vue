@@ -19,34 +19,16 @@
                 
             </el-form>
             <div class="product-tab-box">
-                <el-table ref="singleTable" border :data="tableData" style="width: 100%" @cell-click="showPlanInfo">
-                    <el-table-column type="index" label="序号" width="70">
+                <el-table ref="singleTable" border :data="tableData" style="width: 100%;text-align: center;" @cell-click="showPlanInfo">
+                    <el-table-column type="index" label="序号" width="150" style="width: 20%">
                     </el-table-column>
-                    <el-table-column property="picibianhName" label="计划名称" width="160" className="plan-name-td">
+                    <el-table-column property="picibianhName" label="资源名称" style="width: 20%" className="plan-name-td">
                     </el-table-column>
-                    <el-table-column property="picibianh" label="批次编号" width="100">
+                    <el-table-column property="picibianh" label="归属地"  style="width: 20%">
                     </el-table-column>
-                    <el-table-column property="productName" label="产品名称" width="120">
+                    <el-table-column property="planstartdatetime" label="开始使用时间"  style="width: 20%">
                     </el-table-column>
-                    <el-table-column property="linkIdName" label="生产环节" width="100">
-                    </el-table-column>
-                    <el-table-column property="planstartdatetime" label="计划开始时间" width="130">
-                    </el-table-column>
-                    <el-table-column property="planenddatetime" label="计划结束时间" width="130">
-                    </el-table-column>
-                    <el-table-column property="createtime" label="任务新建时间" width="130">
-                    </el-table-column>
-                    <el-table-column property="distributetime" label="任务派发时间" width="130">
-                    </el-table-column>
-                    <el-table-column property="receivetime" label="任务接收时间" width="100">
-                    </el-table-column>
-                    <el-table-column property="finishtime" label="任务完成时间" width="100">
-                    </el-table-column>
-                    <el-table-column property="creator" label="新建者" width="100">
-                    </el-table-column>
-                    <el-table-column property="abutmentname" label="责任人" width="100">
-                    </el-table-column>
-                    <el-table-column property="statusName" label="任务状态" width="100">
+                    <el-table-column property="statusName" label="使用状态"  style="width: 20%">
                     </el-table-column>
                 </el-table>
                 <el-pagination class="page-box" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage4" :page-sizes="[100, 200, 300, 400]" :page-size="100" layout="total, sizes, prev, pager, next, jumper" :total="400">
@@ -199,6 +181,9 @@ export default {
     padding-left: 20px;
     padding-right: 20px;
     padding-bottom: 20px;
+    .cell{
+    	text-align: center;
+    }
 }
 
 .screen-btn {
