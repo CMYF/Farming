@@ -10,6 +10,7 @@ import RoleManagement from './modules/rolemanagement'
 import TaskList from './modules/taskList'
 import TaskGet from './modules/taskGet'
 import NewPlans from './modules/newPlans'
+import Product from './modules/product'
 Vue.use(Vuex)
 export default new Vuex.Store({
     state: {
@@ -31,6 +32,7 @@ export default new Vuex.Store({
        RoleManagement,
        TaskList,
        TaskGet,
-       NewPlans
+       NewPlans,
+       Product,
     }
 })
