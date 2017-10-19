@@ -145,23 +145,8 @@ export default {
     
 }
 </script>
-<style>
-	.el-input__inner {
-	   border: none;
-	   height: 40px;
-	}
-	.el-button{
-		border-radius: 20px;
-		background-color: #02bdad;
-		font-size: 20px;
-	}
-	
-	.input:-webkit-autofill{
-		background-color: #FFFFFF;
-	}
-	
-</style>
-<style lang="scss" scoped>
+
+<style lang="scss">
 .main-box {
     width: 100vw;
     height: 100vh;   
@@ -169,6 +154,7 @@ export default {
     overflow: auto;
     background: url(./../../static/images/denglu/login_bg.jpg) no-repeat 100% 100%;
 }
+
 
 .logo-box{
 	width: 100%;
@@ -182,6 +168,21 @@ export default {
 .login_right{
 	width: 50%;
 	float: right;
+	.el-input__inner {
+	   border: none;
+	   height: 40px;
+	}
+
+	.el-button{
+		border-radius: 20px;
+		background-color: #02bdad;
+		font-size: 20px;
+	}
+	
+	.input:-webkit-autofill{
+		background-color: #FFFFFF;
+	}
+	
 }
 
 .login_left{

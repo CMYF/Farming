@@ -12,6 +12,7 @@ import TaskGet from './modules/TaskGet'
 import Product from './modules/product'
 import Kuaidial from './modules/kuaidial'
 import Principal from './modules/principal'
+import NewPlans from './modules/newPlans'
 Vue.use(Vuex)
 export default new Vuex.Store({
     state: {
@@ -36,5 +37,6 @@ export default new Vuex.Store({
        Product,
        Kuaidial,
        Principal
+       NewPlans,
     }
 })
