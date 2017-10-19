@@ -271,11 +271,8 @@ export default {
                 this._showMessage('error', '请选中要删除的数据！');
                 return;
             }
-            console.log('=================');
-            console.log(this.selectedOptions);
             let proId = productIds[0].id;
             fetchDelProductInfo(this.$store, { id: proId }).then(() => {
-                console.log('删除成功了吗？');
                 let tempData = this.$store.getters.delProductInfo;
                 if (tempData.resultCode === '1') {
                     this._showMessage('success', '删除产品信息成功！');

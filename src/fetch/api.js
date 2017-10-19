@@ -247,5 +247,23 @@ export function fetchProducts(opts) {
         loginedtoken: opts.token
     }));
 }
+
+export function fetchGetTaskInfoLists(opts){
+    console.log('opts是什么？');
+    console.log(opts);
+    return Vue.axios.post('http://10.1.2.151/ctower-mall-c/agriculture/index/queryProductionOverview.do', qs.stringify({
+        loginedtoken: opts.token,
+        dateFlag: opts.flag,
+        beginPage: opts.beginPage,
+        pageSize: opts.pageSize
+    }));
+}
+export function fetchBatchScheduleDatas(opts) {
+    return Vue.axios.post('http://10.1.2.151/ctower-mall-c/agriculture/index/batchSchedule.do', qs.stringify({
+        loginedtoken: opts.token,
+        _lk_createdatetime: opts.startTime,
+        _gk_createdatetime: opts.endTime
+    }));
+}
 // ##------------------------------------------------------------------------------------------------------------------------------------
 

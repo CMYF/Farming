@@ -1,8 +1,10 @@
-import { fetchLinkData, fetchProducts } from '../../fetch/api'
+import { fetchLinkData, fetchProducts, fetchGetTaskInfoLists, fetchBatchScheduleDatas } from '../../fetch/api'
 
 const state = {
     lineData: {},
-    productInfo: {}
+    productInfo: {},
+    taskInfoLists: {},
+    batchSchedules: {}
 }
 
 const actions = {
@@ -12,6 +14,12 @@ const actions = {
     GET_PRODUCTS: ({ commit, state }, opt) => {
         return fetchProducts(opt).then(proinfo => commit('GET_PRODUCT_INFOS', { proinfo }))
     },
+    GET_TASK_INFO_LISTS: ({ commit, state }, opts) => {
+        return fetchGetTaskInfoLists(opts).then(tasklists => commit('GET_TASK_LIST',  { tasklists }));
+    },
+    GET_BATCH_SCHEDULE: ({ commit, state }, opts) => {
+        return fetchBatchScheduleDatas(opts).then(batchlist => commit('GET_BATCH_LISTS', { batchlist }))
+    }
 }
 const mutations = {
     GET_LINE_PRO_DATAS: (state, { linedata }) => {
@@ -19,17 +27,29 @@ const mutations = {
     },
     GET_PRODUCT_INFOS: (state, { proinfo }) => {
         state.productInfo = proinfo.data;
+    },
+    GET_TASK_LIST: (state, { tasklists }) => {
+        state.taskInfoLists = tasklists.data;
+    },
+    GET_BATCH_LISTS: ( state, { batchlist }) => {
+        state.batchSchedules = batchlist.data;
     }
 }
 
 const getters = {
     getPrincipalLine (state) {
         console.log('getters state');
-        return state.lineData
+        return state.lineData;
     },
     getPrincipalNames (state) {
         console.log('getters state');
-        return state.productInfo
+        return state.productInfo;
+    },
+    getTakInfoLists(state) {
+        return state.taskInfoLists;
+    },
+    getBatchSchedules(state) {
+        return state.batchSchedules;
     }
 }
 

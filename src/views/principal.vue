@@ -7,13 +7,13 @@
                 </el-col>
                 <el-col :span="16" class="mack-box">
                     <div class="date-box">
-                        <el-date-picker v-model="params.beginTime"  @change="startChange" format="yyyy-MM-dd" type="date" placeholder="选择开始日期" ></el-date-picker>
+                        <el-date-picker v-model="params.beginTime" @change="startChange" format="yyyy-MM-dd" type="date" :picker-options="pickerOptions0" placeholder="选择开始日期"></el-date-picker>
                         -
-                        <el-date-picker v-model="params.finishTime"   @change="endChange" type="date" placeholder="选择结束日期" > </el-date-picker>
+                        <el-date-picker v-model="params.finishTime" @change="endChange" type="date" :picker-options="pickerOptions0" placeholder="选择结束日期"> </el-date-picker>
                         <el-button class="select-btn" @click="getProductLines()">
                             查询
                         </el-button>
-                      <!--  :picker-options="pickerOptions0"-->
+                        <!--  :picker-options="pickerOptions0"-->
                         <div class="day-box">
                             <span class="day-item day-item-day" @click="selectPluckDay('1', $event)">日</span>
                             <span class="day-item day-item-thrday day-item-active" @click="selectPluckDay('3', $event)">三天</span>
@@ -28,7 +28,7 @@
                         <el-checkbox-group v-model="chnageTypes" @change="typeChange" :max="5">
                             <el-checkbox v-for="(item, idx) in vfTypes" :label="item.label" :key="idx">{{item.label}}</el-checkbox>
                             <!--<el-checkbox v-for="(item, index) in vfTypes" :key="index" :data-id="item.id " @change="selectProducts(item.id, $event)" :label="item.label" :true-label="item.id">{{ item.label }}
-                                                                </el-checkbox>-->
+                                                                                                                                </el-checkbox>-->
 
                         </el-checkbox-group>
                     </div>
@@ -48,14 +48,38 @@
                 <div class="title-box product-title-box">
                     <h1>生产总览</h1>
                 </div>
-                <el-tabs v-model="activeName2" type="card" @tab-click="handleClick">
-                    <el-tab-pane label="当日情况" name="now">
-                        <same-day> </same-day>
+                <el-tabs v-model="taskList.flag" type="card" @tab-click="handleClick">
+                    <el-tab-pane label="当日情况" name="1">
+                        <!-- <same-day> </same-day>-->
                     </el-tab-pane>
-                    <el-tab-pane label="次日任务" name="task">
-                        <tomorrow-task> </tomorrow-task>
+                    <el-tab-pane label="次日任务" name="2">
+                        <!-- <tomorrow-task> </tomorrow-task>-->
                     </el-tab-pane>
                 </el-tabs>
+                <div class="tomo-task-box">
+                    <el-table :data="taskListData" stripe style="width: 100%">
+                        <el-table-column prop="batch" align="left" label="批次" width="180">
+                        </el-table-column>
+                        <el-table-column prop="productName" align="left" label="产品" width="180">
+                        </el-table-column>
+                        <el-table-column prop="distributeTime" align="left" label="任务派发时间">
+                        </el-table-column>
+                        <el-table-column prop="proLinks" align="left" label="生产环节">
+                        </el-table-column>
+                        <el-table-column prop="address" align="left" label="资源位置">
+                        </el-table-column>
+                        <el-table-column prop="manHours" align="left" label="总人工时">
+                        </el-table-column>
+                        <el-table-column prop="outputs" align="left" label="生产量">
+                        </el-table-column>
+                        <el-table-column prop="state" align="left" label="任务状态">
+                        </el-table-column>
+                        <el-table-column prop="liable" align="left" label="责任人">
+                        </el-table-column>
+                    </el-table>
+                    <el-pagination class="page-box" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="taskList.currentPage" :page-size="taskList.pageSize" layout="total, prev, pager, next" :total="taskList.totalRows">
+                    </el-pagination>
+                </div>
             </el-row>
         </el-col>
         <el-col :span="23" class="progress-table-box">
@@ -81,34 +105,14 @@
                     <div class="clear-float"></div>
                     <el-col :span="2">
                         <ul class="batch-name-box">
-                            <li class="batch-item">第一批次</li>
-                            <li class="batch-item">第一批次</li>
-                            <li class="batch-item">第一批次</li>
-                            <li class="batch-item">第一批次</li>
-                            <li class="batch-item">第一批次</li>
+                            <li class="batch-item" v-for="(item, index) in batchDatas.names" :title="item.name" :key="index">{{ item.subName }}</li>
                         </ul>
                     </el-col>
                     <el-col :span="20">
                         <ul class="batch-table">
-                            <li class="batch-bar-item">
-                                <span class="batch-bar bar-item gobj-progress" style="width:80%"></span>
-                                <span class="batch-txt bar-item">80%</span>
-                            </li>
-                            <li class="batch-bar-item">
-                                <span class="batch-bar bar-item not-gobj-progress" style="width: 40%"></span>
-                                <span class="batch-txt bar-item">40%</span>
-                            </li>
-                            <li class="batch-bar-item">
-                                <span class="batch-bar bar-item gobj-progress" style="width: 65%"></span>
-                                <span class="batch-txt bar-item">65%</span>
-                            </li>
-                            <li class="batch-bar-item">
-                                <span class="batch-bar bar-item gobj-progress" style="width: 75%"></span>
-                                <span class="batch-txt bar-item">75%</span>
-                            </li>
-                            <li class="batch-bar-item">
-                                <span class="batch-bar bar-item not-gobj-progress" style="width: 12%"></span>
-                                <span class="batch-txt bar-item">12%</span>
+                            <li class="batch-bar-item" v-for="(gress, index) in batchDatas.progress" :key="index">
+                                <span class="batch-bar bar-item gobj-progress" :title="gress +'%'" :style="{width:  gress + '%' }"></span>
+                                <span class="batch-txt bar-item">{{ gress }}%</span>
                             </li>
                             <span class="line"></span>
                         </ul>
@@ -129,6 +133,12 @@ function fetchGetLinePicData(store, opts) {
 function fetchGetProductInfo(store) {
     return store.dispatch('GET_PRODUCTS', { token: localStorage.token });
 }
+function fetchTaskInfoLists(store, opts) {
+    return store.dispatch('GET_TASK_INFO_LISTS', opts);
+}
+function fetchBatchSchedules(store, opts) {
+    return store.dispatch('GET_BATCH_SCHEDULE', opts);
+}
 export default {
     components: {
         SameDay,
@@ -141,19 +151,45 @@ export default {
                     return (time.getTime()) > Date.now() - 8.64e7;
                 }
             },
-            params: {
+            params: { // 点击查询参数
                 beginTime: '',
                 finishTime: '',
                 pluckDay: 3,
                 productIds: ''
             },
-            value1: '',
-            value2: '',
-            activeName2: 'now',
-            vfTypes: [
+            vfTypes: [ // 产品
 
             ],
-            chnageTypes: []
+            taskListData: [ // 生产总览数据
+
+            ],
+            chnageTypes: [], // 选中的产品
+            lineData: { // 折线图的数据
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: []
+                }
+            },
+            taskList: {  // 生产总览参数
+                beginPage: 1,
+                token: localStorage.token,
+                pageSize: 5,
+                totalRows: 0,
+                totalPage: 0,
+                currentPage: 1,
+                flag: '1' // 1.当日   2.次日
+            },
+            batchParams: {
+                token: localStorage.token,
+                startTime: '',
+                endTime: ''
+            },
+            batchDatas: {
+                names: [],
+                progress: []
+            }
+
         }
     },
     beforeMount() {
@@ -175,108 +211,109 @@ export default {
 
             }
         });
+        this.getProductDatas();
+        this.getBatchSchedule();
 
     },
     mounted() {
 
-        let ctx = _j('#myCanvas');
-        let opts = {
-            scaleOverride: true,   //是否用硬编码重写y轴网格线
-            scaleSteps: 10,        //y轴刻度的个数
-            scaleStepWidth: 300,   //y轴每个刻度的宽度
-            scaleStartValue: 0,    //y轴的起始值
-            pointDot: true,        //是否显示点
-            pointDotRadius: 5,     //点的半径
-            pointDotStrokeWidth: 1,//点的线宽
-            datasetStrokeWidth: 3, //数据线的线宽
-            animation: true,       //是否有动画效果
-            animationSteps: 60    //动画的步数
 
-        }
-        let data = {
-            type: 'line',
-            data: {
-                labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange", "Brown", "Black"],
-                datasets: [{
-                    label: '# of Votes',
-                    data: [12, 19, 3, 5, 2, 3, 60, 80],
-                    backgroundColor: [
-                        'rgba(255, 99, 132, 0.2)',
-                        'rgba(54, 162, 235, 0.2)',
-                        'rgba(255, 206, 86, 0.2)',
-                        'rgba(75, 192, 192, 0.2)',
-                        'rgba(153, 102, 255, 0.2)',
-                        'rgba(255, 159, 64, 0.2)',
-                        'rgba(153, 102, 255, 0.2)',
-                        'rgba(255, 159, 64, 0.2)'
-                    ],
-                    borderColor: [
-                        'rgba(255,99,132,1)',
-                        'rgba(54, 162, 235, 1)',
-                        'rgba(255, 206, 86, 1)',
-                        'rgba(75, 192, 192, 1)',
-                        'rgba(153, 102, 255, 1)',
-                        'rgba(255, 159, 64, 1)',
-                        'rgba(153, 102, 255, 1)',
-                        'rgba(255, 159, 64, 1)'
-                    ],
-                    borderWidth: 1
-                },
-                {
-                    label: '# of Votes',
-                    data: [20, 30, 40, 50, 60, 70, 80, 500],
-                    backgroundColor: [
-                        'rgba(255, 99, 132, 0.2)',
-                        'rgba(54, 162, 235, 0.2)',
-                        'rgba(255, 206, 86, 0.2)',
-                        'rgba(75, 192, 192, 0.2)',
-                        'rgba(153, 102, 255, 0.2)',
-                        'rgba(255, 159, 64, 0.2)',
-                        'rgba(153, 102, 255, 0.2)',
-                        'rgba(255, 159, 64, 0.2)'
-                    ],
-                    borderColor: [
-                        '#71bfff'
-                    ],
-                    borderWidth: 1
-                },
-                {
-                    label: '# of aaa',
-                    data: [2, 22, 8, 5, 36, 12, 200, 450],
-                    backgroundColor: [
-                        'rgba(255, 99, 132, 0.2)',
-                        'rgba(54, 162, 235, 0.2)',
-                        'rgba(255, 240, 86, 0.2)',
-                        'rgba(75, 81, 192, 0.2)',
-                        'rgba(153, 222, 255, 0.2)',
-                        'rgba(255, 159, 64, 0.2)'
-                    ],
-                    borderColor: [
-                        'rgba(255,99,132,1)',
-                        'rgba(54, 162, 235, 1)',
-                        'rgba(255, 206, 86, 1)',
-                        'rgba(75, 192, 192, 1)',
+        /*  let data = {
+              type: 'line',
+              data: {
+                  labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange", "Brown", "Black"],
+                  datasets: [{
+                      label: '# of Votes',
+                      data: [12, 19, 3, 5, 2, 3, 60, 80],
+                      backgroundColor: [
+                          'rgba(255, 99, 132, 0.2)',
+                          'rgba(54, 162, 235, 0.2)',
+                          'rgba(255, 206, 86, 0.2)',
+                          'rgba(75, 192, 192, 0.2)',
+                          'rgba(153, 102, 255, 0.2)',
+                          'rgba(255, 159, 64, 0.2)',
+                          'rgba(153, 102, 255, 0.2)',
+                          'rgba(255, 159, 64, 0.2)'
+                      ],
+                      borderColor: [
+                          'rgba(255,99,132,1)',
+                          'rgba(54, 162, 235, 1)',
+                          'rgba(255, 206, 86, 1)',
+                          'rgba(75, 192, 192, 1)',
+                          'rgba(153, 102, 255, 1)',
+                          'rgba(255, 159, 64, 1)',
+                          'rgba(153, 102, 255, 1)',
+                          'rgba(255, 159, 64, 1)'
+                      ],
+                      borderWidth: 1
+                  },
+                  {
+                      label: '# of Votes',
+                      data: [20, 30, 40, 50, 60, 70, 80, 500],
+                      backgroundColor: [
+                          'rgba(255, 99, 132, 0.2)',
+                          'rgba(54, 162, 235, 0.2)',
+                          'rgba(255, 206, 86, 0.2)',
+                          'rgba(75, 192, 192, 0.2)',
+                          'rgba(153, 102, 255, 0.2)',
+                          'rgba(255, 159, 64, 0.2)',
+                          'rgba(153, 102, 255, 0.2)',
+                          'rgba(255, 159, 64, 0.2)'
+                      ],
+                      borderColor: [
+                          '#71bfff'
+                      ],
+                      borderWidth: 1
+                  },
+                  {
+                      label: '# of aaa',
+                      data: [2, 22, 8, 5, 36, 12, 200, 450],
+                      backgroundColor: [
+                          'rgba(255, 99, 132, 0.2)',
+                          'rgba(54, 162, 235, 0.2)',
+                          'rgba(255, 240, 86, 0.2)',
+                          'rgba(75, 81, 192, 0.2)',
+                          'rgba(153, 222, 255, 0.2)',
+                          'rgba(255, 159, 64, 0.2)'
+                      ],
+                      borderColor: [
+                          'rgba(255,99,132,1)',
+                          'rgba(54, 162, 235, 1)',
+                          'rgba(255, 206, 86, 1)',
+                          'rgba(75, 192, 192, 1)',
+  
+                          'rgba(153, 102, 255, 1)',
+                          'rgba(255, 159, 64, 1)'
+                      ],
+                      borderWidth: 1
+                  }]
+              }
+          }*/
 
-                        'rgba(153, 102, 255, 1)',
-                        'rgba(255, 159, 64, 1)'
-                    ],
-                    borderWidth: 1
-                }]
-            }
-        }
-        let myChart = new Chart(ctx, data, opts);
     },
     methods: {
         typeChange() {
         },
-        startChange(d){
+        // 开始时间
+        startChange(d) {
             this.params.beginTime = d;
         },
+        // 结束时间
         endChange(d) {
             this.params.finishTime = d;
         },
+        // 切换tab页
         handleClick(tab, event) {
-            console.log(tab, event);
+            this.taskList = {  // 生产总览参数
+                beginPage: 1,
+                token: localStorage.token,
+                pageSize: 5,
+                totalRows: 0,
+                totalPage: 0,
+                currentPage: 1,
+                flag: tab.name // 1.当日   2.次日
+            }
+            this.getProductDatas()
         },
         selectPluckDay(day, e) {
             let dom = _j(e.currentTarget);
@@ -317,18 +354,19 @@ export default {
             for (let i = 0; i < sLen; i++) {
                 for (let j = 0; j < oLen; j++) {
                     if (selectType[i] === oldType[j].label) {
-                        productIds.push(oldType[j].id);
+                        ids.push(oldType[j].id);
                     }
                 }
             }
             this.params.productIds = ids.join(',');
         },
+        // 加载折线图数据
         loadProductLines(isClick) {
             let startTime = this.params.beginTime;
             let endTime = this.params.finishTime;
             if (isClick) {
                 if ((!startTime && endTime) || (!endTime && startTime)) {
-                    console.log('yes');
+                    this._showMessage('error', '开始日期和结束日期都是必须的！');
                     return;
                 }
             }
@@ -341,9 +379,119 @@ export default {
             }
             fetchGetLinePicData(this.$store, opts).then(() => {
                 let tempData = this.$store.getters.getPrincipalLine;
-                console.log(tempData);
+                if (tempData.resultCode === '1') {
+                    let tempObj = tempData.resultObj;
+                    this.lineData.data.labels = tempObj[0].labels;
+                    let tempDatasets = tempObj[1].datasets;
+                    let len = tempDatasets.length;
+                    let tempDataObj = {};
+                    let aph = '';
+                    let backgorundColor = [];
+                    let borderColor = [];
+                    this.lineData.data.datasets.length = 0;
+                    for (let i = 0; i < len; i++) {
+                        tempDataObj.label = tempDatasets[i].chanpiMc;
+                        tempDataObj.data = tempDatasets[i].data;
+                        backgorundColor = ['rgba(2, 189, 173, ' + (aph + ('0.' + (i + 1))) + ')'];
+                        borderColor = ['rgba(2, 189, 173, ' + (aph + ('0.' + (i + 2))) + ')'];
+                        this.lineData.data.datasets.push({
+                            label: tempDataObj.label,
+                            data: tempDataObj.data,
+                            borderColor: borderColor,
+                            backgroundColor: backgorundColor
+                        });
+                    }
+                }
+                let ctx = _j('#myCanvas');
+                let opts = {
+                    scaleOverride: true,   //是否用硬编码重写y轴网格线
+                    scaleSteps: 10,        //y轴刻度的个数
+                    scaleStepWidth: 300,   //y轴每个刻度的宽度
+                    scaleStartValue: 0,    //y轴的起始值
+                    pointDot: true,        //是否显示点
+                    pointDotRadius: 5,     //点的半径
+                    pointDotStrokeWidth: 1,//点的线宽
+                    datasetStrokeWidth: 3, //数据线的线宽
+                    animation: true,       //是否有动画效果
+                    animationSteps: 60    //动画的步数
+                }
+                let myChart = new Chart(ctx, this.lineData, opts);
+                //myChart.clear();
             });
         },
+        handleSizeChange(val) {
+            this.taskList.pageSize = val;
+            this.getProductDatas();
+        },
+
+        handleCurrentChange(val) {
+            this.taskList.currentPage = val;
+            this.getProductDatas();
+        },
+        // 获取生产总览数据
+        getProductDatas() {
+            fetchTaskInfoLists(this.$store, this.taskList).then(() => {
+                let tempData = this.$store.getters.getTakInfoLists;
+                if (tempData.resultCode === '1') {
+                    let tempObj = tempData.basePageObj;
+                    this.taskList.totalRows = tempObj.totalRows;
+                    this.taskList.totalPage = tempObj.totalPage;
+                    let tempDataList = tempObj.dataList;
+                    let tempItem = {};
+                    let len = tempDataList.length;
+                    this.taskListData.length = 0;
+                    for (let i = 0; i < len; i++) {
+                        tempItem = tempDataList[i];
+                        this.taskListData.push({
+                            batch: tempItem.picibianh,  // 批次
+                            productName: tempItem.chanpinmc, // 产品
+                            distributeTime: tempItem.distributeTime, // 派发时间
+                            proLinks: tempItem.linkId, // 生产环节
+                            address: tempItem.resourceId, // 资源地址
+                            manHours: tempItem.costTime, // 人工时
+                            outputs: tempItem.harverst, // 产量
+                            state: tempItem.status, // 状态
+                            liable: tempItem.abutmentName // 责任人
+                        });
+                    }
+                }
+            });
+
+        },
+        getBatchSchedule() {
+            fetchBatchSchedules(this.$store, this.batchParams).then(() => {
+                console.log('批次进度成功了吗？');
+                let tempData = this.$store.getters.getBatchSchedules;
+                if (tempData.resultCode === '1') {
+                    let tempObj = tempData.resultObj;
+                    let len = tempObj.length;
+                    let tempItem = {};
+                    let tempName = '';
+                    let subStr = '';
+                    for (let i = 0; i < len; i++) {
+                        tempItem = tempObj[i];
+                        tempName = tempItem.name;
+                        if (tempName.length > 6) {
+                            subStr = tempName.substr(0, 6) + '...'
+                        } else {
+                            subStr = tempName;
+                        }
+                        this.batchDatas.names.push({
+                            subName: subStr,
+                            name: tempName
+                        });
+                        this.batchDatas.progress.push(tempItem.bacth);
+                    }
+                }
+            });
+        },
+        _showMessage(type, msg) {
+            this.$message({
+                showClose: true,
+                message: msg,
+                type: type
+            });
+        }
 
     }
 }
@@ -564,6 +712,16 @@ export default {
 
 .clear-float {
     clear: both;
+}
+
+.tomo-task-box {
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+.page-box {
+    text-align: right;
+    margin-top: 10px;
 }
 
 @media (max-width: 1420px) {}
