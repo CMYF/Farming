@@ -30,7 +30,7 @@ export default {
 </script>
 
 <style>
-
+@import url('./assets/fonts/iconfont.css');
 * {
   margin: 0px;
   padding: 0px;
@@ -61,7 +61,7 @@ a:hover {
   color: #2c3e50;
 }
 
-@font-face {
+/* @font-face {
   font-family: 'iconfont';
   src: url('./assets/fonts/iconfont.eot');
   src: url('./assets/fonts/iconfont.eot?#iefix') format('embedded-opentype'),
@@ -77,13 +77,14 @@ a:hover {
   -webkit-font-smoothing: antialiased;
   -webkit-text-stroke-width: 0.2px;
   -moz-osx-font-smoothing: grayscale;
-}
+} */
 
 .left-nav-box {
   height: 100%;
   overflow: hidden;
   position: fixed;
-  width: 220px;
+   width: 12.5%; 
+   min-width:180px;
   top: 0px;
   z-index: 10;
   left: 0;
@@ -94,11 +95,19 @@ a:hover {
   height: auto;
   overflow: hidden;
   margin-top: 60px;
+  width: 86.5%;
+  min-width: 1150px; 
+  margin-left: 13.3%;
 }
 
 .hide {
   display: none;
 }
 
-
+@media (max-width: 1420px){
+  .right-content-box{
+    width: 85.3%;
+    margin-left: 14.3%;
+  }
+}
 </style>

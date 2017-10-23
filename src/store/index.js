@@ -7,11 +7,13 @@ import HomePage from './modules/homepage'
 import Login from './modules/login'
 import UserAdmin from './modules/useradmin'
 import RoleManagement from './modules/rolemanagement'
-import TaskList from './modules/taskList'
-import TaskGet from './modules/taskGet'
-import NewPlans from './modules/newPlans'
+import TaskList from './modules/TaskList'
+import TaskGet from './modules/TaskGet'
 import Product from './modules/product'
 import Resourceconfig from './modules/resourceconfig'
+import Kuaidial from './modules/kuaidial'
+import Principal from './modules/principal'
+import NewPlans from './modules/newPlans'
 Vue.use(Vuex)
 export default new Vuex.Store({
     state: {
@@ -33,8 +35,10 @@ export default new Vuex.Store({
        RoleManagement,
        TaskList,
        TaskGet,
-       NewPlans,
        Product,
-       Resourceconfig
+       Resourceconfig,
+       Kuaidial,
+       Principal,
+       NewPlans
     }
 })

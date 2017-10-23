@@ -1,6 +1,6 @@
 <template>
     <el-row>
-        <el-col :span="20" :offset="3" class="add-menu-main-box">
+        <el-col :span="23"  class="add-menu-main-box">
             <el-col :span="5">
                 <h2 class="model-title">菜单管理</h2>
                 <div class="btn-box">

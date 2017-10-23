@@ -4,7 +4,7 @@
             <el-breadcrumb-item>系统设置</el-breadcrumb-item>
             <el-breadcrumb-item>生产配置</el-breadcrumb-item>
         </el-breadcrumb>
-        <el-col :span="20" :offset="3" class="pro-content">
+        <el-col :span="23" class="pro-content">
             <el-tabs v-model="activeName2" type="card" @tab-click="handleClick">
                 <el-tab-pane label="归属地" name="productType">
                     <BelongToPosi></BelongToPosi>

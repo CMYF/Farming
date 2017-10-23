@@ -1,15 +1,19 @@
 <template>
     <div>
-        <FHeader> </FHeader>
-        <el-row class="tac">
-            <el-col :span="3" class="left-nav-box left-nav-reset-bg">
+        <el-row>
+            <FHeader> </FHeader>
+        </el-row>
+        <el-row class="tac" :gutter="0">
+            <div class="left-nav-box left-nav-reset-bg">
+                <!-- <el-col :span="3" class="left-nav-box left-nav-reset-bg"> -->
                 <LeftNav></LeftNav>
-            </el-col>
-            <el-col :span="24" class="right-content-box">
-
+            </div>
+            <div class="right-content-box">
+                <!-- <el-col :span="21" :offset="3" class="right-content-box">
+     -->
                 <router-view name="rightContent"></router-view>
 
-            </el-col>
+            </div>
         </el-row>
     </div>
 </template>
@@ -68,8 +72,7 @@ export default {
 }
 </script>
 <style lang="scss">
-.left-nav-reset-bg
-{
+.left-nav-reset-bg {
 
     background-color: #3f4551;
 }
