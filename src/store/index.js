@@ -11,6 +11,7 @@ import TaskList from './modules/taskList'
 import TaskGet from './modules/taskGet'
 import NewPlans from './modules/newPlans'
 import Product from './modules/product'
+import Resourceconfig from './modules/resourceconfig'
 Vue.use(Vuex)
 export default new Vuex.Store({
     state: {
@@ -34,5 +35,6 @@ export default new Vuex.Store({
        TaskGet,
        NewPlans,
        Product,
+       Resourceconfig
     }
 })

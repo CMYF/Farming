@@ -5,11 +5,11 @@
             <el-breadcrumb-item>任务列表</el-breadcrumb-item>
         </el-breadcrumb>
         <el-col :span="20" :offset="3" class="pro-content">
-            <el-tabs v-model="activeName2" type="card" @tab-click="handleClick">
-                <el-tab-pane label="待派发任务" name="TaskSendType">
+            <el-tabs v-model="activeName2" type="card" @tab-click="taskClick">
+                <el-tab-pane label="待派发任务" name="info">
                 	<TaskSendList></TaskSendList>
                 </el-tab-pane>
-                <el-tab-pane label="已派发任务" name="info">
+                <el-tab-pane label="已派发任务" >
                     <TaskListInfo> </TaskListInfo>
                 </el-tab-pane>
             </el-tabs>
@@ -30,7 +30,7 @@ export default {
         };
     },
     methods: {
-        handleClick(tab, event) {
+        taskClick(tab, event) {
             console.log(tab, event);
         }
     }

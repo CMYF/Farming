@@ -6,7 +6,7 @@
         </el-breadcrumb>
         <el-col :span="20" :offset="3" class="pro-content">
             <el-tabs v-model="activeName2" type="card" @tab-click="handleClick">
-                <el-tab-pane label="育苗盘" name="info">
+                <el-tab-pane label="育苗床" name="info">
                 	<ResourceGrow></ResourceGrow>
                 </el-tab-pane>
                 <el-tab-pane label="种植架" name="">
