@@ -16,10 +16,13 @@
                 <el-form-item>
                     <el-button class="screen-btn" @click="screenProduct">筛选</el-button>
                 </el-form-item>
+                 <el-form-item style="float: right;">
+                    <el-button class="screen-btn" @click="planBack"  :disabled="isTrue" >撤回</el-button>
+                </el-form-item>
                 
             </el-form>
             <div class="product-tab-box">
-                <el-table ref="singleTable" border :data="tableData" style="width: 100%" @cell-click="showPlanInfo">
+                <el-table ref="singleTable" border :data="tableData" highlight-current-row style="width: 100%"  @current-change="danXuanChange">
                     <el-table-column type="index" label="序号" width="70">
                     </el-table-column>
                     <el-table-column property="picibianhName" label="计划名称" width="160" className="plan-name-td">
@@ -49,7 +52,7 @@
                     <el-table-column property="statusName" label="任务状态" width="100">
                     </el-table-column>
                 </el-table>
-                <el-pagination class="page-box" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage4" :page-sizes="[100, 200, 300, 400]" :page-size="100" layout="total, sizes, prev, pager, next, jumper" :total="400">
+                <el-pagination class="page-box" :total="pageTotle" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="page.page_number" :page-sizes="[1,2,3,10]" :page-size="page.page_size" layout="total, sizes, prev, pager, next, jumper" >
                 </el-pagination>
             </div>
         </el-col>
@@ -64,17 +67,38 @@ function fetchTask(store, opt) {
     return store.dispatch('TASKLIST', {
        num: opt.page_number,
        size: opt.page_size,
-       states: opt.taskStates
+       states: opt.taskStates,
+       pici: opt.page_pici,
+       operater: opt.page_operater,
+       proName: opt.page_proName
     });
 }
+
+function fetchPlanBack(store, opt) {
+    return store.dispatch('PLANBACK', {
+       ypfPiCiBianH: opt.piciBH,
+       ypfSort: opt.piciSort
+    });
+}
+
 export default {
 	store,
     data() {
         return {
+        	pageTotle: 1,
+        	isTrue: true,
         	page:{
         		page_number: 1,
-                page_size: 10,
-                taskStates:20
+                page_size: '',
+                taskStates:20,
+                page_pici: '',
+                page_operater: '',
+                page_proName: ''
+        	},
+        	
+        	backPlan: {
+        		piciBH: '',
+        		piciSort: ''
         	},
         	
             screenForm: {
@@ -117,24 +141,86 @@ export default {
     }), 
     beforeMount() {
     	fetchTask(this.$store, this.page).then(() => {
-               this.lgd = this.$store.getters.TaskListData.resultData;
-               if (this.lgd.resultCode === '1') {
-                  this.tableData = this.lgd.basePageObj.dataList;
-               	}else{
-               		this.titleNotice=this.lgd.resultMsg;
-               	}
-            });
+	           this.lgd = this.$store.getters.TaskListData.resultData;
+	           if (this.lgd.resultCode === '1') {
+	              this.pageTotle = this.lgd.basePageObj.dataList.length;
+	              console.log(this.pageTotle)
+	           	}else{
+	           		this.titleNotice=this.lgd.resultMsg;
+	           	}
+	        });
+   			this.page.page_size = 10;
+    		fetchTask(this.$store, this.page).then(() => {
+	           this.lgd = this.$store.getters.TaskListData.resultData;
+	           if (this.lgd.resultCode === '1') {
+	              this.tableData = this.lgd.basePageObj.dataList;
+	           	}else{
+	           		this.titleNotice=this.lgd.resultMsg;
+	           	}
+	        });
+    	
     },
     methods: {
+    	
+    	planBack(){
+    		console.log("000000000000")
+    		console.log(this.backPlan)
+    		fetchPlanBack(this.$store, this.backPlan).then(() => {
+	           this.bk = this.$store.getters.PlanBackData.resultData;
+	           if (this.bk.resultCode === '1') {
+	              //this.tableData = this.bk.basePageObj.dataList;
+	           	}else{
+	           		//this.titleNotice=this.bk.resultMsg;
+	           	}
+	        });
+    	},
+    	danXuanChange(val) {
+         	if(val == null || val == ''){
+         		this.isTrue = true;
+         		return;
+         	}else{
+         		this.backPlan.piciBH = val.picibianh;
+         		this.backPlan.piciSort = val.sort;
+		        console.log('22222222222222')
+		        console.log(val)
+		        this.isTrue = false;
+        	}
+	        
+	        
+	      },
     	
         screenProduct() {
 
         },
         handleSizeChange(val) {
+        	console.log(val)
+        	this.page.page_size = parseInt(val);
             console.log(`每页 ${val} 条`);
+            console.log("22222222222")
+            console.log(this.page);
+            fetchTask(this.$store, this.page).then(() => {
+	           this.lgd = this.$store.getters.TaskListData.resultData;
+	           if (this.lgd.resultCode === '1') {
+	              this.tableData = this.lgd.basePageObj.dataList;
+	           	}else{
+	           		this.titleNotice=this.lgd.resultMsg;
+	           	}
+	        });
+            
         },
         handleCurrentChange(val) {
+        	console.log(val)
+        	this.page.page_number = val;
             console.log(`当前页: ${val}`);
+            console.log(this.page)
+            fetchTask(this.$store, this.page).then(() => {
+	           this.lgd = this.$store.getters.TaskListData.resultData;
+	           if (this.lgd.resultCode === '1') {
+	              this.tableData = this.lgd.basePageObj.dataList;
+	           	}else{
+	           		this.titleNotice=this.lgd.resultMsg;
+	           	}
+	        });
         },
         showPlanInfo(row, column, cell, event) {
             let currRowData = row;
