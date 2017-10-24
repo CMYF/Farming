@@ -168,6 +168,7 @@ export function fetchTaskZiyuan(opts) {
         _in_type: opts.zyType,
         _lk_names: opts.zyName,
         columid:opts.zyColumid,
+        piCiBianH: opts.zyPiCiBianH,
         status: opts.zyStatus,
 		beginPage: opts.zyPage,
 		pageSize: opts.zyPageSize

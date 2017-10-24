@@ -131,6 +131,7 @@ function fetchTaskZiyuan(store, opt) {
       	zyType: opt.AllzyType,
         zyName: opt.AllzyName,
         zyStatus: opt.AllzyStatus,
+        zyPiCiBianH: opt.AllzyPiCi,
 		zyPage: opt.AllzyPage,
 		zyPageSize: opt.AllzyPageSize
     })
@@ -179,6 +180,7 @@ export default {
 		        AllzyType: '',
 		        AllzyName: '',
 		        AllzyStatus: 0,
+		        AllzyPiCi: '',
 				AllzyPage: '',
 				AllzyPageSize: ''
 	        },
@@ -417,6 +419,7 @@ export default {
 	        	this.planForm.task_linkIdNames = '';
 	            this.planForm.task_number = row.picibianh;
 	            this.planForm.task_sorts = row.sort;
+	            this.ziYuanDate.AllzyPiCi = 'HY20171023111440';
 				this.isTrue =false;
 	        }else{
 	        	this.isTrue =true;

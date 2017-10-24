@@ -1,10 +1,10 @@
 <template >
     <el-row class="pro-box">
-        <el-breadcrumb separator="/" class="bread-box">
+        <el-breadcrumb separator="/" class="plan-box">
             <el-breadcrumb-item>计划管理</el-breadcrumb-item>
             <el-breadcrumb-item>新建计划</el-breadcrumb-item>
         </el-breadcrumb>
-        <el-col :span="20" :offset="3" class="pro-content">
+        <el-col :span="23" class="pro-content">
         	 
              <el-row class="info-box">
 		    	<el-col  class="product-box">
@@ -59,12 +59,12 @@
                 		</el-pagination>
 		            </div>
 		        </el-col>
-		        <el-dialog class="dialog-box" title="新增计划" :visible.sync="isShowPlanDailog">
-		            <el-form :model="newPlan" :inline="true" ref="newPlan" class="plan-form">
-		                <el-form-item label="计划名称" :label-width="formLabelWidth">
+		        <el-dialog class="dialog-box" title="新增计划" :visible.sync="isShowPlanDailog" @close="closeDialog">
+		            <el-form :model="newPlan" :inline="true" :rules="rules" ref="newPlan" class="plan-form">
+		                <el-form-item label="计划名称" :label-width="formLabelWidth" prop="Names">
 		                    <el-input v-model="newPlan.Names"  auto-complete="off"></el-input>
 		                </el-form-item>
-		                <el-form-item label="归属地" :label-width="formLabelWidth" >
+		                <el-form-item label="归属地" :label-width="formLabelWidth" prop="selectedOptions2">
 		                    <div class="block" >
 							  <el-cascader
 							    expand-trigger="hover"
@@ -76,11 +76,9 @@
 		                </el-form-item>
 		
 		                </el-form-item>
-		                <el-form-item label="批次编号" :label-width="formLabelWidth">
-		                    <el-input auto-complete="off"></el-input>
-		                </el-form-item>
-		                <el-form-item label="产品名称" :label-width="formLabelWidth">
-		                    <el-select v-model="value8" filterable placeholder="请选择" @change="getProductID">
+		                
+		                <el-form-item label="产品名称" :label-width="formLabelWidth" prop="ProductName">
+		                    <el-select v-model="newPlan.ProductName" filterable placeholder="请选择" @change="getProductID">
 							    <el-option
 							      v-for="item in productNames"
 							      :key="item.value"
@@ -113,13 +111,16 @@
 		                    <el-input v-model="newPlan.Target"  auto-complete="off"></el-input>
 		                </el-form-item>
 		                <el-form-item label="选择育苗床" :label-width="formLabelWidth" >
-		                    <el-input v-model= "zyArrays" :disabled="isFlag"  @focus="zyData"  auto-complete="off"></el-input>
+		                    <el-input v-model= "zyArrays" :disabled="isFlag"  @focus="zyData($event)"  auto-complete="off"></el-input>
 		                </el-form-item>
 		                <el-form-item label="定植数" :label-width="formLabelWidth">
 		                    <el-input v-model="newPlan.DingZhi"  auto-complete="off"></el-input>
 		                </el-form-item>
-		                <el-form-item label="育苗盘数" :label-width="formLabelWidth">
+		                <el-form-item label="育苗盘数" :label-width="formLabelWidth" >
 		                    <el-input v-model="newPlan.YuMiaoNum"  auto-complete="off"></el-input>
+		                </el-form-item>
+		                 <el-form-item label="" :label-width="formLabelWidth" >
+		                   
 		                </el-form-item>
 		            </el-form>
 		            <el-row class="TaskBtn">
@@ -222,6 +223,32 @@ export default {
         	
         	selectedOptions2: [],
         	
+        	rules: {
+	          Names: [
+	            { required: true, message: '请输入计划名称', trigger: 'blur' },
+	            { min: 3, max: 35, message: '长度在 3 到 35 个字符', trigger: 'blur' }
+	          ],
+//	          selectedOptions2: [
+//	            { required: true, message: '请选择活动区域', trigger: 'change' }
+//	          ],
+	          ProductName: [
+	            { required: true, message: '请选择日期', trigger: 'change' }
+	          ],
+//	          date2: [
+//	            { type: 'date', required: true, message: '请选择时间', trigger: 'change' }
+//	          ],
+//	          type: [
+//	            { type: 'array', required: true, message: '请至少选择一个活动性质', trigger: 'change' }
+//	          ],
+//	          resource: [
+//	            { required: true, message: '请选择活动资源', trigger: 'change' }
+//	          ],
+//	          desc: [
+//	            { required: true, message: '请填写活动形式', trigger: 'blur' }
+//	          ]
+	        },
+        	
+        	
         	newPlan:{
         		Names: '',
         		LandId: '',
@@ -262,9 +289,6 @@ export default {
 		    checkedCities1:[],
 		    
         	dialogFormVisible: false,
-        	formLabelWidth: '120px',
-			
-			
 			
             planForm: {
                 no: '',
@@ -273,7 +297,6 @@ export default {
                 state: ''
             },
            
-          
             formLabelWidth: '120px',
             currentPage4: 4,
             isShowPlanDailog: false,
@@ -342,7 +365,9 @@ export default {
     
     
     methods: {
-    	
+    	closeDialog(){
+    		this.$refs.newPlan.resetFields();
+    	},
     	cancelPlans(){
     		this.isShowPlanDailog = false;
     		 this.$refs.newPlan.resetFields();
@@ -434,6 +459,7 @@ export default {
 	        this.newPlan.LandName = this.landNameArray.join("/")
 	        console.log(this.newPlan.LandId)
 	        console.log(this.newPlan.LandName)
+	        console.log(this.selectedOptions2)
 	     },
     	bulidPlan(){
     		console.log(this.products)
@@ -450,6 +476,7 @@ export default {
 	         this.newPlan.ProductId = '';
 	         this.zyArrays = '';
 	         this.ziyuanAll = [];
+	         
     		fetchProductList(this.$store, this.products).then(() => {
 	           this.cp = this.$store.getters.ProductListData.resultData;
 	           if (this.cp.resultCode === '1') {
@@ -477,11 +504,15 @@ export default {
 		          return item.value === value8;
 		      	});
 		    	 this.newPlan.ProductId = obj.lable;
+		    	 this.newPlan.ProductName = value8;
     		}
 		      
     	},
     	
-    	zyData(){
+    	zyData(e){
+    		console.log(e)
+    		let dom = _j(e.currentTarget);
+    		dom.blur();
     		this.dialogFormVisible = true;
     		this.ziYuanDate.AllzyColumid =this.landIdArray[this.landIdArray.length-1];
     		console.log("77777777777777")
@@ -557,31 +588,44 @@ export default {
 		},
 
 	sendPlanComfire() {
-        		this.newPlan.ProductName = this.value8;
+		
+		 this.$refs.newPlan.validate((valid) => {
+          if (valid) {
+            alert('submit!');
+          } else {
+            console.log('error submit!!');
+            return false;
+          }
+        });
+		
+		
+		
+        		//this.newPlan.ProductName = this.value8;
       			this.newPlan.Bed = this.ziyuanAll.join("/")+"/";
       			console.log(this.newPlan)
       			this.flag = true;
-			fetchPlanNew(this.$store, this.newPlan).then(() => {
-	           this.mess = this.$store.getters.NewPlanData.resultData;
-	           if (this.mess.resultCode === '1') {
-	           		this.flag = false;
-					this.isShowPlanDailog = false;
-					fetchPlanList(this.$store, this.page).then(() => {
-			           this.jh = this.$store.getters.PlanData.resultData;
-			           if (this.jh.resultCode === '1') {
-			              this.tableData = this.jh.basePageObj.dataList;
-			           	}else{
-			           		//this.titleNotice=this.jh.resultMsg;
-			           	}
-			        });
-					
-					
-	           	console.log(this.mess)
-	           	}else{
-	           		this.flag = false;
-	           		//this.titleNotice=this.mess.resultMsg;
-	           	}
-	        });
+//			fetchPlanNew(this.$store, this.newPlan).then(() => {
+//	           this.mess = this.$store.getters.NewPlanData.resultData;
+//	           if (this.mess.resultCode === '1') {
+//	           		this.flag = false;
+//					this.isShowPlanDailog = false;
+//					fetchPlanList(this.$store, this.page).then(() => {
+//			           this.jh = this.$store.getters.PlanData.resultData;
+//			           if (this.jh.resultCode === '1') {
+//			              this.tableData = this.jh.basePageObj.dataList;
+//			           	}else{
+//			           		//console.log(this.jh.resultMsg)
+//			           	}
+//			        });
+//					
+//					
+//	           	console.log(this.mess)
+//	           	}else{
+//	           		this.flag = false;
+//	           		//console.log(this.mess.resultMsg)
+//	           		//this.titleNotice=this.mess.resultMsg;
+//	           	}
+//	        });
 		},
     	 
 	
@@ -697,10 +741,10 @@ export default {
 }
 </script>
 <style lang="scss">
-.bread-box {
+.plan-box {
     height: 60px;
     line-height: 60px;
-    padding-left: 13.5%;
+    padding-left: 2%;
     font-size: 16px;
     background-color: #fff;
 }

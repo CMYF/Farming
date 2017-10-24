@@ -36,12 +36,12 @@
                 
             </el-form>
             <div class="product-tab-box">
-                <el-table ref="singleTable" border :data="tableData"  highlight-current-row style="width: 100%;text-align: center; " @cell-click="showCode"  @current-change="danXuanChange" >
-                    <el-table-column type="index" label="序号" width="150" style="width: 20%">
+                <el-table ref="singleTable" border :data="tableData"  highlight-current-row style="width: 100%;text-align: center; " @cell-mouse-enter="showCode"  @current-change="danXuanChange" >
+                    <el-table-column type="index" label="序号" width="150" style="width: 50">
                     </el-table-column>
-                    <el-table-column property="names" label="资源名称" style="width: 20%" className="caishou-name-td">
+                    <el-table-column property="names" label="资源名称" style="width: 100" className="caishou-name-td">
                     	<template scope="scope">
-					        <el-popover trigger="click" placement="right">
+					        <el-popover trigger="hover" placement="right">
 					        	<p><img :src="imglink" /></p>
 					        	<div slot="reference" class="name-wrapper">
            							 <span>{{ scope.row.names }}</span>
@@ -49,15 +49,13 @@
 					        </el-popover>
 					     </template>
                     </el-table-column>
-                    <el-table-column property="columname" label="归属地"  style="width: 20%">
+                    <el-table-column property="columname" label="归属地"  style="width: 120">
                     </el-table-column>
-                    <el-table-column property="code" label="资源编号"  style="width: 20%">
+                    <el-table-column property="code" label="资源编号"  style="width: 120">
                     </el-table-column>
-                    <el-table-column property="qrcode" label="二维码"  style="width: 20%">
+                    <el-table-column property="usetime" label="开始使用时间"  style="width: 200">
                     </el-table-column>
-                    <el-table-column property="usetime" label="开始使用时间"  style="width: 20%">
-                    </el-table-column>
-                    <el-table-column property="statusName" label="使用状态"  style="width: 20%">
+                    <el-table-column property="statusName" label="使用状态"  style="width: 50">
                     </el-table-column>
                 </el-table>
                 <el-pagination class="page-box" :total="pageTotle" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="ziYuanDate.AllzyPage" :page-sizes="[1,2,3,10]" :page-size="ziYuanDate.AllzyPageSize" layout="total, sizes, prev, pager, next, jumper" >
@@ -176,7 +174,7 @@ export default {
 	        landIds:[],
 	        landNames:[],
         	ziYuanDate:{
-		        AllzyType: 4,
+		        AllzyType: 3,
 		        AllzyName: '',
 		        AllzyColumid: '',
 		        AllzyStatus: '',
@@ -288,11 +286,13 @@ export default {
     	
     	ziYuanCheck(){
     		this.ziYuanDate.AllzyStatus= this.value5;
-    		//this.ziYuanDate.AllzyColumid=
+    		this.ziYuanDate.AllzyPageSize = '';
     		fetchTaskZiyuan(this.$store, this.ziYuanDate).then(() => {
 	           this.allzy = this.$store.getters.TaskZiyuanData.resultData;
 	           if (this.allzy.resultCode === '1') {
+	           	this.pageTotle = this.allzy.basePageObj.dataList.length;
 	          	this.tableData = this.allzy.basePageObj.dataList;
+	          	
 	           	}else{
 	           		this.titleNotice=this.allzy.resultMsg;
 	           	}
