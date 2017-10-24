@@ -232,7 +232,7 @@ export default {
 //	            { required: true, message: '请选择活动区域', trigger: 'change' }
 //	          ],
 	          ProductName: [
-	            { required: true, message: '请选择日期', trigger: 'change' }
+	            { required: true, message: '请产品名称', trigger: 'change' }
 	          ],
 //	          date2: [
 //	            { type: 'date', required: true, message: '请选择时间', trigger: 'change' }
@@ -604,28 +604,28 @@ export default {
       			this.newPlan.Bed = this.ziyuanAll.join("/")+"/";
       			console.log(this.newPlan)
       			this.flag = true;
-//			fetchPlanNew(this.$store, this.newPlan).then(() => {
-//	           this.mess = this.$store.getters.NewPlanData.resultData;
-//	           if (this.mess.resultCode === '1') {
-//	           		this.flag = false;
-//					this.isShowPlanDailog = false;
-//					fetchPlanList(this.$store, this.page).then(() => {
-//			           this.jh = this.$store.getters.PlanData.resultData;
-//			           if (this.jh.resultCode === '1') {
-//			              this.tableData = this.jh.basePageObj.dataList;
-//			           	}else{
-//			           		//console.log(this.jh.resultMsg)
-//			           	}
-//			        });
-//					
-//					
-//	           	console.log(this.mess)
-//	           	}else{
-//	           		this.flag = false;
-//	           		//console.log(this.mess.resultMsg)
-//	           		//this.titleNotice=this.mess.resultMsg;
-//	           	}
-//	        });
+			fetchPlanNew(this.$store, this.newPlan).then(() => {
+	           this.mess = this.$store.getters.NewPlanData.resultData;
+	           if (this.mess.resultCode === '1') {
+	           		this.flag = false;
+					this.isShowPlanDailog = false;
+					fetchPlanList(this.$store, this.page).then(() => {
+			           this.jh = this.$store.getters.PlanData.resultData;
+			           if (this.jh.resultCode === '1') {
+			              this.tableData = this.jh.basePageObj.dataList;
+			           	}else{
+			           		//console.log(this.jh.resultMsg)
+			           	}
+			        });
+					
+					
+	           	console.log(this.mess)
+	           	}else{
+	           		this.flag = false;
+	           		//console.log(this.mess.resultMsg)
+	           		//this.titleNotice=this.mess.resultMsg;
+	           	}
+	        });
 		},
     	 
 	
