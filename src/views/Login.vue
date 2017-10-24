@@ -120,7 +120,7 @@ export default {
         		this.key=false;
         	}
         },
- 
+ 		
         _delUser: function(event){
         	this.user.name = '';
         	this.key=false;

@@ -175,14 +175,14 @@ export default {
         taskGetData: 'TaskGetData'
     }), 
     beforeMount() {
-    	fetchTask(this.$store, this.page).then(() => {
-               this.lgd = this.$store.getters.TaskGetData.resultData;
-               if (this.lgd.resultCode === '1') {
-                  this.tableData = this.lgd.basePageObj.dataList;
-               	}else{
-               		this.titleNotice=this.lgd.resultMsg;
-               	}
-            });
+//  	fetchTask(this.$store, this.page).then(() => {
+//             this.lgd = this.$store.getters.TaskGetData.resultData;
+//             if (this.lgd.resultCode === '1') {
+//                this.tableData = this.lgd.basePageObj.dataList;
+//             	}else{
+//             		this.titleNotice=this.lgd.resultMsg;
+//             	}
+//          });
     },
     methods: {
     	

@@ -1,15 +1,15 @@
 <template>
-    <el-row class="pro-box">
-        <el-breadcrumb separator="/" class="bread-box">
+    <el-row class="pro-task">
+        <el-breadcrumb separator="/" class="task-box">
             <el-breadcrumb-item>任务管理</el-breadcrumb-item>
             <el-breadcrumb-item>任务列表</el-breadcrumb-item>
         </el-breadcrumb>
-        <el-col :span="20" :offset="3" class="pro-content">
-            <el-tabs v-model="activeName2" type="card" @tab-click="handleClick">
-                <el-tab-pane label="待派发任务" name="TaskSendType">
+        <el-col :span="23" class="pro-content">
+            <el-tabs v-model="activeName2" type="card" @tab-click="taskClick">
+                <el-tab-pane label="待派发任务" name="info">
                 	<TaskSendList></TaskSendList>
                 </el-tab-pane>
-                <el-tab-pane label="已派发任务" name="info">
+                <el-tab-pane label="已派发任务" >
                     <TaskListInfo> </TaskListInfo>
                 </el-tab-pane>
             </el-tabs>
@@ -30,7 +30,7 @@ export default {
         };
     },
     methods: {
-        handleClick(tab, event) {
+        taskClick(tab, event) {
             console.log(tab, event);
         }
     }
@@ -41,14 +41,14 @@ export default {
     background-color: #fff;
 }
 
-.pro-box {
+.pro-task {
     height: 60px;
 }
 
-.bread-box {
+.task-box {
     height: 60px;
     line-height: 60px;
-    padding-left: 14%;
+    padding-left: 2%;
     font-size: 16px;
     background-color: #fff;
 }
