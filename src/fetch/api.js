@@ -167,6 +167,8 @@ export function fetchTaskZiyuan(opts) {
     return Vue.axios.post('http://10.1.2.151/ctower-mall-c/agriculture/resource/dataGrid.do', qs.stringify({
         _in_type: opts.zyType,
         _lk_names: opts.zyName,
+        columid:opts.zyColumid,
+        piCiBianH: opts.zyPiCiBianH,
         status: opts.zyStatus,
 		beginPage: opts.zyPage,
 		pageSize: opts.zyPageSize
@@ -347,3 +349,39 @@ export function fetchBatchScheduleDatas(opts) {
 }
 // ##------------------------------------------------------------------------------------------------------------------------------------
 
+export function fetchAddResource(opts){
+    return Vue.axios.post('http://10.1.2.151/ctower-mall-c/agriculture/resource/addResource.do', qs.stringify({
+        loginedtoken: opts.zyToken,
+        columid: opts.zyColumid,
+        columname: opts.zyColumname,
+		names: opts.zyName,		
+		type:  opts.zyType,   
+		amount:	opts.zyAmount,	
+		holes:	opts.zyHoles,	
+		areas:	opts.zyAreas,	 
+		createtime:	opts.zyTime,  
+		density: opts.zyDensity,
+		code: opts.zyCode
+    }));
+}
+
+
+export function fetchZiYuanNum(opts){
+    return Vue.axios.post('http://10.1.2.151/ctower-mall-c/agriculture/resource/genCodeRule.do', qs.stringify({
+        _in_type: opts.zyType
+    }));
+}
+
+export function fetchDeleteZiYuan(opts){
+    return Vue.axios.post('http://10.1.2.151/ctower-mall-c/agriculture/resource/deleteResource.do', qs.stringify({
+        loginedtoken: opts.token,
+        id: opts.ids
+    }));
+}
+
+export function fetchPlanBack(opts){
+    return Vue.axios.post('http://10.1.2.151/ctower-mall-c/agriculture/taskInfo/withdrawTaskInfo.do', qs.stringify({
+        'withdrawTaskInfoRequest.piCiBianH': opts.ypfPiCiBianH,
+        'withdrawTaskInfoRequest.sort': opts.ypfSort
+    }));
+}

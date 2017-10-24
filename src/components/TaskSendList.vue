@@ -21,12 +21,8 @@
                 </el-form-item>
             </el-form>
             <div class="product-tab-box">
-                <el-table ref="singleTable" border :data="tableData" style="width: 100%" @cell-click="showSend">
-                	<el-table-column width="55" align="center" className="plan-send-td" >
-                		<template scope="scope">
-                            <el-radio class="radio" v-model="radio" :label="scope.$index" ></el-radio>
-                        </template>
-            		</el-table-column>
+                <el-table ref="singleTable" border :data="tableData"  highlight-current-row @current-change="showSend" style="width: 100%" >
+                	
                     <el-table-column type="index" label="序号" width="70">
                     </el-table-column>
                     <el-table-column property="picibianhName" label="计划名称" width="160" className="plan-name-td">
@@ -48,7 +44,7 @@
                     <el-table-column property="statusName" label="任务状态" width="120">
                     </el-table-column>
                 </el-table>
-                <el-pagination class="page-box" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage4" :page-sizes="[100, 200, 300, 400]" :page-size="100" layout="total, sizes, prev, pager, next, jumper" :total="400">
+                <el-pagination class="page-box" :total="pageTotle" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="page.page_number" :page-sizes="[1,2,3,10]" :page-size="page.page_size" layout="total, sizes, prev, pager, next, jumper" >
                 </el-pagination>
             </div>
         </el-col>
@@ -57,7 +53,7 @@
         <el-dialog class="dialog-box1"   title="派发任务" :visible.sync="isShowPlanDailog1">
         	<el-form :model="planForm" :inline="true"  ref="planForm" class="plan-form">
                 <el-form-item label="生产环节">
-				     <el-select v-model="value" placeholder="请选择" @change="selectChange($event)">
+				     <el-select v-model="planForm.task_linkIds" placeholder="请选择" @change="selectChange($event)">
 					    <el-option
 					      v-for="item in options"
 					      :key="item.linkId"
@@ -86,7 +82,7 @@
             </el-form>
         	<el-row class="TaskBtn">
         		<el-col :span="6" :offset="4">
-				    <el-button type="success" @click="sendTaskComplete($event)">确定</el-button>
+				    <el-button type="success" :disabled="flag" @click="sendTaskComplete($event)">确定</el-button>
 			    </el-col>
 			    <el-col :span="6" :offset="4">
 			    	<el-button class="BtnCancel"  @click="isShowPlanDailog1 = false">取消</el-button>
@@ -135,6 +131,7 @@ function fetchTaskZiyuan(store, opt) {
       	zyType: opt.AllzyType,
         zyName: opt.AllzyName,
         zyStatus: opt.AllzyStatus,
+        zyPiCiBianH: opt.AllzyPiCi,
 		zyPage: opt.AllzyPage,
 		zyPageSize: opt.AllzyPageSize
     })
@@ -146,7 +143,8 @@ export default {
 	store,
     data() {
         return {
-        	radio: '',
+        	pageTotle: 1,
+        	flag: false,
         	checkedCities1: [],
         	ziyuanId:[],
         	ziyuanAll:[],
@@ -161,7 +159,7 @@ export default {
         	},
         	page:{
         		page_number: 1,
-                page_size: 10,
+                page_size: '',
                 taskStates:10,
                 page_pici: '',
                 page_operater: '',
@@ -182,6 +180,7 @@ export default {
 		        AllzyType: '',
 		        AllzyName: '',
 		        AllzyStatus: 0,
+		        AllzyPiCi: '',
 				AllzyPage: '',
 				AllzyPageSize: ''
 	        },
@@ -197,7 +196,7 @@ export default {
                 task_linkIds: '',
                 task_linkIdNames: '',
                 task_hourTime: '',
-                task_abutments: [],
+                task_abutments: '',
                 task_resoureinfos: []
             },
             isDisabled: true,
@@ -226,27 +225,31 @@ export default {
         taskListData: 'TaskListData'
     }), 
     beforeMount() {
+    		fetchTask(this.$store, this.page).then(() => {
+	           this.lgd = this.$store.getters.TaskListData.resultData;
+	           if (this.lgd.resultCode === '1') {
+	              this.pageTotle = this.lgd.basePageObj.dataList.length;
+	              console.log(this.pageTotle)
+	           	}else{
+	           		this.titleNotice=this.lgd.resultMsg;
+	           	}
+	        });
+   			this.page.page_size = 10;
+    		fetchTask(this.$store, this.page).then(() => {
+	           this.lgd = this.$store.getters.TaskListData.resultData;
+	           if (this.lgd.resultCode === '1') {
+	              this.tableData = this.lgd.basePageObj.dataList;
+	           	}else{
+	           		this.titleNotice=this.lgd.resultMsg;
+	           	}
+	        });
     	
-    	if(localStorage.taskArray == ''){
-        		this.isTrue =false;
-        }
     	
-    	fetchTask(this.$store, this.page).then(() => {
-           this.lgd = this.$store.getters.TaskListData.resultData;
-           if (this.lgd.resultCode === '1') {
-              this.tableData = this.lgd.basePageObj.dataList;
-           	}else{
-           		this.titleNotice=this.lgd.resultMsg;
-           	}
-        });
     },
     methods: {
     	sendTaskComplete(e){
-    		this.planForm.task_number = JSON.parse(localStorage.taskArray).picibianh;
-            this.planForm.task_sorts = JSON.parse(localStorage.taskArray).sort;
-            this.planForm.task_linkIds = JSON.parse(localStorage.taskArray).linkId;
             this.planForm.task_linkIdNames = this.circleNames;
-            this.planForm.task_resoureinfos = JSON.stringify(this.ziyuanAll);
+            this.planForm.task_resoureinfos = this.ziyuanAll.join("/");
             if(this.task_abutmentOne != ''){
             	this.planForm.task_abutments.push(this.task_abutmentOne);
             }
@@ -259,18 +262,20 @@ export default {
             	return;
             }
             console.log(this.value)
-           
-            this.planForm.task_abutments=JSON.stringify(this.planForm.task_abutments);
+            this.flag = true;
+            this.planForm.task_abutments=this.planForm.task_abutments.join("/");
+            console.log("33333333333333333")
             console.log(this.planForm)
-	  		fetchSendTask(this.$store, this.planForm).then(() => {
-	           this.sem = this.$store.getters.TaskCircleData.resultData;
-	           if (this.sem.resultCode === '1') {
-					
-	            	this.isShowPlanDailog1 = false;
-	           }else{	           		
-	           		this.titleNotice=this.sem.resultMsg;
-	           	}
-	        });
+//	  		fetchSendTask(this.$store, this.planForm).then(() => {
+//	           this.sem = this.$store.getters.TaskCircleData.resultData;
+//	           if (this.sem.resultCode === '1') {
+//					this.flag = false;
+//	            	this.isShowPlanDailog1 = false;
+//	           }else{	           		
+//	           		this.titleNotice=this.sem.resultMsg;
+//                  this.flag = false;		
+//	           	}
+//	        });
 	    },
     	
     	selectPiCi(e){
@@ -290,6 +295,8 @@ export default {
     		this.task_abutmentOne = '';
         	this.task_abutmentTwo = '';
     		this.planForm.task_hourTime = '';
+    		this.planForm.task_linkIds  = e;
+      		console.log(this.options)
     		this.options.forEach((items) =>{
     			if(e == items.linkId ){
     				this.circleNames=items.linkName;
@@ -302,7 +309,7 @@ export default {
     			console.log(this.planForm.task_resoureinfos)
     		}else{
     			this.zyDisable = true;
-	    		this.ziYuanDate.AllzyType = this.value;
+	    		this.ziYuanDate.AllzyType = this.planForm.task_linkIds;
 	    		fetchTaskZiyuan(this.$store, this.ziYuanDate).then(() => {
 		           this.allzy = this.$store.getters.TaskZiyuanData.resultData;
 		           if (this.allzy.resultCode === '1') {
@@ -321,10 +328,10 @@ export default {
     	
     	selets(ids,names,e){
     		if(e.target.checked == true){
-    			this.ziyuanAll.push({id:ids,name:names})
+    			this.ziyuanAll.push(ids)
     		}else{
     			this.ziyuanAll.forEach((item,index)=>{
-    				if(item.id == ids){
+    				if(item == ids){
 	    				this.ziyuanAll.splice(index,1)
 	    				console.log(this.ziyuanAll)
     				}
@@ -340,20 +347,47 @@ export default {
 
         },
         handleSizeChange(val) {
+        	console.log(val)
+        	this.page.page_size = parseInt(val);
             console.log(`每页 ${val} 条`);
+            console.log("22222222222")
+            console.log(this.page);
+            fetchTask(this.$store, this.page).then(() => {
+	           this.lgd = this.$store.getters.TaskListData.resultData;
+	           if (this.lgd.resultCode === '1') {
+	              this.tableData = this.lgd.basePageObj.dataList;
+	           	}else{
+	           		this.titleNotice=this.lgd.resultMsg;
+	           	}
+	        });
+            
         },
         handleCurrentChange(val) {
+        	console.log(val)
+        	this.page.page_number = val;
             console.log(`当前页: ${val}`);
+            console.log(this.page)
+            fetchTask(this.$store, this.page).then(() => {
+	           this.lgd = this.$store.getters.TaskListData.resultData;
+	           if (this.lgd.resultCode === '1') {
+	              this.tableData = this.lgd.basePageObj.dataList;
+	           	}else{
+	           		this.titleNotice=this.lgd.resultMsg;
+	           	}
+	        });
         },
         sendplan(e){
-        	this.circles.circles_num = JSON.parse(localStorage.taskArray).picibianh;
+        	this.flag = false;
+        	this.circles.circles_num =  this.planForm.task_number;
         	this.isShowPlanDailog1 = true;
         	console.log(this.options)// 1
         	this.task_abutmentOne = '';
         	this.task_abutmentTwo = '';
+        	this.planForm.task_linkIdNames = '';
         	this.planForm.task_abutments =[];
     		this.planForm.task_hourTime = '';
     		this.ziyuanAll = [];
+    		this.circleNames = '';
         	fetchTaskCircle(this.$store, this.circles).then(() => {
 	           this.pcm = this.$store.getters.TaskCircleData.resultData;
 	           if (this.pcm.resultCode === '1') {
@@ -368,7 +402,7 @@ export default {
 			  
 				})
 	           	}else{
-	           		this.titleNotice=this.pcm.resultMsg;
+	           		//this.titleNotice=this.pcm.resultMsg;
 	           	}
 	        });
         	
@@ -377,15 +411,23 @@ export default {
         },
        
         showSend(row, column, cell, event){
-            let dom = _j(cell);
-            let taskArray = row;
-            localStorage.taskArray = JSON.stringify(taskArray); 
-			this.isTrue =false;
+        	if(row != null && row != ''){
+        		console.log("555555555555555")
+	        	console.log(row)
+	            let dom = _j(cell);
+	            this.planForm.task_linkIds = '';
+	        	this.planForm.task_linkIdNames = '';
+	            this.planForm.task_number = row.picibianh;
+	            this.planForm.task_sorts = row.sort;
+	            this.ziYuanDate.AllzyPiCi = 'HY20171023111440';
+				this.isTrue =false;
+	        }else{
+	        	this.isTrue =true;
+	        }
+        	
 
         },
-        
-        
-        
+  
         
         showLinkDetail(e) {
             let dom = _j(e.target);

@@ -10,6 +10,7 @@ import RoleManagement from './modules/rolemanagement'
 import TaskList from './modules/TaskList'
 import TaskGet from './modules/TaskGet'
 import Product from './modules/product'
+import Resourceconfig from './modules/resourceconfig'
 import Kuaidial from './modules/kuaidial'
 import Principal from './modules/principal'
 import NewPlans from './modules/newPlans'
@@ -35,8 +36,9 @@ export default new Vuex.Store({
        TaskList,
        TaskGet,
        Product,
+       Resourceconfig,
        Kuaidial,
        Principal,
-       NewPlans,
+       NewPlans
     }
 })

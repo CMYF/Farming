@@ -1,15 +1,15 @@
 <template>
-    <el-row class="pro-box">
-        <el-breadcrumb separator="/" class="bread-box">
+    <el-row class="pro-task1">
+        <el-breadcrumb separator="/" class="task-box1">
             <el-breadcrumb-item>任务管理</el-breadcrumb-item>
             <el-breadcrumb-item>任务接收</el-breadcrumb-item>
         </el-breadcrumb>
-        <el-col :span="20" :offset="3" class="pro-content">
+        <el-col :span="23" class="pro-content">
             <el-tabs v-model="activeName2" type="card" @tab-click="handleClick">
-                <el-tab-pane label="待处理任务" name="TaskSendType">
+                <el-tab-pane label="待处理任务" name="info">
                 	<TaskGetPending></TaskGetPending>
                 </el-tab-pane>
-                <el-tab-pane label="已完成任务" name="info">
+                <el-tab-pane label="已完成任务" name="">
                     <TaskGetComplete> </TaskGetComplete>
                 </el-tab-pane>
             </el-tabs>
@@ -41,14 +41,14 @@ export default {
     background-color: #fff;
 }
 
-.pro-box {
+.pro-task1 {
     height: 60px;
 }
 
-.bread-box {
+.task-box1 {
     height: 60px;
     line-height: 60px;
-    padding-left: 14%;
+    padding-left: 2%;
     font-size: 16px;
     background-color: #fff;
 }

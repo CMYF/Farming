@@ -1,4 +1,4 @@
-import { fetchTask,fetchSendTask,fetchTaskCircle,fetchTaskZiyuan,fetchPlanList } from '../../fetch/api'
+import { fetchTask,fetchSendTask,fetchTaskCircle,fetchTaskZiyuan,fetchPlanList,fetchPlanBack } from '../../fetch/api'
 
 const state = {
     Tasklist: {
@@ -14,6 +14,9 @@ const state = {
     },
     
     TaskZiyuan:{
+      resultData: {}
+    },
+    PlanBack:{
       resultData: {}
     }
     
@@ -32,7 +35,10 @@ const actions = {
     },
     TASKZIYUAN: ({ commit, state }, opt) => {
         return fetchTaskZiyuan(opt).then(taskZiyuans => commit('GET_TASKZIYUAN_DATA', { taskZiyuans }))
-    }
+    },
+    PLANBACK: ({ commit, state }, opt) => {
+        return fetchPlanBack(opt).then(planBacks => commit('GET_PLANBACK_DATA', { planBacks }))
+    },
 }
 const mutations = {
     GET_TASKLIST_DATA: (state, { taskLists }) => {
@@ -50,6 +56,10 @@ const mutations = {
     	console.log("成功1")
         state.TaskZiyuan.resultData = taskZiyuans.data;
     },
+    GET_PLANBACK_DATA: (state, { planBacks }) => {
+    	console.log("成功1")
+        state.PlanBack.resultData = planBacks.data;
+    }
 }
 
 const getters = {
@@ -67,6 +77,9 @@ const getters = {
     },
     TaskZiyuanData (state) {
     	return state.TaskZiyuan
+    },
+    PlanBackData (state) {
+    	return state.PlanBack
     }
     
 }

@@ -1,12 +1,12 @@
 <template>
-    <el-row class="pro-box">
-        <el-breadcrumb separator="/" class="bread-box">
+    <el-row class="pro-plan-box">
+        <el-breadcrumb separator="/" class="resource-box">
             <el-breadcrumb-item>系统设置</el-breadcrumb-item>
             <el-breadcrumb-item>资源管理</el-breadcrumb-item>
         </el-breadcrumb>
-        <el-col :span="20" :offset="3" class="pro-content">
+        <el-col :span="23" class="pro-content">
             <el-tabs v-model="activeName2" type="card" @tab-click="handleClick">
-                <el-tab-pane label="育苗盘" name="info">
+                <el-tab-pane label="育苗床" name="info">
                 	<ResourceGrow></ResourceGrow>
                 </el-tab-pane>
                 <el-tab-pane label="种植架" name="">
@@ -48,14 +48,14 @@ export default {
     background-color: #fff;
 }
 
-.pro-box {
+.pro-plan-box {
     height: 60px;
 }
 
-.bread-box {
+.resource-box {
     height: 60px;
     line-height: 60px;
-    padding-left: 14%;
+    padding-left: 2%;
     font-size: 16px;
     background-color: #fff;
 }
