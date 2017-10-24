@@ -28,7 +28,7 @@
                         <el-checkbox-group v-model="chnageTypes" @change="typeChange" :max="5">
                             <el-checkbox v-for="(item, idx) in vfTypes" :label="item.label" :key="idx">{{item.label}}</el-checkbox>
                             <!--<el-checkbox v-for="(item, index) in vfTypes" :key="index" :data-id="item.id " @change="selectProducts(item.id, $event)" :label="item.label" :true-label="item.id">{{ item.label }}
-                                                                                                                                </el-checkbox>-->
+                                                                                                                                    </el-checkbox>-->
 
                         </el-checkbox-group>
                     </div>
@@ -440,6 +440,10 @@ export default {
                     let tempItem = {};
                     let len = tempDataList.length;
                     this.taskListData.length = 0;
+                    this.taskListData = [];
+                    if (len < 0) {
+                        return;
+                    }
                     for (let i = 0; i < len; i++) {
                         tempItem = tempDataList[i];
                         this.taskListData.push({
