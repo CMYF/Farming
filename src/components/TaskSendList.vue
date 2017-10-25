@@ -53,7 +53,7 @@
         <el-dialog class="dialog-box1"   title="派发任务" :visible.sync="isShowPlanDailog1">
         	<el-form :model="planForm" :inline="true"  ref="planForm" class="plan-form">
                 <el-form-item label="生产环节">
-				     <el-select v-model="planForm.task_linkIds" placeholder="请选择" @change="selectChange($event)">
+				     <el-select v-model="planForm.task_linkIds" placeholder="请选择"  @change="selectChange($event)" >
 					    <el-option
 					      v-for="item in options"
 					      :key="item.linkId"
@@ -62,7 +62,7 @@
 					    </el-option>
 					  </el-select>
 				</el-form-item>
-				<el-form-item :inline="true" label="此环节对接人"  class="colperson">
+				<el-form-item :inline="true" label="此环节对接人"  class="colperson" >
 					<el-col :span="10">
 				    	<el-input v-model.trim="task_abutmentOne"></el-input>
 				   </el-col>
@@ -224,6 +224,7 @@ export default {
     computed: mapGetters({
         taskListData: 'TaskListData'
     }), 
+    
     beforeMount() {
     		fetchTask(this.$store, this.page).then(() => {
 	           this.lgd = this.$store.getters.TaskListData.resultData;
@@ -271,6 +272,16 @@ export default {
 	           if (this.sem.resultCode === '1') {
 					this.flag = false;
 	            	this.isShowPlanDailog1 = false;
+	            	fetchTask(this.$store, this.page).then(() => {
+			           this.lgd = this.$store.getters.TaskListData.resultData;
+			           if (this.lgd.resultCode === '1') {
+			              this.tableData = this.lgd.basePageObj.dataList;
+			           	}else{
+			           		this.titleNotice=this.lgd.resultMsg;
+			           	}
+			        });
+			       
+	            	
 	           }else{	           		
 	           		this.titleNotice=this.sem.resultMsg;
                     this.flag = false;		
@@ -279,14 +290,26 @@ export default {
 	    },
     	
     	selectPiCi(e){
+    		this.page.page_size = '';
+        	this.page.page_number = 1;
     		fetchTask(this.$store, this.page).then(() => {
-           this.lgd = this.$store.getters.TaskListData.resultData;
-           if (this.lgd.resultCode === '1') {
-              this.tableData = this.lgd.basePageObj.dataList;
-           	}else{
-           		this.titleNotice=this.lgd.resultMsg;
-           	}
-        });
+	           this.lgd = this.$store.getters.TaskListData.resultData;
+	           if (this.lgd.resultCode === '1') {
+	              this.tableData = this.lgd.basePageObj.dataList;
+	           	}else{
+	           		this.titleNotice=this.lgd.resultMsg;
+	           	}
+	        });
+	        
+	        this.page.page_size = 10;
+	        fetchTask(this.$store, this.page).then(() => {
+	           this.lgd = this.$store.getters.TaskListData.resultData;
+	           if (this.lgd.resultCode === '1') {
+	              this.tableData = this.lgd.basePageObj.dataList;
+	           	}else{
+	           		this.titleNotice=this.lgd.resultMsg;
+	           	}
+	        });
     	},
     	
     	

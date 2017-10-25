@@ -19,7 +19,7 @@
                 
             </el-form>
             <div class="product-tab-box">
-                <el-table ref="singleTable" border :data="tableData" style="width: 100%" @cell-click="showPlanInfo">
+                <el-table ref="singleTable" border :data="tableData" highlight-current-row style="width: 100%"  @current-change="danXuanChange">
                     <el-table-column type="index" label="序号" width="70">
                     </el-table-column>
                     <el-table-column property="picibianhName" label="计划名称" width="160" className="plan-name-td">
@@ -49,69 +49,11 @@
                     <el-table-column property="statusName" label="任务状态" width="100">
                     </el-table-column>
                 </el-table>
-                <el-pagination class="page-box" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage4" :page-sizes="[100, 200, 300, 400]" :page-size="100" layout="total, sizes, prev, pager, next, jumper" :total="400">
+                <el-pagination class="page-box" :total="pageTotle" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="page.page_number" :page-sizes="[1,2,3,10]" :page-size="page.page_size" layout="total, sizes, prev, pager, next, jumper" >
                 </el-pagination>
             </div>
         </el-col>
-        <el-dialog class="dialog-box" title="收货地址" :visible.sync="isShowPlanDailog">
-            <el-form :model="planForm" :inline="true" ref="form" class="plan-form">
-                <el-form-item label="产品名称" :label-width="formLabelWidth">
-                    <el-input v-model="planForm.name" :disabled="this.isDisabled" auto-complete="off"></el-input>
-                </el-form-item>
-                <el-form-item label="所属分类" :label-width="formLabelWidth">
-                    <el-input v-model="planForm.planType" :disabled="this.isDisabled" auto-complete="off"></el-input>
-                </el-form-item>
-
-                </el-form-item>
-                <el-form-item label="发芽率%" :label-width="formLabelWidth">
-                    <el-input v-model="planForm.germinate" :disabled="this.isDisabled" auto-complete="off"></el-input>
-                </el-form-item>
-                <el-form-item label="移栽成苗率%" :label-width="formLabelWidth">
-                    <el-input v-model="planForm.transplant" :disabled="this.isDisabled" auto-complete="off"></el-input>
-                </el-form-item>
-                <el-form-item label="单棵重g" :label-width="formLabelWidth">
-                    <el-input v-model="planForm.weight" :disabled="this.isDisabled" auto-complete="off"></el-input>
-                </el-form-item>
-                <el-form-item label="采摘周期" :label-width="formLabelWidth">
-                    <el-input v-model="planForm.pluck" :disabled="this.isDisabled" auto-complete="off"></el-input>
-                </el-form-item>
-            </el-form>
-            <div class="link-info-box">
-                <ul class="link-info-items">
-                    <li class="info-item">
-                        <div class="collapse-title">
-                            <label class="el-form-item__label">生产环节名称</label>
-                            <el-input :disabled="this.isDisabled"></el-input>
-                        </div>
-                        <div class="collapse-ex" @click="showLinkDetail">
-                            <span> 展开详情</span>
-                            <span class="iconfont detail-icon">&#xe7cc;</span>
-                        </div>
-                        <ul class="sub-link-info-box" style="display:none;">
-                            <li class="sub-link-item">
-                                <div class="collapse-title">
-                                    <label class="el-form-item__label">任务状态</label>
-                                    <el-input :disabled="this.isDisabled"></el-input>
-                                </div>
-                            </li>
-                            <li class="sub-link-item">
-                                <div class="collapse-title">
-                                    <label class="el-form-item__label">实际开始时间</label>
-                                    <el-input :disabled="this.isDisabled"></el-input>
-                                </div>
-                            </li>
-                            <li class="sub-link-item">
-                                <div class="collapse-title">
-                                    <label class="el-form-item__label">实际结束时间</label>
-                                    <el-input :disabled="this.isDisabled"></el-input>
-                                </div>
-                            </li>
-                            <el-input type="textarea" class="link-desc" :disabled="this.isDisabled" :rows="5"></el-input>
-                        </ul>
-                    </li>
-                </ul>
-            </div>
-        </el-dialog>
+        
     </el-row>
 </template>
 <script>
@@ -119,20 +61,29 @@ import _j from 'jquery'
 import { mapGetters } from 'vuex'
 import store from './../store/index'
 function fetchTask(store, opt) {
-    return store.dispatch('TASKGET', {
+    return store.dispatch('TASKLIST', {
        num: opt.page_number,
        size: opt.page_size,
-       states: opt.taskStates
+       states: opt.taskStates,
+       pici: opt.page_pici,
+       operater: opt.page_operater,
+       proName: opt.page_proName
     });
 }
+
 export default {
 	store,
     data() {
         return {
+        	pageTotle: 1,
+        	isTrue: true,
         	page:{
         		page_number: 1,
-                page_size: 10,
-                taskStates:20
+                page_size: '',
+                taskStates:40,
+                page_pici: '',
+                page_operater: '',
+                page_proName: ''
         	},
         	
             screenForm: {
@@ -152,7 +103,6 @@ export default {
             isDisabled: true,
             formLabelWidth: '120px',
             currentPage4: 4,
-            isShowPlanDailog: false,
             taskStates: [
                 {
                     label: '处理中',
@@ -172,28 +122,79 @@ export default {
         }
     },
     computed: mapGetters({
-        taskGetData: 'TaskGetData'
+        taskListData: 'TaskListData'
     }), 
     beforeMount() {
-//  	fetchTask(this.$store, this.page).then(() => {
-//             this.lgd = this.$store.getters.TaskGetData.resultData;
-//             if (this.lgd.resultCode === '1') {
-//                this.tableData = this.lgd.basePageObj.dataList;
-//             	}else{
-//             		this.titleNotice=this.lgd.resultMsg;
-//             	}
-//          });
+    	fetchTask(this.$store, this.page).then(() => {
+	           this.lgd = this.$store.getters.TaskListData.resultData;
+	           if (this.lgd.resultCode === '1') {
+	              this.pageTotle = this.lgd.basePageObj.dataList.length;
+	              console.log(this.pageTotle)
+	           	}else{
+	           		this.titleNotice=this.lgd.resultMsg;
+	           	}
+	        });
+   			this.page.page_size = 10;
+    		fetchTask(this.$store, this.page).then(() => {
+	           this.lgd = this.$store.getters.TaskListData.resultData;
+	           if (this.lgd.resultCode === '1') {
+	              this.tableData = this.lgd.basePageObj.dataList;
+	           	}else{
+	           		this.titleNotice=this.lgd.resultMsg;
+	           	}
+	        });
+    	
     },
     methods: {
+    	
+    	
+    	danXuanChange(val) {
+         	if(val == null || val == ''){
+         		this.isTrue = true;
+         		return;
+         	}else{
+         		this.backPlan.piciBH = val.picibianh;
+         		this.backPlan.piciSort = val.sort;
+		        console.log('22222222222222')
+		        console.log(val)
+		        this.isTrue = false;
+        	}
+	        
+	        
+	      },
     	
         screenProduct() {
 
         },
         handleSizeChange(val) {
+        	console.log(val)
+        	this.page.page_size = parseInt(val);
             console.log(`每页 ${val} 条`);
+            console.log("22222222222")
+            console.log(this.page);
+            fetchTask(this.$store, this.page).then(() => {
+	           this.lgd = this.$store.getters.TaskListData.resultData;
+	           if (this.lgd.resultCode === '1') {
+	              this.tableData = this.lgd.basePageObj.dataList;
+	           	}else{
+	           		this.titleNotice=this.lgd.resultMsg;
+	           	}
+	        });
+            
         },
         handleCurrentChange(val) {
+        	console.log(val)
+        	this.page.page_number = val;
             console.log(`当前页: ${val}`);
+            console.log(this.page)
+            fetchTask(this.$store, this.page).then(() => {
+	           this.lgd = this.$store.getters.TaskListData.resultData;
+	           if (this.lgd.resultCode === '1') {
+	              this.tableData = this.lgd.basePageObj.dataList;
+	           	}else{
+	           		this.titleNotice=this.lgd.resultMsg;
+	           	}
+	        });
         },
         showPlanInfo(row, column, cell, event) {
             let currRowData = row;
@@ -201,9 +202,9 @@ export default {
             if (!dom.hasClass('plan-name-td')) {
                 return;
             }
-            this.isShowPlanDailog = true;
-            _j('.plan-name-td').removeClass('plan-name-active');
-            dom.addClass('plan-name-active');
+//          this.isShowPlanDailog = true;
+//          _j('.plan-name-td').removeClass('plan-name-active');
+//          dom.addClass('plan-name-active');
         },
         showLinkDetail(e) {
             let dom = _j(e.target);

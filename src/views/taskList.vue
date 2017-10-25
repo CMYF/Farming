@@ -31,6 +31,13 @@ export default {
     },
     methods: {
         taskClick(tab, event) {
+        	if(tab.index == 0){
+        		
+        	}else{
+        		
+        	}
+        	console.log(tab)
+        	console.log(event)
             console.log(tab, event);
         }
     }

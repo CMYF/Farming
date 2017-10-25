@@ -14,7 +14,7 @@
                     </el-select>
                 </el-form-item>
                 <el-form-item>
-                    <el-button class="screen-btn" @click="screenProduct">筛选</el-button>
+                    <el-button class="screen-btn" @click="screenTask">筛选</el-button>
                 </el-form-item>
                  <el-form-item style="float: right;">
                     <el-button class="screen-btn" @click="planBack"  :disabled="isTrue" >撤回</el-button>
@@ -141,23 +141,23 @@ export default {
     }), 
     beforeMount() {
     	fetchTask(this.$store, this.page).then(() => {
-	           this.lgd = this.$store.getters.TaskListData.resultData;
-	           if (this.lgd.resultCode === '1') {
-	              this.pageTotle = this.lgd.basePageObj.dataList.length;
-	              console.log(this.pageTotle)
-	           	}else{
-	           		this.titleNotice=this.lgd.resultMsg;
-	           	}
-	        });
-   			this.page.page_size = 10;
-    		fetchTask(this.$store, this.page).then(() => {
-	           this.lgd = this.$store.getters.TaskListData.resultData;
-	           if (this.lgd.resultCode === '1') {
-	              this.tableData = this.lgd.basePageObj.dataList;
-	           	}else{
-	           		this.titleNotice=this.lgd.resultMsg;
-	           	}
-	        });
+           this.lgd = this.$store.getters.TaskListData.resultData;
+           if (this.lgd.resultCode === '1') {
+              this.pageTotle = this.lgd.basePageObj.dataList.length;
+              console.log(this.pageTotle)
+           	}else{
+           		this.titleNotice=this.lgd.resultMsg;
+           	}
+        });
+		this.page.page_size = 10;
+		fetchTask(this.$store, this.page).then(() => {
+           this.lgd = this.$store.getters.TaskListData.resultData;
+           if (this.lgd.resultCode === '1') {
+              this.tableData = this.lgd.basePageObj.dataList;
+           	}else{
+           		this.titleNotice=this.lgd.resultMsg;
+           	}
+        });
     	
     },
     methods: {
@@ -168,7 +168,14 @@ export default {
     		fetchPlanBack(this.$store, this.backPlan).then(() => {
 	           this.bk = this.$store.getters.PlanBackData.resultData;
 	           if (this.bk.resultCode === '1') {
-	              //this.tableData = this.bk.basePageObj.dataList;
+	              fetchTask(this.$store, this.page).then(() => {
+		           this.lgd = this.$store.getters.TaskListData.resultData;
+		           if (this.lgd.resultCode === '1') {
+		              this.tableData = this.lgd.basePageObj.dataList;
+		           	}else{
+		           		this.titleNotice=this.lgd.resultMsg;
+		           	}
+		          });
 	           	}else{
 	           		//this.titleNotice=this.bk.resultMsg;
 	           	}
@@ -189,8 +196,27 @@ export default {
 	        
 	      },
     	
-        screenProduct() {
-
+        screenTask() {
+			this.page.page_size = '';
+        	this.page.page_number = 1;
+    		fetchTask(this.$store, this.page).then(() => {
+	           this.lgd = this.$store.getters.TaskListData.resultData;
+	           if (this.lgd.resultCode === '1') {
+	              this.tableData = this.lgd.basePageObj.dataList;
+	           	}else{
+	           		this.titleNotice=this.lgd.resultMsg;
+	           	}
+	        });
+	        
+	        this.page.page_size = 10;
+	        fetchTask(this.$store, this.page).then(() => {
+	           this.lgd = this.$store.getters.TaskListData.resultData;
+	           if (this.lgd.resultCode === '1') {
+	              this.tableData = this.lgd.basePageObj.dataList;
+	           	}else{
+	           		this.titleNotice=this.lgd.resultMsg;
+	           	}
+	        });
         },
         handleSizeChange(val) {
         	console.log(val)

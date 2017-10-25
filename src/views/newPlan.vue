@@ -642,14 +642,18 @@ export default {
 				if(this.startTimes == "" && this.endTimes == ""){
 	  				_j(".startDates .error1").show();
 	  				_j(".endDates .error3").show();
+	  				return;
 	  			}else if(this.startTimes == "" && this.endTimes != ""){
 	  				_j(".startDates .error1").show();
+	  				return;
 	  			}else if(this.startTimes != "" && this.endTimes == ""){
 	  				_j(".endDates .error3").show();
+	  				return;
 	  			}
 	  			
 	  			if(this.newPlan.Bed == "/" || this.newPlan.Bed == ""){
-	  				 _j(".ymBed .el-form-item__content").append("<div class='el-form-item__error'>请选择育苗床</div>")
+	  				 _j(".ymBed .el-form-item__content").append("<div class='el-form-item__error'>请选择育苗床</div>");
+	  				 return;
 	  			}
 	  			
 				 this.$refs.newPlan.validate((valid) => {
@@ -675,7 +679,6 @@ export default {
 			           	}else{
 			           		this.flag = false;
 			           		//console.log(this.mess.resultMsg)
-			           		//this.titleNotice=this.mess.resultMsg;
 			           	}
 			        });
 		            

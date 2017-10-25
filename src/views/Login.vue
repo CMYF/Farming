@@ -215,16 +215,22 @@ export default {
         display: inline-block;
     }
 }
-
-.login-res-box {
-    width: 44%;
-    height: 40%;
-    position: absolute;
-    margin: auto;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
+.login-res-box{
+	width: 44%;
+    
+    @media screen and (max-height:1000px){
+	 	height: 40%;
+	}
+	@media screen and (max-height:800px){
+	 	height: 55%;
+	}
+	
+	position: absolute;
+	margin: auto;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
     overflow: hidden;
     border-radius: 6px;
     background: rgba(0, 0, 0, 0);
