@@ -158,7 +158,7 @@ export default {
     height: 100vh;   
     min-height: 600px;
     overflow: auto;
-    background: url(./../../static/images/denglu/login_bg.jpg) no-repeat 100% 100%;
+    background: url(./../assets/images/login_bg.jpg) no-repeat 100% 100%;
 }
 
 
@@ -167,7 +167,7 @@ export default {
 	height: auto;
 	min-height: 115px;
 	margin-top: 9%;
-	 background: url(./../../static/images/denglu/denglu_bg2.png) no-repeat center;
+	 background: url(./../assets/images/denglu_bg2.png) no-repeat center;
 	 background-size: 100% 100%;
 }
 
