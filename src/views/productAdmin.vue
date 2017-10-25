@@ -53,7 +53,7 @@
                 </el-pagination>
             </div>
         </el-col>
-        <el-dialog class="dialog-box" title="收货地址" :visible.sync="isShowPlanDailog">
+        <el-dialog class="product-dialog-box" title="生产标准详情" :visible.sync="isShowPlanDailog">
             <el-form :model="planForm" :inline="true" ref="form" class="plan-form">
                 <el-form-item label="产品名称" :label-width="formLabelWidth">
                     <el-input v-model="planForm.name" :disabled="this.isDisabled" auto-complete="off"></el-input>
@@ -327,8 +327,6 @@ export default {
     },
     methods: {
         screenProduct() {
-            console.log('查询数据：');
-            console.log(this.screenForm);
             this.getProductInfo();
         },
         handleSizeChange(val) {
@@ -346,9 +344,12 @@ export default {
             if (!dom.hasClass('plan-name-td')) {
                 return;
             }
-            // let planNo = currRowData.planNo;
-            let planNo = 'b9de97a4fab5489899738f23bc7feabf';
-            fetchProductByNo(this.$store, { no: planNo }).then(() => {
+            let planNo = currRowData.planNo;
+            if (!planNo) {
+                return;
+            }
+            // let planNo = 'b9de97a4fab5489899738f23bc7feabf';
+            fetchProductByNo(this.$store, { no: planNo, token: localStorage.token }).then(() => {
                 let tempData = this.$store.getters.getProductDetail;
                 console.log('--------------------------');
                 console.log(this.$store);
@@ -465,8 +466,9 @@ export default {
 .bread-box {
     height: 60px;
     line-height: 60px;
-    padding-left: 13.5%;
+    padding-left: 20px;
     font-size: 16px;
+    overflow: hidden;
     background-color: #fff;
 }
 
@@ -515,7 +517,7 @@ export default {
     color: #02bdad;
 }
 
-.dialog-box {
+.product-dialog-box {
     .el-dialog--small {
         width: 885px;
     }
@@ -659,7 +661,7 @@ export default {
     padding-right: 10px;
     padding-top: 15px;
     padding-bottom: 15px;
-    .temp-item{
+    .temp-item {
         height: 25px;
         line-height: 25px;
     }

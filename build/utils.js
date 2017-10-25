@@ -37,6 +37,7 @@ exports.cssLoaders = function (options) {
     if (options.extract) {
       return ExtractTextPlugin.extract({
         use: loaders,
+        publicPath: './../../',  // build img
         fallback: 'vue-style-loader'
       })
     } else {

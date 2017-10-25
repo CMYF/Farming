@@ -237,10 +237,12 @@ export default {
                 return;
             }*/
             let isHasSubItem = _j('.menu-active').siblings('ul');
-            console.log(isHasSubItem);
             if (isHasSubItem.length > 0) {
                 this._showMessage('error', '该菜单下面还有子项！')
                 return;
+            }
+            if (!this.ruleForm.sort || this.ruleForm.sort === 'null') {
+                this.ruleForm.sore = 0;
             }
             this.ruleForm.token = this.token;
             fetchDelMenu(this.$store, this.ruleForm).then(() => {

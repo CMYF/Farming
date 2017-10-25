@@ -2,10 +2,10 @@
     <el-row>
         <el-col :span="23" class="pro-content">
             <el-row class="chart-header-box">
-                <el-col :span="6" class="title-box">
+                <el-col :span="4" class="title-box">
                     <h1>预估产量</h1>
                 </el-col>
-                <el-col :span="16" class="mack-box">
+                <el-col :span="18" class="mack-box">
                     <div class="date-box">
                         <el-date-picker v-model="params.beginTime" @change="startChange" format="yyyy-MM-dd" type="date" :picker-options="pickerOptions0" placeholder="选择开始日期"></el-date-picker>
                         -
@@ -450,11 +450,11 @@ export default {
                             batch: tempItem.picibianh,  // 批次
                             productName: tempItem.chanpinmc, // 产品
                             distributeTime: tempItem.distributeTime, // 派发时间
-                            proLinks: tempItem.linkId, // 生产环节
+                            proLinks: tempItem.linkIdName, // 生产环节
                             address: tempItem.resourceId, // 资源地址
                             manHours: tempItem.costTime, // 人工时
                             outputs: tempItem.harverst, // 产量
-                            state: tempItem.status, // 状态
+                            state: tempItem.statusName, // 状态
                             liable: tempItem.abutmentName // 责任人
                         });
                     }

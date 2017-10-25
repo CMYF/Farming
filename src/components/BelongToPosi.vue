@@ -18,7 +18,7 @@
                 <li class="posi-item" v-for="(root, index) in this.posiDatas" :key="index" v-bind:data-info="root.id + '|' + root.names + '|'+ root.level +'|' + root.parentid ">
                     <div class="le-ri-box">
                         <div class="left-box">
-                            <span class="iconfont arrow-icon" v-show="root.isSub">&#xe7cc;</span>
+                            <span class="iconfont belong-arrow-icon" v-show="root.isSub">&#xe7cc;</span>
                             <span class="item-txt">{{ root.names }}</span>
                         </div>
                         <div class="right-box">
@@ -37,7 +37,7 @@
                         <li class="posi-item" v-for="(levTwo, idx) in root.subItem" :key="idx" v-bind:data-info="levTwo.id + '|' + levTwo.names + '|'+ levTwo.level +'|' + levTwo.parentid">
                             <div class="le-ri-box">
                                 <div class="left-box">
-                                    <span class="iconfont arrow-icon" v-show="levTwo.isSub">&#xe7cc;</span>
+                                    <span class="iconfont belong-arrow-icon" v-show="levTwo.isSub">&#xe7cc;</span>
                                     <span class="item-txt">{{ levTwo.names }}</span>
                                 </div>
                                 <div class="right-box">
@@ -56,7 +56,7 @@
                                 <li class="posi-item" v-for="(levThree, i) in levTwo.subItem" :key="i" v-bind:data-info="levThree.id + '|' + levThree.names + '|' + levThree.level +'|' + levThree.parentid">
                                     <div class="le-ri-box">
                                         <div class="left-box">
-                                            <span class="iconfont arrow-icon" v-show="levThree.isSub">&#xe7cc;</span>
+                                            <span class="iconfont belong-arrow-icon" v-show="levThree.isSub">&#xe7cc;</span>
                                             <span class="item-txt">{{ levThree.names }}</span>
                                         </div>
                                         <div class="right-box">
@@ -235,7 +235,7 @@ export default {
             _j('.posi-item').unbind('click').on('click', function(e) {
                 e.stopPropagation();
                 let dom = _j(this);
-                let iconDom = dom.children('.le-ri-box').children('.left-box').children('.arrow-icon');
+                let iconDom = dom.children('.le-ri-box').children('.left-box').children('.belong-arrow-icon');
                 let domTxtDom = dom.children('.le-ri-box').children('.left-box').children('.item-txt');
                 let tempData = dom.attr('data-info');
                 if (dom.hasClass('is-open')) {
@@ -265,7 +265,6 @@ export default {
                 self.editForm.id = id;
                 self.editForm.name = name;
                 self.editForm.parentId = id;
-                // self.editForm.parentId = parentId;
                 if (evType === 'del') {
                     self.delKuaidialFetch();
                     return;
@@ -275,6 +274,7 @@ export default {
                     self.editForm.id = '';
                 }
                 if (evType === 'modify') {
+                    self.editForm.parentId = parentId;
                     self.editForm.name = name;
                 }
                 self.isShowEditDailog = true;
@@ -282,7 +282,6 @@ export default {
         },
         delKuaidialFetch() {
             fetchDeleteKuaidial(this.$store, this.editForm).then(() => {
-                console.log('删除成功了吗？');
                 let tempData = this.$store.getters.delKuaidial;
                 if (tempData.resultCode) {
                     this._showMessage('success', '删除成功！');
@@ -292,9 +291,7 @@ export default {
             });
         },
         addOrModifyKuaiFetch() {
-
             fetchAddKuaidial(this.$store, this.editForm).then(() => {
-                console.log('新增成功了吗？');
                 let tempData = this.$store.getters.addKuaidial;
                 if (tempData.resultCode === '1') {
                     this._showMessage('success', '操作成功！');
@@ -348,7 +345,7 @@ export default {
     color: #999;
 }
 
-.arrow-icon {
+.belong-arrow-icon {
     transform: rotate(-90deg);
     display: inline-block;
     -webkit-transform: rotate(-90deg);
@@ -385,7 +382,7 @@ export default {
         }
     }
     .left-box {
-        width: 200px;
+        width: 400px;
         float: left;
         text-align: left;
     }

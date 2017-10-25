@@ -1,16 +1,16 @@
 <template >
     <el-row class="info-box">
-        <el-col :span="5" class="select-info-box">
+        <el-col :span="7" class="select-info-box">
             <el-select v-model="productInfo" @change="filterProductInfo" filterable placeholder="请选择">
                 <el-option v-for="item in productNameIds" :key="item.value" :label="item.label" :value="item.id + ':' + item.value">
                 </el-option>
             </el-select>
             <el-button type="success" @click="filterProducts">筛选</el-button>
         </el-col>
-        <el-col :span="15">
+        <el-col :span="11">
             <div style="height:60px;"></div>
         </el-col>
-        <el-col :span="3">
+        <el-col :span="5">
             <el-button class="add-product-info" @click="addProductInfo">
                 <span class="iconfont">&#xe622;</span>新增
             </el-button>
@@ -42,7 +42,7 @@
             <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="this.getProducts.currentPage" :page-sizes="[10, 20, 30, 40, 50]" :page-size="this.getProducts.pageSize" layout="total, sizes, prev, pager, next, jumper" :total="this.getProducts.totalRows">
             </el-pagination>
         </el-row>
-        <el-dialog class="dialog-box" title="收货地址" :visible.sync="dialogFormVisible">
+        <el-dialog class="product-dialog-box" title="收货地址" :visible.sync="dialogFormVisible">
             <el-form :model="form" :inline="true" ref="form" :rules="rules" class="product-form">
                 <el-form-item label="产品名称" :label-width="formLabelWidth" prop="name">
                     <el-input v-model="form.name" auto-complete="off" placeholder="请输入产品名称"></el-input>
@@ -139,6 +139,7 @@ export default {
             productNameIds: [],
             productInfo: '',
             selectedOptions: [],
+            token:localStorage.token,
             options: [],  // 归属地
             getProducts: { // 产品数据
                 currentPage: 1,
@@ -206,6 +207,7 @@ export default {
         }
     },
     beforeMount() {
+        this.getProducts.token = this.token;
         fetchGetProducts(this.$store, this.getProducts).then(() => {
             this.dec_data();
         });
@@ -567,7 +569,7 @@ export default {
     margin-bottom: 25px;
 }
 
-.dialog-box {
+.product-dialog-box{
     .el-dialog--small {
         width: 885px;
     }

@@ -9,8 +9,6 @@
                 <LeftNav></LeftNav>
             </div>
             <div class="right-content-box">
-                <!-- <el-col :span="21" :offset="3" class="right-content-box">
-     -->
                 <router-view name="rightContent"></router-view>
 
             </div>

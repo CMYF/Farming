@@ -278,10 +278,9 @@ export function fetchProductLists(opts) {
 }
 
 export function fetchProductDetail(opts) {
-    console.log('opts是什么？');
-    console.log(opts);
     return Vue.axios.post('http://10.1.2.151/ctower-mall-c/agriculture/production/showInfo.do', qs.stringify({
-        picibianh: opts.no
+        picibianh: opts.no,
+        loginedtoken: opts.token
     }));
 }
 // ##------------------------------------------------------------------------------------------------------------------------------
@@ -292,12 +291,11 @@ export function fetchAddKuaidial(opts) {
         loginedtoken: opts.token,
         names: opts.name,
         parentid: opts.parentId,
+        id: opts.id
     }));
 }
 
 export function fetchModifyKuaidial(opts) {
-    console.log('opts是什么？');
-    console.log(opts);
     return Vue.axios.post('http://10.1.2.151/ctower-mall-c/agriculture/column/addOrUpdateData.do', qs.stringify({
         loginedtoken: opts.token,
         names: opts.name,
@@ -305,8 +303,6 @@ export function fetchModifyKuaidial(opts) {
     }));
 }
 export function fetchDelKuaidial(opts) {
-    console.log('opts是什么？');
-    console.log(opts);
     return Vue.axios.post('http://10.1.2.151/ctower-mall-c/agriculture/column/deleteData.do', qs.stringify({
         loginedtoken: opts.token,
         id: opts.id
