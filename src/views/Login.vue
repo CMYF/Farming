@@ -55,6 +55,7 @@
     </el-row>
 </template>
 <script>
+import _j from 'jquery'
 import { mapGetters } from 'vuex'
 import store from './../store/index'
 function fetchLogin(store, opt) {
@@ -81,6 +82,8 @@ export default {
     computed: mapGetters({
         loginData: 'LoginData'
     }),
+    
+   
     methods: {
         _login: function (e) {
             var name = this.user.name;
@@ -148,7 +151,7 @@ export default {
 
 <style lang="scss">
 .main-box {
-    width: 100vw;
+    width: 100%;
     height: 100vh;   
     min-height: 600px;
     overflow: auto;
@@ -209,14 +212,17 @@ export default {
 }
 
 .login-res-box{
-    height: auto;
-    min-height: 300px;
+	width: 44%;
+    height: 40%;
+	position: absolute;
+	margin: auto;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
     overflow: hidden;
-    width: 44%;
-    margin: 0px auto;
     border-radius: 6px;
     background: rgba(0, 0, 0, 0);
-    margin-top: 250px;
     padding-left: 20px;
     padding-right: 20px;
     padding-top: 15px;
