@@ -1,16 +1,16 @@
 <template >
     <el-row class="info-box">
-        <el-col :span="5" class="select-info-box">
+        <el-col :span="7" class="select-info-box">
             <el-select v-model="productInfo" @change="filterProductInfo" filterable placeholder="请选择">
                 <el-option v-for="item in productNameIds" :key="item.value" :label="item.label" :value="item.id + ':' + item.value">
                 </el-option>
             </el-select>
             <el-button type="success" @click="filterProducts">筛选</el-button>
         </el-col>
-        <el-col :span="15">
+        <el-col :span="11">
             <div style="height:60px;"></div>
         </el-col>
-        <el-col :span="3">
+        <el-col :span="5">
             <el-button class="add-product-info" @click="addProductInfo">
                 <span class="iconfont">&#xe622;</span>新增
             </el-button>

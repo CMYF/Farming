@@ -265,7 +265,6 @@ export default {
                 self.editForm.id = id;
                 self.editForm.name = name;
                 self.editForm.parentId = id;
-                // self.editForm.parentId = parentId;
                 if (evType === 'del') {
                     self.delKuaidialFetch();
                     return;
@@ -275,6 +274,7 @@ export default {
                     self.editForm.id = '';
                 }
                 if (evType === 'modify') {
+                    self.editForm.parentId = parentId;
                     self.editForm.name = name;
                 }
                 self.isShowEditDailog = true;
@@ -282,7 +282,6 @@ export default {
         },
         delKuaidialFetch() {
             fetchDeleteKuaidial(this.$store, this.editForm).then(() => {
-                console.log('删除成功了吗？');
                 let tempData = this.$store.getters.delKuaidial;
                 if (tempData.resultCode) {
                     this._showMessage('success', '删除成功！');
@@ -292,9 +291,7 @@ export default {
             });
         },
         addOrModifyKuaiFetch() {
-
             fetchAddKuaidial(this.$store, this.editForm).then(() => {
-                console.log('新增成功了吗？');
                 let tempData = this.$store.getters.addKuaidial;
                 if (tempData.resultCode === '1') {
                     this._showMessage('success', '操作成功！');
@@ -385,7 +382,7 @@ export default {
         }
     }
     .left-box {
-        width: 200px;
+        width: 400px;
         float: left;
         text-align: left;
     }

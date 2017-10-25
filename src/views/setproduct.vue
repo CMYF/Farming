@@ -48,7 +48,7 @@ export default {
 .bread-box {
     height: 60px;
     line-height: 60px;
-    padding-left: 14%;
+    padding-left: 20px;
     font-size: 16px;
     background-color: #fff;
 }
