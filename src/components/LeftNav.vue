@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div class="logo-box">
+        <div class="home-logo-box">
             <img src="./../assets/images/logo.jpg" alt="">
         </div>
         <div class="user-pic-box">
@@ -113,7 +113,7 @@ export default {
     border-radius: 0;
 }
 
-.logo-box{
+.home-logo-box{
     width: 100%;
     min-width: 100%;
     img{
