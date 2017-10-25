@@ -53,7 +53,7 @@
                 </el-pagination>
             </div>
         </el-col>
-        <el-dialog class="dialog-box" title="收货地址" :visible.sync="isShowPlanDailog">
+        <el-dialog class="product-dialog-box" title="收货地址" :visible.sync="isShowPlanDailog">
             <el-form :model="planForm" :inline="true" ref="form" class="plan-form">
                 <el-form-item label="产品名称" :label-width="formLabelWidth">
                     <el-input v-model="planForm.name" :disabled="this.isDisabled" auto-complete="off"></el-input>
@@ -516,7 +516,7 @@ export default {
     color: #02bdad;
 }
 
-.dialog-box {
+.product-dialog-box {
     .el-dialog--small {
         width: 885px;
     }

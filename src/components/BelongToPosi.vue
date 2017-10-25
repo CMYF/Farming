@@ -18,7 +18,7 @@
                 <li class="posi-item" v-for="(root, index) in this.posiDatas" :key="index" v-bind:data-info="root.id + '|' + root.names + '|'+ root.level +'|' + root.parentid ">
                     <div class="le-ri-box">
                         <div class="left-box">
-                            <span class="iconfont arrow-icon" v-show="root.isSub">&#xe7cc;</span>
+                            <span class="iconfont belong-arrow-icon" v-show="root.isSub">&#xe7cc;</span>
                             <span class="item-txt">{{ root.names }}</span>
                         </div>
                         <div class="right-box">
@@ -37,7 +37,7 @@
                         <li class="posi-item" v-for="(levTwo, idx) in root.subItem" :key="idx" v-bind:data-info="levTwo.id + '|' + levTwo.names + '|'+ levTwo.level +'|' + levTwo.parentid">
                             <div class="le-ri-box">
                                 <div class="left-box">
-                                    <span class="iconfont arrow-icon" v-show="levTwo.isSub">&#xe7cc;</span>
+                                    <span class="iconfont belong-arrow-icon" v-show="levTwo.isSub">&#xe7cc;</span>
                                     <span class="item-txt">{{ levTwo.names }}</span>
                                 </div>
                                 <div class="right-box">
@@ -56,7 +56,7 @@
                                 <li class="posi-item" v-for="(levThree, i) in levTwo.subItem" :key="i" v-bind:data-info="levThree.id + '|' + levThree.names + '|' + levThree.level +'|' + levThree.parentid">
                                     <div class="le-ri-box">
                                         <div class="left-box">
-                                            <span class="iconfont arrow-icon" v-show="levThree.isSub">&#xe7cc;</span>
+                                            <span class="iconfont belong-arrow-icon" v-show="levThree.isSub">&#xe7cc;</span>
                                             <span class="item-txt">{{ levThree.names }}</span>
                                         </div>
                                         <div class="right-box">
@@ -235,7 +235,7 @@ export default {
             _j('.posi-item').unbind('click').on('click', function(e) {
                 e.stopPropagation();
                 let dom = _j(this);
-                let iconDom = dom.children('.le-ri-box').children('.left-box').children('.arrow-icon');
+                let iconDom = dom.children('.le-ri-box').children('.left-box').children('.belong-arrow-icon');
                 let domTxtDom = dom.children('.le-ri-box').children('.left-box').children('.item-txt');
                 let tempData = dom.attr('data-info');
                 if (dom.hasClass('is-open')) {
@@ -345,7 +345,7 @@ export default {
     color: #999;
 }
 
-.arrow-icon {
+.belong-arrow-icon {
     transform: rotate(-90deg);
     display: inline-block;
     -webkit-transform: rotate(-90deg);
