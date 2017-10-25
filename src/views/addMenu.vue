@@ -242,7 +242,7 @@ export default {
                 return;
             }
             if (!this.ruleForm.sort || this.ruleForm.sort === 'null') {
-                this.ruleForm.sort = 0;
+                this.ruleForm.sore = 0;
             }
             this.ruleForm.token = this.token;
             fetchDelMenu(this.$store, this.ruleForm).then(() => {
