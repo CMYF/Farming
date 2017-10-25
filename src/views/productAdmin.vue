@@ -327,8 +327,6 @@ export default {
     },
     methods: {
         screenProduct() {
-            console.log('查询数据：');
-            console.log(this.screenForm);
             this.getProductInfo();
         },
         handleSizeChange(val) {
@@ -346,8 +344,11 @@ export default {
             if (!dom.hasClass('plan-name-td')) {
                 return;
             }
-            // let planNo = currRowData.planNo;
-            let planNo = 'b9de97a4fab5489899738f23bc7feabf';
+             let planNo = currRowData.planNo;
+             if (!planNo) {
+                return;
+             }
+           // let planNo = 'b9de97a4fab5489899738f23bc7feabf';
             fetchProductByNo(this.$store, { no: planNo }).then(() => {
                 let tempData = this.$store.getters.getProductDetail;
                 console.log('--------------------------');
