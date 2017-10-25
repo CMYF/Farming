@@ -62,9 +62,9 @@
 		        <el-dialog class="dialog-box" title="新增计划" :visible.sync="isShowPlanDailog" @close="closeDialog">
 		            <el-form :model="newPlan" :inline="true" :rules="rules" ref="newPlan" class="plan-form">
 		                <el-form-item label="计划名称" :label-width="formLabelWidth" prop="Names">
-		                    <el-input v-model="newPlan.Names"  auto-complete="off"></el-input>
+		                    <el-input v-model="newPlan.Names" :maxlength="35"  auto-complete="off"></el-input>
 		                </el-form-item>
-		                <el-form-item label="归属地" :label-width="formLabelWidth" prop="selectedOptions2">
+		                <el-form-item label="归属地" :label-width="formLabelWidth" prop="LandId">
 		                    <div class="block" >
 							  <el-cascader
 							    expand-trigger="hover"
@@ -87,37 +87,41 @@
 							    </el-option>
 							</el-select>
 		                </el-form-item>
-		                <el-form-item label="开始日期" :label-width="formLabelWidth" prop="StartTime">
+		                <el-form-item label="开始日期" :label-width="formLabelWidth" prop="StartTime" class="startDates">
 		                    <div class="block">
 							    <el-date-picker
 							      v-model="newPlan.StartTime"
 							      type="datetime"
-							      @change="getTime1"
+							      @change="getTimeOne"
 							      placeholder="选择日期时间">
 							    </el-date-picker>
-							  </div>
+							</div>
+							<div class='el-form-item__error error1'>开始日期为空</div>
+							<div class='el-form-item__error error2'>开始日期大于结束时间</div>
 		                </el-form-item>
-		                <el-form-item label="结束日期" :label-width="formLabelWidth" prop="EndTime">
+		                <el-form-item label="结束日期" :label-width="formLabelWidth" prop="EndTime" class="endDates">
 		                   <div class="block">
 						    <el-date-picker
 						      v-model="newPlan.EndTime"
-						      @change="getTime2"
+						      @change="getTimeTwo"
 						      type="datetime"
 						      placeholder="选择日期时间">
 						    </el-date-picker>
 						  </div>
+						  <div class='el-form-item__error error3'>结束日期为空</div>
+						  <div class='el-form-item__error error4'>结束日期小于开始时间</div>
 		                </el-form-item>
-		                <el-form-item label="目标采收量" :label-width="formLabelWidth">
-		                    <el-input v-model="newPlan.Target"  auto-complete="off"></el-input>
+		                <el-form-item label="目标采收量" :label-width="formLabelWidth" prop="Target">
+		                    <el-input  v-model.number="newPlan.Target"  :maxlength="7" auto-complete="off" ></el-input>
 		                </el-form-item>
-		                <el-form-item label="选择育苗床" :label-width="formLabelWidth" >
+		                <el-form-item label="选择育苗床" :label-width="formLabelWidth"  class="ymBed">
 		                    <el-input v-model= "zyArrays" :disabled="isFlag"  @focus="zyData($event)"  auto-complete="off"></el-input>
 		                </el-form-item>
-		                <el-form-item label="定植数" :label-width="formLabelWidth">
-		                    <el-input v-model="newPlan.DingZhi"  auto-complete="off"></el-input>
+		                <el-form-item label="定植数" :label-width="formLabelWidth" prop="DingZhi" >
+		                    <el-input v-model.number="newPlan.DingZhi" :maxlength="7"  auto-complete="off"></el-input>
 		                </el-form-item>
-		                <el-form-item label="育苗盘数" :label-width="formLabelWidth" >
-		                    <el-input v-model="newPlan.YuMiaoNum"  auto-complete="off"></el-input>
+		                <el-form-item label="育苗盘数" :label-width="formLabelWidth" prop="YuMiaoNum" >
+		                    <el-input v-model.number="newPlan.YuMiaoNum" :maxlength="7"  auto-complete="off"></el-input>
 		                </el-form-item>
 		                 <el-form-item label="" :label-width="formLabelWidth" >
 		                   
@@ -228,24 +232,26 @@ export default {
 	            { required: true, message: '请输入计划名称', trigger: 'blur' },
 	            { min: 3, max: 35, message: '长度在 3 到 35 个字符', trigger: 'blur' }
 	          ],
-//	          selectedOptions2: [
-//	            { required: true, message: '请选择活动区域', trigger: 'change' }
-//	          ],
+	          LandId: [
+	            { required: true, message: '请选择活动区域', trigger: 'change' }
+	          ],
 	          ProductName: [
 	            { required: true, message: '请产品名称', trigger: 'change' }
 	          ],
-//	          date2: [
-//	            { type: 'date', required: true, message: '请选择时间', trigger: 'change' }
-//	          ],
-//	          type: [
-//	            { type: 'array', required: true, message: '请至少选择一个活动性质', trigger: 'change' }
-//	          ],
-//	          resource: [
-//	            { required: true, message: '请选择活动资源', trigger: 'change' }
-//	          ],
-//	          desc: [
-//	            { required: true, message: '请填写活动形式', trigger: 'blur' }
-//	          ]
+			
+	          Target: [
+	           { required: true, message: '请输入目标采收量' },
+	           { type: 'number', message: '必须为数字值'}
+	          ],
+	        
+	          DingZhi: [
+	            { required: true, message: '请输入定植数'},
+	            { type: 'number', message: '必须为数字值'}
+	          ],
+			  YuMiaoNum: [
+	            { required: true, message: '请输入育苗盘数'},
+	            { type: 'number', message: '必须为数字值'}
+	          ]
 	        },
         	
         	
@@ -331,12 +337,12 @@ export default {
 	        
 	        landIdArray:[],
 	        landNameArray:[],
-	        
-	        
             ziyuanId:[],
             ziyuanAll:[],
             zyArray:[],
-            zyArrays: ''
+            zyArrays: '',
+            startTimes: '',
+            endTimes: ''
         }
     },
     beforeMount() {
@@ -431,12 +437,47 @@ export default {
 //      	})
 //  	},
     	
-    	getTime1(date){
-          this.newPlan.StartTime = date;
+    	getTimeOne(date){
+    		if(date != undefined ){
+    			this.startTimes = this.newPlan.StartTime.getTime();
+	    		console.log(this.startTimes)
+	    		_j(".startDates .error1").hide()
+		        if(this.endTimes <= this.startTimes && this.endTimes != ''){
+    				_j(".startDates .error2").show()
+    				_j(".endDates .error4").hide();
+    				this.newPlan.StartTime = date;
+    			}else{
+    				_j(".startDates .error2").hide()
+    				_j(".endDates .error4").hide();
+    				this.newPlan.StartTime = date;
+    			}
+		        
+		        
+    		}else{
+    			return;
+    		}
+    		
        	},
     	
-    	getTime2(date){
-          this.newPlan.EndTime = date;
+    	getTimeTwo(date){
+    		if(date != undefined){
+    			
+    			this.endTimes = this.newPlan.EndTime.getTime();
+	    		console.log(this.endTimes)
+	          	_j(".endDates .error3").hide();
+	          	if(this.endTimes <= this.startTimes && this.startTimes != ''){
+    				_j(".endDates .error4").show();
+    				_j(".startDates .error2").hide()
+    				this.newPlan.EndTime = date;
+    			}else{
+    				_j(".endDates .error4").hide();
+    				_j(".startDates .error2").hide()
+    				this.newPlan.EndTime = date;
+    			}
+    		}else{
+    			return;
+    		}
+    		
        	},
     	
     	handleChange(value) {
@@ -465,6 +506,7 @@ export default {
     		console.log(this.products)
     		this.isShowPlanDailog = true;
     		this.flag = false;
+    		this.isFlag = true;
     		this.selectedOptions2 = [];
     		this.checkedCities1 = [];
     		this.landIdArray =  [];
@@ -476,7 +518,11 @@ export default {
 	         this.newPlan.ProductId = '';
 	         this.zyArrays = '';
 	         this.ziyuanAll = [];
-	         
+	         _j(".startDates .error1").hide();
+	         _j(".startDates .error2").hide();
+	  		_j(".endDates .error3").hide();
+	  		_j(".endDates .error4").hide();
+	          _j(".ymBed .el-form-item__content .el-form-item__error").remove();
     		fetchProductList(this.$store, this.products).then(() => {
 	           this.cp = this.$store.getters.ProductListData.resultData;
 	           if (this.cp.resultCode === '1') {
@@ -495,8 +541,6 @@ export default {
     	},
     	
     	getProductID(value8){
-    		console.log("1111111111111")
-    		 console.log(value8);
     		 if(value8 != null && value8 != ''){
     		 	let obj = {};
 		      console.log(this.productNames)
@@ -510,13 +554,10 @@ export default {
     	},
     	
     	zyData(e){
-    		console.log(e)
     		let dom = _j(e.currentTarget);
     		dom.blur();
     		this.dialogFormVisible = true;
     		this.ziYuanDate.AllzyColumid =this.landIdArray[this.landIdArray.length-1];
-    		console.log("77777777777777")
-    		console.log(this.ziYuanDate.AllzyColumid)
     		fetchTaskZiyuan(this.$store, this.ziYuanDate).then(() => {
 	           this.allzy = this.$store.getters.TaskZiyuanData.resultData;
 	           if (this.allzy.resultCode === '1') {
@@ -541,6 +582,10 @@ export default {
     			console.log(this.zyArray)
     			console.log("3333")
     			this.zyArrays = this.zyArray.join(",")
+    			this.newPlan.Bed = this.ziyuanAll.join("/")+"/";
+    			if(ids != ''){
+    				 _j(".ymBed .el-form-item__content .el-form-item__error").remove();
+    			}
     		}else{
     			this.ziyuanAll.forEach((item,index)=>{
     				if(item == ids){
@@ -550,8 +595,13 @@ export default {
     				
     			})
     			this.zyArrays = this.zyArray.join(",")
-    			console.log("4444")
-    			console.log(this.zyArray)
+  				this.newPlan.Bed = this.ziyuanAll.join("/")+"/";
+  				if(this.zyArrays == ''){
+  					_j(".ymBed .el-form-item__content").append("<div class='el-form-item__error'>请选择育苗床</div>")
+  				}
+  				
+    			
+    			
     		}
     		
     	},
@@ -564,6 +614,7 @@ export default {
 					for(var i = 0; i < datas.length; i++) {
 						this.options5[i] = GetCopy(datas[i]);
 					}
+					
 					console.log(this.options5)
 				
 					function GetCopy(json) {
@@ -588,45 +639,58 @@ export default {
 		},
 
 	sendPlanComfire() {
-		
-		 this.$refs.newPlan.validate((valid) => {
-          if (valid) {
-            alert('submit!');
-          } else {
-            console.log('error submit!!');
-            return false;
-          }
-        });
-		
-		
-		
-        		//this.newPlan.ProductName = this.value8;
-      			this.newPlan.Bed = this.ziyuanAll.join("/")+"/";
-      			console.log(this.newPlan)
-      			this.flag = true;
-			fetchPlanNew(this.$store, this.newPlan).then(() => {
-	           this.mess = this.$store.getters.NewPlanData.resultData;
-	           if (this.mess.resultCode === '1') {
-	           		this.flag = false;
-					this.isShowPlanDailog = false;
-					fetchPlanList(this.$store, this.page).then(() => {
-			           this.jh = this.$store.getters.PlanData.resultData;
-			           if (this.jh.resultCode === '1') {
-			              this.tableData = this.jh.basePageObj.dataList;
+				if(this.startTimes == "" && this.endTimes == ""){
+	  				_j(".startDates .error1").show();
+	  				_j(".endDates .error3").show();
+	  			}else if(this.startTimes == "" && this.endTimes != ""){
+	  				_j(".startDates .error1").show();
+	  			}else if(this.startTimes != "" && this.endTimes == ""){
+	  				_j(".endDates .error3").show();
+	  			}
+	  			
+	  			if(this.newPlan.Bed == "/" || this.newPlan.Bed == ""){
+	  				 _j(".ymBed .el-form-item__content").append("<div class='el-form-item__error'>请选择育苗床</div>")
+	  			}
+	  			
+				 this.$refs.newPlan.validate((valid) => {
+		          if (valid) {
+		            this.flag = true;
+		            
+		            fetchPlanNew(this.$store, this.newPlan).then(() => {
+			           this.mess = this.$store.getters.NewPlanData.resultData;
+			           if (this.mess.resultCode === '1') {
+			           		this.flag = false;
+							this.isShowPlanDailog = false;
+							fetchPlanList(this.$store, this.page).then(() => {
+					           this.jh = this.$store.getters.PlanData.resultData;
+					           if (this.jh.resultCode === '1') {
+					              this.tableData = this.jh.basePageObj.dataList;
+					           	}else{
+					           		//console.log(this.jh.resultMsg)
+					           	}
+					        });
+							
+							
+			           	console.log(this.mess)
 			           	}else{
-			           		//console.log(this.jh.resultMsg)
+			           		this.flag = false;
+			           		//console.log(this.mess.resultMsg)
+			           		//this.titleNotice=this.mess.resultMsg;
 			           	}
 			        });
-					
-					
-	           	console.log(this.mess)
-	           	}else{
-	           		this.flag = false;
-	           		//console.log(this.mess.resultMsg)
-	           		//this.titleNotice=this.mess.resultMsg;
-	           	}
-	        });
-		},
+		            
+		            
+		          } else {
+		            console.log('error submit!!');
+		            return false;
+		          }
+		        });
+		        
+		       
+    		
+  			
+		
+	},
     	 
 	
 	
@@ -655,12 +719,27 @@ export default {
     	
         screenPlan() {
         	this.page.page_size = '';
+        	this.page.page_number = 1;
 			fetchPlanList(this.$store, this.page).then(() => {
 	           this.jh = this.$store.getters.PlanData.resultData;
 	           if (this.jh.resultCode === '1') {
 	           	console.log(this.jh)
 	           	 this.pageTotle = this.jh.basePageObj.dataList.length;
+	           	 console.log( '11111111111')
+	           	 console.log( this.pageTotle)
+	              //this.tableData = this.jh.basePageObj.dataList;
+	           	}else{
+	           		this.titleNotice=this.jh.resultMsg;
+	           	}
+	        });
+	        this.page.page_size = 10;
+	        fetchPlanList(this.$store, this.page).then(() => {
+	           this.jh = this.$store.getters.PlanData.resultData;
+	           if (this.jh.resultCode === '1') {
+	           	 //this.pageTotle = this.jh.basePageObj.dataList.length;
 	              this.tableData = this.jh.basePageObj.dataList;
+	               console.log( '113333333333333')
+	               console.log( this.pageTotle)
 	           	}else{
 	           		this.titleNotice=this.jh.resultMsg;
 	           	}
@@ -806,6 +885,18 @@ export default {
             .el-form-item__content,
             .el-select {
                 width: 250px;
+            }
+            .error1{
+            	display: none;
+            }
+            .error2{
+            	display: none;
+            }
+            .error3{
+            	display: none;
+            }
+            .error4{
+            	display: none;
             }
         }
     }

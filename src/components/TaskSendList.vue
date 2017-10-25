@@ -266,16 +266,16 @@ export default {
             this.planForm.task_abutments=this.planForm.task_abutments.join("/");
             console.log("33333333333333333")
             console.log(this.planForm)
-//	  		fetchSendTask(this.$store, this.planForm).then(() => {
-//	           this.sem = this.$store.getters.TaskCircleData.resultData;
-//	           if (this.sem.resultCode === '1') {
-//					this.flag = false;
-//	            	this.isShowPlanDailog1 = false;
-//	           }else{	           		
-//	           		this.titleNotice=this.sem.resultMsg;
-//                  this.flag = false;		
-//	           	}
-//	        });
+	  		fetchSendTask(this.$store, this.planForm).then(() => {
+	           this.sem = this.$store.getters.TaskCircleData.resultData;
+	           if (this.sem.resultCode === '1') {
+					this.flag = false;
+	            	this.isShowPlanDailog1 = false;
+	           }else{	           		
+	           		this.titleNotice=this.sem.resultMsg;
+                    this.flag = false;		
+	           	}
+	        });
 	    },
     	
     	selectPiCi(e){
