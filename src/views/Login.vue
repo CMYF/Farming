@@ -57,6 +57,7 @@
 <script>
 import { mapGetters } from 'vuex'
 import store from './../store/index'
+import _cookie from './../utils/_C'
 function fetchLogin(store, opt) {
     return store.dispatch('LOGIN', {
         id: opt.name,
@@ -96,8 +97,10 @@ export default {
             fetchLogin(this.$store, this.user).then(() => {
                this.lgd = this.$store.getters.LoginData.resultData;
                if (this.lgd.resultCode === '1') {
-                    const token = this.lgd.resultObj.token;
-                    localStorage.token = token;
+                    const tempObj = this.lgd.resultObj;
+                    _cookie._C.setCookie('token', tempObj.token, 1);
+                    localStorage.token = tempObj.token;
+                    localStorage.uinfo = JSON.stringify(tempObj);
                     this.$router.push('/');
                	}else{
                		this.titleNotice=this.lgd.resultMsg;

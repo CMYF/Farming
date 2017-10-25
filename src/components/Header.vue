@@ -15,15 +15,12 @@
                         </span>
                     </el-badge>
 
-                    <el-dropdown>
+                    <el-dropdown  @command="selectMenuItem">
                         <span class="el-dropdown-link dropdown-btn-box icon-box">
                             <i class="iconfont user-info-icon  el-icon--right">&#xe794;</i>
                         </span>
                         <el-dropdown-menu slot="dropdown">
-                            <el-dropdown-item>设置</el-dropdown-item>
-                            <el-dropdown-item>消息</el-dropdown-item>
-                            <el-dropdown-item>个人信息</el-dropdown-item>
-                            <el-dropdown-item>注销</el-dropdown-item>
+                            <el-dropdown-item command="loginout">注销</el-dropdown-item>
                         </el-dropdown-menu>
                     </el-dropdown>
                 </el-col>
@@ -32,6 +29,7 @@
     </header>
 </template>
 <script>
+import _cookie from './../utils/_C'
 export default {
     name: 'FHeader',
     data() {
@@ -41,15 +39,17 @@ export default {
         }
     },
     methods: {
-        toIndex: function() {
-            this.$router.push('/')
-        },
-        sendLogin: function() {
-            this.$router.push('/login')
-
-        },
         handleIconClick: function() {
 
+        },
+        selectMenuItem(val) {
+            let selectItem = val;
+            if (selectItem === 'loginout') {
+                _cookie._C.delCookie('token');
+                localStorage.uinfo = '';
+                localStorage.token = '';
+                this.$router.push('/login');
+            }
         }
     }
 }

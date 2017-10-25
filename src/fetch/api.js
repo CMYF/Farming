@@ -292,6 +292,7 @@ export function fetchAddKuaidial(opts) {
         loginedtoken: opts.token,
         names: opts.name,
         parentid: opts.parentId,
+        id: opts.id
     }));
 }
 

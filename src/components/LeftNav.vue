@@ -5,7 +5,7 @@
         </div>
         <div class="user-pic-box">
             <span class="iconfont user-pic-icon">&#xe794;</span>
-            <span class="user-name">Cattle</span>
+            <span class="user-name">{{ userInfo.name }}</span>
         </div>
         <el-menu :unique-opened="true" default-active="2" class="el-menu-vertical-demo left-nav-reset-bg left-nav-items" @open="handleOpen" @close="handleClose">
             <div class="menu-box" v-for="(item, index) in navDatas" :key="item.id">
@@ -50,7 +50,10 @@ export default {
     store,
     data() {
         return {
-            navDatas: {}
+            navDatas: {},
+            userInfo: {
+                name: ''
+            }
         }
     },
     computed: mapGetters({
@@ -58,14 +61,10 @@ export default {
         subNavData: 'subNavData'
     }),
     mounted() {
-        /* var docH = $(document).height();
-        var headerH = $('.header').height();
-        var h = docH - headerH;
-        $('.left-nav-items').css({
-            'max-height': h + 'px',
-            'overflow-y': 'auto'
-        });
- */
+        let tempInfo = localStorage.uinfo;
+        let userInfo = JSON.parse(tempInfo);
+        this.userInfo.name = userInfo.opername;
+
     },
     beforeMount() {
         let token = localStorage.token;
@@ -113,16 +112,16 @@ export default {
     border-radius: 0;
 }
 
-.home-logo-box{
+.home-logo-box {
     width: 100%;
     min-width: 100%;
-    img{
+    img {
         min-width: 100%;
         max-width: 100%;
         height: 60px;
-
     }
 }
+
 .el-menu--horizontal .el-submenu .el-submenu__title {
     height: 50px;
     line-height: 50px;
@@ -133,6 +132,7 @@ export default {
 .el-submenu .el-submenu__title {
     border-left: 6px solid transparent;
 }
+
 .el-menu-item,
 .el-menu-item a,
 .el-submenu__title,
@@ -143,13 +143,15 @@ export default {
     color: #fff !important;
     font-size: 16px;
 }
-.el-menu-item a{
-    display: inline-block;
 
+.el-menu-item a {
+    display: inline-block;
 }
-.el-submenu .el-menu-item{
+
+.el-submenu .el-menu-item {
     padding-left: 55px !important;
 }
+
 .el-menu--horizontal.el-menu--dark .el-submenu .el-menu-item:hover,
 .el-menu--horizontal.el-menu--dark .el-submenu .el-submenu-title:hover,
 .el-menu-item:hover,
@@ -158,17 +160,21 @@ export default {
 .el-submenu__title:hover {
     background-color: #2a2e36;
 }
-.el-submenu.is-opened .el-submenu__title{}
+
+.el-submenu.is-opened .el-submenu__title {}
 
 .el-menu--horizontal.el-menu--dark .el-submenu .el-menu-item.is-active,
-.el-menu-item.is-active,  {
+.el-menu-item.is-active,
+{
     background-color: #2a2e36;
     border-left: 6px solid #02bdad;
     color: #fff;
 }
-.el-menu-item-group__title{
+
+.el-menu-item-group__title {
     padding-top: 0px;
 }
+
 .user-pic-box {
     width: 100%;
     text-align: center;
@@ -190,7 +196,8 @@ export default {
         color: #02bdad;
     }
 }
-.nav-icon{
+
+.nav-icon {
     font-size: 19px;
     margin-right: 15px;
 }
