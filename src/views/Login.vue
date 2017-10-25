@@ -213,7 +213,14 @@ export default {
 
 .login-res-box{
 	width: 44%;
-    height: 40%;
+    
+    @media screen and (max-height:1000px){
+	 	height: 40%;
+	}
+	@media screen and (max-height:800px){
+	 	height: 55%;
+	}
+	
 	position: absolute;
 	margin: auto;
 	top: 0;
