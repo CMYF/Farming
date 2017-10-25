@@ -139,6 +139,7 @@ export default {
             productNameIds: [],
             productInfo: '',
             selectedOptions: [],
+            token:localStorage.token,
             options: [],  // 归属地
             getProducts: { // 产品数据
                 currentPage: 1,
@@ -206,6 +207,7 @@ export default {
         }
     },
     beforeMount() {
+        this.getProducts.token = this.token;
         fetchGetProducts(this.$store, this.getProducts).then(() => {
             this.dec_data();
         });

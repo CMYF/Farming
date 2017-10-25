@@ -344,12 +344,12 @@ export default {
             if (!dom.hasClass('plan-name-td')) {
                 return;
             }
-             let planNo = currRowData.planNo;
-             if (!planNo) {
+            let planNo = currRowData.planNo;
+            if (!planNo) {
                 return;
-             }
-           // let planNo = 'b9de97a4fab5489899738f23bc7feabf';
-            fetchProductByNo(this.$store, { no: planNo }).then(() => {
+            }
+            // let planNo = 'b9de97a4fab5489899738f23bc7feabf';
+            fetchProductByNo(this.$store, { no: planNo, token: localStorage.token }).then(() => {
                 let tempData = this.$store.getters.getProductDetail;
                 console.log('--------------------------');
                 console.log(this.$store);
@@ -661,7 +661,7 @@ export default {
     padding-right: 10px;
     padding-top: 15px;
     padding-bottom: 15px;
-    .temp-item{
+    .temp-item {
         height: 25px;
         line-height: 25px;
     }
