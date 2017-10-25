@@ -5,11 +5,13 @@ import axios from 'axios'
 import VueAxios from 'vue-axios'
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-default/index.css'
+//import EasyScroll from 'easyscroll';
 //import '../theme/index.css' // 重置Element-ui主题
 import App from './App'
 import router from './router'
 Vue.config.productionTip = false
 Vue.use(VueAxios, axios);
+//Vue.use(EasyScroll);
 Vue.use(ElementUI)
   /* eslint-disable no-new */
   new Vue({
