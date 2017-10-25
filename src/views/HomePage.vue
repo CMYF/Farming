@@ -22,8 +22,6 @@ import store from './../store/index'
 import FHeader from './../components/Header'
 import LeftNav from './../components/LeftNav'
 function fetchHome(store) {
-    console.log('====================');
-    console.log(store);
     return store.dispatch('GET_HOMEPAGE');
 }
 
@@ -46,15 +44,9 @@ export default {
         HomePage: 'homeData',
     }),
     beforeMount() {
-        console.log('---------------------');
-        console.log(this.$store);
-        /*fetchHome(this.$store).then(() => {
-            console.log(this.$store);
-            this.datas = this.$store.getters.homeData.resultData;
-            console.log(this.datas.banner);
-        })*/
     },
     mounted() {
+       
         var localStore = window.localStorage;
         //localStorage.token = '1';
         var isLogin = localStorage.token;

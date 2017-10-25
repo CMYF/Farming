@@ -28,7 +28,7 @@
                         <el-checkbox-group v-model="chnageTypes" @change="typeChange" :max="5">
                             <el-checkbox v-for="(item, idx) in vfTypes" :label="item.label" :key="idx">{{item.label}}</el-checkbox>
                             <!--<el-checkbox v-for="(item, index) in vfTypes" :key="index" :data-id="item.id " @change="selectProducts(item.id, $event)" :label="item.label" :true-label="item.id">{{ item.label }}
-                                                                                                                                    </el-checkbox>-->
+                                                                                                                                        </el-checkbox>-->
 
                         </el-checkbox-group>
                     </div>
@@ -195,7 +195,6 @@ export default {
     beforeMount() {
         this.loadProductLines();
         fetchGetProductInfo(this.$store).then(() => {
-            console.log('获取所有产品名成功了吗？');
             let tempData = this.$store.getters.getPrincipalNames;
             if (tempData.resultCode === '1') {
                 let tempVFs = tempData.basePageObj.dataList;
@@ -216,80 +215,6 @@ export default {
 
     },
     mounted() {
-
-
-        /*  let data = {
-              type: 'line',
-              data: {
-                  labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange", "Brown", "Black"],
-                  datasets: [{
-                      label: '# of Votes',
-                      data: [12, 19, 3, 5, 2, 3, 60, 80],
-                      backgroundColor: [
-                          'rgba(255, 99, 132, 0.2)',
-                          'rgba(54, 162, 235, 0.2)',
-                          'rgba(255, 206, 86, 0.2)',
-                          'rgba(75, 192, 192, 0.2)',
-                          'rgba(153, 102, 255, 0.2)',
-                          'rgba(255, 159, 64, 0.2)',
-                          'rgba(153, 102, 255, 0.2)',
-                          'rgba(255, 159, 64, 0.2)'
-                      ],
-                      borderColor: [
-                          'rgba(255,99,132,1)',
-                          'rgba(54, 162, 235, 1)',
-                          'rgba(255, 206, 86, 1)',
-                          'rgba(75, 192, 192, 1)',
-                          'rgba(153, 102, 255, 1)',
-                          'rgba(255, 159, 64, 1)',
-                          'rgba(153, 102, 255, 1)',
-                          'rgba(255, 159, 64, 1)'
-                      ],
-                      borderWidth: 1
-                  },
-                  {
-                      label: '# of Votes',
-                      data: [20, 30, 40, 50, 60, 70, 80, 500],
-                      backgroundColor: [
-                          'rgba(255, 99, 132, 0.2)',
-                          'rgba(54, 162, 235, 0.2)',
-                          'rgba(255, 206, 86, 0.2)',
-                          'rgba(75, 192, 192, 0.2)',
-                          'rgba(153, 102, 255, 0.2)',
-                          'rgba(255, 159, 64, 0.2)',
-                          'rgba(153, 102, 255, 0.2)',
-                          'rgba(255, 159, 64, 0.2)'
-                      ],
-                      borderColor: [
-                          '#71bfff'
-                      ],
-                      borderWidth: 1
-                  },
-                  {
-                      label: '# of aaa',
-                      data: [2, 22, 8, 5, 36, 12, 200, 450],
-                      backgroundColor: [
-                          'rgba(255, 99, 132, 0.2)',
-                          'rgba(54, 162, 235, 0.2)',
-                          'rgba(255, 240, 86, 0.2)',
-                          'rgba(75, 81, 192, 0.2)',
-                          'rgba(153, 222, 255, 0.2)',
-                          'rgba(255, 159, 64, 0.2)'
-                      ],
-                      borderColor: [
-                          'rgba(255,99,132,1)',
-                          'rgba(54, 162, 235, 1)',
-                          'rgba(255, 206, 86, 1)',
-                          'rgba(75, 192, 192, 1)',
-  
-                          'rgba(153, 102, 255, 1)',
-                          'rgba(255, 159, 64, 1)'
-                      ],
-                      borderWidth: 1
-                  }]
-              }
-          }*/
-
     },
     methods: {
         typeChange() {
@@ -464,7 +389,6 @@ export default {
         },
         getBatchSchedule() {
             fetchBatchSchedules(this.$store, this.batchParams).then(() => {
-                console.log('批次进度成功了吗？');
                 let tempData = this.$store.getters.getBatchSchedules;
                 if (tempData.resultCode === '1') {
                     let tempObj = tempData.resultObj;
