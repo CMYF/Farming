@@ -91,5 +91,11 @@ a:hover {
     width: 85.3%;
     margin-left: 14.3%;
   }
+  .user-pic-box{
+    display: none;
+  }
+  .left-nav-items{
+    margin-top: 20px;
+  }
 }
 </style>
