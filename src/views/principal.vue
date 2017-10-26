@@ -60,21 +60,21 @@
                     <el-table :data="taskListData" stripe style="width: 100%">
                         <el-table-column prop="batch" align="left" label="批次" width="180">
                         </el-table-column>
-                        <el-table-column prop="productName" align="left" label="产品" width="180">
+                        <el-table-column prop="productName" align="left" label="产品" width="200">
                         </el-table-column>
-                        <el-table-column prop="distributeTime" align="left" label="任务派发时间">
+                        <el-table-column prop="distributeTime" align="left" width="240" label="任务派发时间">
                         </el-table-column>
-                        <el-table-column prop="proLinks" align="left" label="生产环节">
+                        <el-table-column prop="proLinks" align="left" label="生产环节" width="120">
                         </el-table-column>
-                        <el-table-column prop="address" align="left" label="资源位置">
+                        <el-table-column prop="address" align="left" label="资源位置" width="150">
                         </el-table-column>
-                        <el-table-column prop="manHours" align="left" label="总人工时">
+                        <el-table-column prop="manHours" align="left" label="总人工时" width="200">
                         </el-table-column>
                         <el-table-column prop="outputs" align="left" label="生产量">
                         </el-table-column>
-                        <el-table-column prop="state" align="left" label="任务状态">
+                        <el-table-column prop="state" align="left" label="任务状态" width="150">
                         </el-table-column>
-                        <el-table-column prop="liable" align="left" label="责任人">
+                        <el-table-column prop="liable" align="left" label="责任人" width="150">
                         </el-table-column>
                     </el-table>
                     <el-pagination class="page-box" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="taskList.currentPage" :page-size="taskList.pageSize" layout="total, prev, pager, next" :total="taskList.totalRows">
