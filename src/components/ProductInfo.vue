@@ -23,19 +23,19 @@
             </el-table-column>
             <el-table-column type="index" label="序号" width="80" align="center" show-overflow-tooltip>
             </el-table-column>
-            <el-table-column label="产品名称" prop="name" align="center" width="200">
+            <el-table-column label="产品名称" prop="name" align="center" >
             </el-table-column>
-            <el-table-column prop="address" label="归属地" align="center" width="399">
+            <el-table-column prop="addressName" label="归属地" align="center" width="450">
             </el-table-column>
-            <el-table-column prop="productionLink" label="生产环节(个)" width="165" align="center" show-overflow-tooltip>
+            <el-table-column prop="productionLink" label="生产环节(个)" align="center" show-overflow-tooltip>
             </el-table-column>
-            <el-table-column prop="pluck" label="采收周期(天)" align="center" width="165" show-overflow-tooltip>
+            <el-table-column prop="pluck" label="采收周期(天)" align="center"  show-overflow-tooltip>
             </el-table-column>
-            <el-table-column prop="germinate" label="发芽率%" align="center" width="165" show-overflow-tooltip>
+            <el-table-column prop="germinate" label="发芽率%" align="center" show-overflow-tooltip>
             </el-table-column>
-            <el-table-column prop="transplant" label="移栽成苗率%" align="center" width="165" show-overflow-tooltip>
+            <el-table-column prop="transplant" label="移栽成苗率%" align="center" show-overflow-tooltip>
             </el-table-column>
-            <el-table-column prop="weight" label="单棵重g" align="center" width="165" show-overflow-tooltip>
+            <el-table-column prop="weight" label="单棵重g" align="center" show-overflow-tooltip>
             </el-table-column>
         </el-table>
         <el-row class="page-box">
@@ -251,6 +251,7 @@ export default {
                             id: tempItem.chanpid,
                             pluck: tempItem.caiszq,
                             productionLink: tempItem.linksNum,
+                            addressName: tempItem.guisdname
                         });
                         tempNameIds.push({
                             value: tempItem.chanpmc,
