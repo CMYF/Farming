@@ -301,7 +301,7 @@ export default {
                     let dataObj = tempData.basePageObj;
                     let tempList = dataObj.dataList;
                     this.screenForm.datas.length = 0;
-                    if (tempList.length <= 0) {
+                    if (tempList.length <= 0) { // 对于筛选后，死循环请求策略
                         this.screenForm.currentPage = 1;
                         this.screenForm.totalPage = 1;
                         this.screenForm.totalRows = 0;
