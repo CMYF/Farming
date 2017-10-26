@@ -42,7 +42,7 @@
             <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="this.getProducts.currentPage" :page-sizes="[10, 20, 30, 40, 50]" :page-size="this.getProducts.pageSize" layout="total, sizes, prev, pager, next, jumper" :total="this.getProducts.totalRows">
             </el-pagination>
         </el-row>
-        <el-dialog class="product-dialog-box" title="产品标准详情" :visible.sync="dialogFormVisible">
+        <el-dialog class="product-dialog-box" title="新增产品" :visible.sync="dialogFormVisible">
             <el-form :model="form" :inline="true" ref="form" :rules="rules" class="product-form">
                 <el-form-item label="产品名称" :label-width="formLabelWidth" prop="name">
                     <el-input v-model="form.name" auto-complete="off" placeholder="请输入产品名称"></el-input>

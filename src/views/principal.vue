@@ -289,12 +289,12 @@ export default {
         loadProductLines(isClick) {
             let startTime = this.params.beginTime;
             let endTime = this.params.finishTime;
-            if (isClick) {
+            /*if (isClick) {
                 if ((!startTime && endTime) || (!endTime && startTime)) {
                     this._showMessage('error', '开始日期和结束日期都是必须的！');
                     return;
                 }
-            }
+            }*/
             let opts = {
                 token: localStorage.token,
                 startTime: startTime,
