@@ -111,7 +111,7 @@
                     <el-col :span="19">
                         <ul class="batch-table">
                             <li class="batch-bar-item" v-for="(gress, index) in batchDatas.progress" :key="index">
-                                <span class="batch-bar bar-item gobj-progress" :title="gress +'%'" :style="{width:  gress + '%' }"></span>
+                                <span class="batch-bar bar-item gobj-progress" :class="gress > 50 ? 'not-gobj-progress':'gobj-progress'" :title="gress +'%'" :style="{width:  gress + '%' }"></span>
                                 <span class="batch-txt bar-item" v-show="gress == 100 ? false : true">{{ gress }}%</span>
                             </li>
                             <span class="line"></span>
