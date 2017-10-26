@@ -7,9 +7,11 @@
                 </el-col>
                 <el-col :span="18" class="mack-box">
                     <div class="date-box">
-                        <el-date-picker v-model="params.beginTime" @change="startChange" format="yyyy-MM-dd" type="date" :picker-options="pickerOptions0" placeholder="选择开始日期"></el-date-picker>
-                        -
-                        <el-date-picker v-model="params.finishTime" @change="endChange" type="date" :picker-options="pickerOptions0" placeholder="选择结束日期"> </el-date-picker>
+                        <!--<el-date-picker v-model="params.beginTime" @change="startChange" format="yyyy-MM-dd" type="date" :picker-options="pickerOptions0" placeholder="选择开始日期"></el-date-picker>
+                            -
+                            <el-date-picker v-model="params.finishTime" @change="endChange" type="date" :picker-options="pickerOptions0" placeholder="选择结束日期"> </el-date-picker>-->
+                        <el-date-picker v-model="value6" type="daterange" range-separator=" / " @change="selectDate" :picker-options="pickerOptions0" placeholder="选择日期范围">
+                        </el-date-picker>
                         <el-button class="select-btn" @click="getProductLines()">
                             查询
                         </el-button>
@@ -28,7 +30,7 @@
                         <el-checkbox-group v-model="chnageTypes" @change="typeChange" :max="5">
                             <el-checkbox v-for="(item, idx) in vfTypes" :label="item.label" :key="idx">{{item.label}}</el-checkbox>
                             <!--<el-checkbox v-for="(item, index) in vfTypes" :key="index" :data-id="item.id " @change="selectProducts(item.id, $event)" :label="item.label" :true-label="item.id">{{ item.label }}
-                                                                                                                                            </el-checkbox>-->
+                                                                                                                                                </el-checkbox>-->
 
                         </el-checkbox-group>
                     </div>
@@ -151,6 +153,7 @@ export default {
                     return (time.getTime()) > Date.now() - 8.64e7;
                 }
             },
+            value6: '',
             params: { // 点击查询参数
                 beginTime: '',
                 finishTime: '',
@@ -219,13 +222,10 @@ export default {
     methods: {
         typeChange() {
         },
-        // 开始时间
-        startChange(d) {
-            this.params.beginTime = d;
-        },
-        // 结束时间
-        endChange(d) {
-            this.params.finishTime = d;
+        selectDate(d) {
+           let tempDate = d.split('/');
+           this.params.beginTime = tempDate[0];
+           this.params.finishTime = tempDate[1];
         },
         // 切换tab页
         handleClick(tab, event) {
@@ -654,7 +654,7 @@ export default {
 }
 
 @media (max-width: 1420px) {
-    .progress-box .batch-name-box li{
+    .progress-box .batch-name-box li {
         font-size: 15px;
     }
 }
