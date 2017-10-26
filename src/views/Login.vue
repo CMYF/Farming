@@ -84,7 +84,9 @@ export default {
         loginData: 'LoginData'
     }),
 
-
+    beforeCreate(){
+        
+    },
     methods: {
         _login: function(e) {
             var name = this.user.name;

@@ -40,7 +40,6 @@ function fetchNav(store, token) {
     return store.dispatch('FETCH_GET_NAV', token);
 }
 function fetchSubNavById(store, idx) {
-    console.log('刚进来???---' + idx);
     return store.dispatch('FETCH_SUBNAV_BY_ID', {
         id: idx
     });
@@ -69,8 +68,14 @@ export default {
     beforeMount() {
         let token = localStorage.token;
         fetchNav(this.$store, token).then(() => {
-            var tempData = this.$store.getters.getNavData.data.resultObj[0];
-            this.navDatas = tempData.subItems;
+            var tempData = this.$store.getters.getNavData.data;
+            if (tempData.resultCode === '1') {
+                let tempObj = tempData.resultObj[0];
+                this.navDatas = tempObj.subItems;
+            } else {
+                this._showMessage('error', tempData.resultMsg);
+            }
+
         })
     },
     methods: {
@@ -81,21 +86,21 @@ export default {
         },
         getNavData: function() {
             fetchNav(this.$store).then(() => {
-                console.log('点击导航有数据吗？');
-                console.log(this.$store);
                 this.navDatas = this.$store.getters.getNavData;
-                console.log(this.navDatas);
             })
         },
         getSubNavById: function() {
-            console.log('yes or no ?');
-            /* fetchSubNavById(this.$store, 2).then(() => {
-                console.log('获取子导航有吗？');
-                console.log(this.$store);
-            }); */
         },
         toNavSix: function() {
             this.$router.push('/createuser')
+        },
+         // show success or error message
+        _showMessage(type, msg) {
+            this.$message({
+                showClose: true,
+                message: msg,
+                type: type
+            });
         }
 
     }

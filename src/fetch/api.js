@@ -6,7 +6,7 @@ export function fetchHomePage() {
 
 export function fetchGetNav(token) {
     return Vue.axios.post('http://10.1.2.151/ctower-mall-c//sys/login/loadMenus.do', qs.stringify({
-        'loginedtoken': token
+      'loginedtoken': token
     }))
 }
 

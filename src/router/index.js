@@ -14,7 +14,6 @@ import ProductAdmin from '@/views/productAdmin'
 import NewPlanTask from '@/views/newPlan'
 import ResourceConfig from '@/views/resourceConfig'
 Vue.use(Router)
-
 export default new Router({
   base: '/html/agriculture/',
   routes: [
