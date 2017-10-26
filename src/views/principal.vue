@@ -28,7 +28,7 @@
                         <el-checkbox-group v-model="chnageTypes" @change="typeChange" :max="5">
                             <el-checkbox v-for="(item, idx) in vfTypes" :label="item.label" :key="idx">{{item.label}}</el-checkbox>
                             <!--<el-checkbox v-for="(item, index) in vfTypes" :key="index" :data-id="item.id " @change="selectProducts(item.id, $event)" :label="item.label" :true-label="item.id">{{ item.label }}
-                                                                                                                                        </el-checkbox>-->
+                                                                                                                                            </el-checkbox>-->
 
                         </el-checkbox-group>
                     </div>
@@ -103,16 +103,16 @@
                         </span>
                     </div>
                     <div class="clear-float"></div>
-                    <el-col :span="2">
+                    <el-col :span="3">
                         <ul class="batch-name-box">
                             <li class="batch-item" v-for="(item, index) in batchDatas.names" :title="item.name" :key="index">{{ item.subName }}</li>
                         </ul>
                     </el-col>
-                    <el-col :span="20">
+                    <el-col :span="19">
                         <ul class="batch-table">
                             <li class="batch-bar-item" v-for="(gress, index) in batchDatas.progress" :key="index">
                                 <span class="batch-bar bar-item gobj-progress" :title="gress +'%'" :style="{width:  gress + '%' }"></span>
-                                <span class="batch-txt bar-item">{{ gress }}%</span>
+                                <span class="batch-txt bar-item" v-show="gress == 100 ? false : true">{{ gress }}%</span>
                             </li>
                             <span class="line"></span>
                         </ul>
@@ -350,6 +350,7 @@ export default {
         },
 
         handleCurrentChange(val) {
+            this.taskList.beginPage = val;
             this.taskList.currentPage = val;
             this.getProductDatas();
         },
@@ -399,8 +400,8 @@ export default {
                     for (let i = 0; i < len; i++) {
                         tempItem = tempObj[i];
                         tempName = tempItem.name;
-                        if (tempName.length > 6) {
-                            subStr = tempName.substr(0, 6) + '...'
+                        if (tempName.length > 9) {
+                            subStr = tempName.substr(0, 9) + '...'
                         } else {
                             subStr = tempName;
                         }
@@ -566,9 +567,9 @@ export default {
     padding-left: 20px;
     padding-right: 20px;
     .progress-items {
-        width: 83.33333%;
+        width: 79.166667%;
         float: left;
-        margin-left: 8.33333%;
+        margin-left: 12.5%;
         border-bottom: 1px solid #ccc;
         .progress-item {
             width: 10%;
@@ -652,5 +653,9 @@ export default {
     margin-top: 10px;
 }
 
-@media (max-width: 1420px) {}
+@media (max-width: 1420px) {
+    .progress-box .batch-name-box li{
+        font-size: 15px;
+    }
+}
 </style>

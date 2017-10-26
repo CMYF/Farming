@@ -30,23 +30,23 @@
                 <el-table ref="singleTable" border :data="this.proDatas.datas" style="width: 100%" @cell-click="showPlanInfo">
                     <el-table-column type="index" label="序号" width="70">
                     </el-table-column>
-                    <el-table-column property="planName" label="计划名称" width="409" className="plan-name-td">
+                    <el-table-column property="planName" label="计划名称"  className="plan-name-td">
                     </el-table-column>
-                    <el-table-column property="planNo" label="批次编号" width="160">
+                    <el-table-column property="planNo" label="批次编号" >
                     </el-table-column>
-                    <el-table-column property="proName" label="产品名称" width="120">
+                    <el-table-column property="proName" label="产品名称" >
                     </el-table-column>
                     <el-table-column property="proLink" label="生产环节" width="100">
                     </el-table-column>
-                    <el-table-column property="planStarTime" label="主划开始时间" width="150">
+                    <el-table-column property="planStarTime" label="主划开始时间" >
                     </el-table-column>
-                    <el-table-column property="planEndTime" label="计划结束时间" width="150">
+                    <el-table-column property="planEndTime" label="计划结束时间" >
                     </el-table-column>
-                    <el-table-column property="factStarTime" label="实际开始时间" width="150">
+                    <el-table-column property="factStarTime" label="实际开始时间" >
                     </el-table-column>
-                    <el-table-column property="factEndTime" label="实际结束时间" width="150">
+                    <el-table-column property="factEndTime" label="实际结束时间" >
                     </el-table-column>
-                    <el-table-column property="taskState" label="任务状态" width="100">
+                    <el-table-column property="taskState" label="任务状态" >
                     </el-table-column>
                 </el-table>
                 <el-pagination class="page-box" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="this.proDatas.currentPage" :page-sizes="[10, 20, 30, 40, 50]" :page-size="this.proDatas.pageSize" layout="total, sizes, prev, pager, next, jumper" :total="this.proDatas.totalRows">
@@ -466,7 +466,7 @@ export default {
 .bread-box {
     height: 60px;
     line-height: 60px;
-    padding-left: 20px;
+    padding-left: 20px !important;
     font-size: 16px;
     overflow: hidden;
     background-color: #fff;
