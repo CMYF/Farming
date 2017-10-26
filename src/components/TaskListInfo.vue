@@ -61,6 +61,7 @@
 </template>
 <script>
 import _j from 'jquery'
+import bus from './../eventBus'
 import { mapGetters } from 'vuex'
 import store from './../store/index'
 function fetchTask(store, opt) {
@@ -89,7 +90,7 @@ export default {
         	isTrue: true,
         	page:{
         		page_number: 1,
-                page_size: '',
+                page_size: 10,
                 taskStates:20,
                 page_pici: '',
                 page_operater: '',
@@ -140,27 +141,26 @@ export default {
         taskListData: 'TaskListData'
     }), 
     beforeMount() {
-    	fetchTask(this.$store, this.page).then(() => {
-           this.lgd = this.$store.getters.TaskListData.resultData;
-           if (this.lgd.resultCode === '1') {
-              this.pageTotle = this.lgd.basePageObj.dataList.length;
-              console.log(this.pageTotle)
-           	}else{
-           		this.titleNotice=this.lgd.resultMsg;
-           	}
-        });
-		this.page.page_size = 10;
-		fetchTask(this.$store, this.page).then(() => {
-           this.lgd = this.$store.getters.TaskListData.resultData;
-           if (this.lgd.resultCode === '1') {
-              this.tableData = this.lgd.basePageObj.dataList;
-           	}else{
-           		this.titleNotice=this.lgd.resultMsg;
-           	}
-        });
+    	bus.$on('tip', (el) => {
+    		console.log("111111111111111")
+    		console.log(el)
+
+					fetchTask(this.$store, el).then(() => {
+			           this.lgd = this.$store.getters.TaskListData.resultData;
+			           if (this.lgd.resultCode === '1') {
+			              this.tableData = this.lgd.basePageObj.dataList;
+			           	}else{
+			           		//this.titleNotice=this.lgd.resultMsg;
+			           	}
+			        });
+			   })
+    	
     	
     },
     methods: {
+    	
+    	
+    	
     	
     	planBack(){
     		console.log("000000000000")
@@ -202,9 +202,9 @@ export default {
     		fetchTask(this.$store, this.page).then(() => {
 	           this.lgd = this.$store.getters.TaskListData.resultData;
 	           if (this.lgd.resultCode === '1') {
-	              this.tableData = this.lgd.basePageObj.dataList;
+	              this.pageTotle = this.lgd.basePageObj.dataList.length;
 	           	}else{
-	           		this.titleNotice=this.lgd.resultMsg;
+	           		//this.titleNotice=this.lgd.resultMsg;
 	           	}
 	        });
 	        
@@ -214,7 +214,7 @@ export default {
 	           if (this.lgd.resultCode === '1') {
 	              this.tableData = this.lgd.basePageObj.dataList;
 	           	}else{
-	           		this.titleNotice=this.lgd.resultMsg;
+	           		//this.titleNotice=this.lgd.resultMsg;
 	           	}
 	        });
         },
