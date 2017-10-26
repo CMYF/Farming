@@ -17,28 +17,54 @@
     </el-row>
 </template>
 <script>
+import _j from 'jquery'
+import bus from './../eventBus'
 import TaskListInfo from './../components/TaskListInfo'
 import TaskSendList from './../components/TaskSendList'
+import store from './../store/index'
+
+function fetchTask(store, opt) {
+    return store.dispatch('TASKLIST', {
+       num: opt.page_number,
+       size: opt.page_size,
+       states: opt.taskStates,
+       pici: opt.page_pici,
+       operater: opt.page_operater,
+       proName: opt.page_proName
+    });
+}
+
 export default {
+	store,
     components: {
         TaskListInfo,
         TaskSendList
     },
     data() {
         return {
-            activeName2: 'info'
-        };
+            activeName2: 'info',
+            page:{
+        		page_number: 1,
+                page_size: 10,
+                taskStates:20,
+                page_pici: '',
+                page_operater: '',
+                page_proName: ''
+        	}
+        	
+        }
     },
+    
     methods: {
-        taskClick(tab, event) {
+        taskClick(tab) {
         	if(tab.index == 0){
         		
         	}else{
-        		
+        		console.log('1234')
+        		bus.$emit('tip', this.page)
         	}
-        	console.log(tab)
-        	console.log(event)
-            console.log(tab, event);
+        	
+        	
         }
     }
 };

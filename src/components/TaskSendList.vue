@@ -159,7 +159,7 @@ export default {
         	},
         	page:{
         		page_number: 1,
-                page_size: '',
+                page_size: 10,
                 taskStates:10,
                 page_pici: '',
                 page_operater: '',
@@ -226,22 +226,14 @@ export default {
     }), 
     
     beforeMount() {
-    		fetchTask(this.$store, this.page).then(() => {
-	           this.lgd = this.$store.getters.TaskListData.resultData;
-	           if (this.lgd.resultCode === '1') {
-	              this.pageTotle = this.lgd.basePageObj.dataList.length;
-	              console.log(this.pageTotle)
-	           	}else{
-	           		this.titleNotice=this.lgd.resultMsg;
-	           	}
-	        });
-   			this.page.page_size = 10;
+
     		fetchTask(this.$store, this.page).then(() => {
 	           this.lgd = this.$store.getters.TaskListData.resultData;
 	           if (this.lgd.resultCode === '1') {
 	              this.tableData = this.lgd.basePageObj.dataList;
+	              this.pageTotle = this.lgd.basePageObj.totalRows
 	           	}else{
-	           		this.titleNotice=this.lgd.resultMsg;
+	           		//this.titleNotice=this.lgd.resultMsg;
 	           	}
 	        });
     	
@@ -290,22 +282,12 @@ export default {
 	    },
     	
     	selectPiCi(e){
-    		this.page.page_size = '';
         	this.page.page_number = 1;
-    		fetchTask(this.$store, this.page).then(() => {
-	           this.lgd = this.$store.getters.TaskListData.resultData;
-	           if (this.lgd.resultCode === '1') {
-	              this.tableData = this.lgd.basePageObj.dataList;
-	           	}else{
-	           		this.titleNotice=this.lgd.resultMsg;
-	           	}
-	        });
-	        
-	        this.page.page_size = 10;
 	        fetchTask(this.$store, this.page).then(() => {
 	           this.lgd = this.$store.getters.TaskListData.resultData;
 	           if (this.lgd.resultCode === '1') {
 	              this.tableData = this.lgd.basePageObj.dataList;
+	               this.pageTotle = this.lgd.basePageObj.totalRows;
 	           	}else{
 	           		this.titleNotice=this.lgd.resultMsg;
 	           	}
@@ -442,7 +424,7 @@ export default {
 	        	this.planForm.task_linkIdNames = '';
 	            this.planForm.task_number = row.picibianh;
 	            this.planForm.task_sorts = row.sort;
-	            this.ziYuanDate.AllzyPiCi = 'HY20171023111440';
+	            this.ziYuanDate.AllzyPiCi = row.picibianh;
 				this.isTrue =false;
 	        }else{
 	        	this.isTrue =true;
