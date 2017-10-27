@@ -231,6 +231,7 @@ export default {
                     this.planForm.name = proInfo.chanpmc;
                     this.planForm.pluck = proInfo.caiszq;
                     this.planForm.planType = proInfo.guisdname;
+                    this.endLinks.length = 0;
                     let tempLink = {}, lLen = links.length, tempLinkData = {};
                     for (let i = 0; i < lLen; i++) {
                         tempLink = links[i];
@@ -252,7 +253,7 @@ export default {
                             let tTempItem = {};
                             for (let j = 0; j < tLen; j++) {
                                 tTempItem = tempDescs[j];
-                                if (tTempItem) {
+                                if (tTempItem && tTempItem.resourceskey) {
                                     this.endLinks[i].linkDescs.push({
                                         key: tTempItem.resourceskey,
                                         value: tTempItem.resources
@@ -320,8 +321,8 @@ export default {
                             planNo: tempItem.picibianh,
                             proName: tempItem.chanpinmc,
                             proLink: tempItem.linkidname,
-                            planStarTime: tempItem.jihuajsrq,
-                            planEndTime: tempItem.jihuaksrq,
+                            planStarTime: tempItem.jihuaksrq,
+                            planEndTime: tempItem.jihuajsrq,
                             factStarTime: tempItem.shijienddatetime,
                             factEndTime: tempItem.shijistartdatetime,
                             taskState: tempItem.zhixingzt

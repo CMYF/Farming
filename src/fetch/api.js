@@ -272,7 +272,7 @@ export function fetchProductLists(opts) {
         pageSize: opts.pageSize,
         _lk_picibianh: opts.no,
         _lk_chanpinmc: opts.name,
-        _lk_linkidname: opts.linkName,
+        _lk_linkidname: opts.link,
         zhixingzt: opts.state
     }));
 }

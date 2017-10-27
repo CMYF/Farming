@@ -61,12 +61,17 @@ export default {
     }),
     mounted() {
         let tempInfo = localStorage.uinfo;
-        let userInfo = JSON.parse(tempInfo);
-        this.userInfo.name = userInfo.opername;
+        if (tempInfo) {
+            let userInfo = JSON.parse(tempInfo);
+            this.userInfo.name = userInfo.opername;
+        }
 
     },
     beforeMount() {
         let token = localStorage.token;
+        if (!token) {
+            return;
+        }
         fetchNav(this.$store, token).then(() => {
             var tempData = this.$store.getters.getNavData.data;
             if (tempData.resultCode === '1') {
@@ -94,7 +99,7 @@ export default {
         toNavSix: function() {
             this.$router.push('/createuser')
         },
-         // show success or error message
+        // show success or error message
         _showMessage(type, msg) {
             this.$message({
                 showClose: true,
