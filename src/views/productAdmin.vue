@@ -240,7 +240,7 @@ export default {
                             state: tempLink.status,
                             startTime: tempLink.receivetime,
                             endTime: tempLink.finishtime,
-                            desc: tempLink.desc,
+                            desc: tempLink.beizhu,
                             isDisabled: true,
                             isHasDescs: false
                         };
@@ -253,17 +253,15 @@ export default {
                             let tTempItem = {};
                             for (let j = 0; j < tLen; j++) {
                                 tTempItem = tempDescs[j];
-                                if (tTempItem && tTempItem.resourceskey) {
+                                if (tTempItem && tTempItem.key) {
                                     this.endLinks[i].linkDescs.push({
-                                        key: tTempItem.resourceskey,
-                                        value: tTempItem.resources
+                                        key: tTempItem.key,
+                                        value: tTempItem.value
                                     });
                                 }
                             }
                         }
                     }
-                    console.log('环节有吗？');
-                    console.log(this.links);
                 }
             });
             this.isShowPlanDailog = true;
@@ -274,7 +272,6 @@ export default {
             let dom = _j(e.target);
             let subInfoBoxDom = '';
             let tempDom = '';
-            let iconDom = _j('.detail-icon');
             if (dom.hasClass('collapse-ex')) {
                 tempDom = dom;
                 subInfoBoxDom = tempDom.siblings('.sub-link-info-box');
@@ -282,6 +279,7 @@ export default {
                 tempDom = dom.parent('.collapse-ex');
                 subInfoBoxDom = tempDom.siblings('.sub-link-info-box');
             }
+            let iconDom = tempDom.children('.detail-icon');
             if (subInfoBoxDom.hasClass('show')) {
                 iconDom.removeClass('detail-icon-show');
                 subInfoBoxDom.slideUp('500', function() {
@@ -323,8 +321,8 @@ export default {
                             proLink: tempItem.linkidname,
                             planStarTime: tempItem.jihuaksrq,
                             planEndTime: tempItem.jihuajsrq,
-                            factStarTime: tempItem.shijienddatetime,
-                            factEndTime: tempItem.shijistartdatetime,
+                            factStarTime: tempItem.shijistartdatetime,
+                            factEndTime: tempItem.shijienddatetime,
                             taskState: tempItem.zhixingzt
                         });
                     }
