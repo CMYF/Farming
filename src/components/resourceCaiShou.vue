@@ -56,18 +56,22 @@
                     <el-table-column property="usetime" label="开始使用时间"  style="width: 200">
                     </el-table-column>
                     <el-table-column property="statusName" label="使用状态"  style="width: 50">
+                    	 <template scope="scope">
+		                        <span v-if="scope.row.status=== 0" style="color: #ff0000">{{ scope.row.statusName }}</span>
+		                        <span v-else style="color: #82d111">{{ scope.row.statusName }}</span>
+			              </template>	
                     </el-table-column>
                 </el-table>
-                <el-pagination class="page-box" :total="pageTotle" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="ziYuanDate.AllzyPage" :page-sizes="[1,2,3,10]" :page-size="ziYuanDate.AllzyPageSize" layout="total, sizes, prev, pager, next, jumper" >
+                <el-pagination class="page-box" :total="pageTotle" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="ziYuanDate.AllzyPage" :page-sizes="[10,20,30,40,50]" :page-size="ziYuanDate.AllzyPageSize" layout="sizes, prev, pager, next"  >
                 </el-pagination>
             </div>
         </el-col>
-        <el-dialog class="dialog-box" title="新增资源" :visible.sync="isShowPlanDailog">
-		            <el-form :model="ymAddResource" :inline="true" ref="ymAddResource" class="plan-form" >
+        <el-dialog class="dialog-box" title="新增资源" :visible.sync="isShowPlanDailog" @close="closeDialogc">
+		            <el-form :model="ymAddResource" :inline="true" :rules="rules" ref="ymAddResource" class="plan-form" >
 		                <el-form-item label="资源名称" :label-width="formLabelWidth" prop = "zyNames">
 		                    <el-input v-model="ymAddResource.zyNames"   auto-complete="off"></el-input>
 		                </el-form-item>
-		                <el-form-item label="归属地" :label-width="formLabelWidth" >
+		                <el-form-item label="归属地" :label-width="formLabelWidth" prop = "zyColumids">
 		                    <div class="block" >
 							  <el-cascader
 							    expand-trigger="hover"
@@ -77,8 +81,8 @@
 							  </el-cascader>
 							</div>
 		                </el-form-item>
-		                <el-form-item label="资源类型" :label-width="formLabelWidth">
-		                    <el-select v-model="value1"  placeholder="请选择" @change="resourceTpye" >
+		                <el-form-item label="资源类型" :label-width="formLabelWidth" prop = "zyTypes">
+		                    <el-select v-model="ymAddResource.zyTypes"  placeholder="请选择" @change="resourceTpye" >
 							    <el-option
 							      v-for="item in typeName"
 							      :key="item.value"
@@ -87,7 +91,7 @@
 							    </el-option>
 							</el-select>
 		                </el-form-item>
-		                <el-form-item label="资源编号" :label-width="formLabelWidth" prop = "zyCodes">
+		                <el-form-item label="资源编号" :label-width="formLabelWidth" >
 		                    <el-input v-model="ymAddResource.zyCodes" :disabled="true"   auto-complete="off"></el-input>
 		                </el-form-item>
 		                 <el-form-item label="创建时间" :label-width="formLabelWidth" >
@@ -108,6 +112,7 @@
 </template>
 <script>
 import _j from 'jquery'
+import bus from './../eventBus'
 import { mapGetters } from 'vuex'
 import store from './../store/index'
 function fetchTaskZiyuan(store, opt) {
@@ -160,6 +165,22 @@ export default {
 	store,
     data() {
         return {
+        	
+        	rules: {
+	          zyNames: [
+	            { required: true, message: '请输入资源名称', trigger: 'blur' },
+	            { min: 1, max: 25, message: '长度在 1 到 25 个字符', trigger: 'blur' }
+	          ],
+	          zyColumids: [
+	            { required: true, message: '请选择活动区域', trigger: 'change' }
+	          ],
+	          zyTypes: [
+	            { required: true, message: '请选择资源类型', trigger: 'change' }
+	          ]
+			
+	        },
+        	
+        	
         	pageTotle: 1,
         	imglink: '',
         	isTrue: true,
@@ -179,7 +200,7 @@ export default {
 		        AllzyColumid: '',
 		        AllzyStatus: '',
 				AllzyPage: 1,
-				AllzyPageSize: ''
+				AllzyPageSize: 10
 	        },
         	delziyuan:{
         		tokens: '',
@@ -249,26 +270,29 @@ export default {
         taskListData: 'TaskListData'
     }), 
     beforeMount() {
-    	fetchTaskZiyuan(this.$store, this.ziYuanDate).then(() => {
-           this.allzy = this.$store.getters.TaskZiyuanData.resultData;
-           if (this.allzy.resultCode === '1') {
-          	 this.pageTotle = this.allzy.basePageObj.dataList.length;
-           	}else{
-           		//this.titleNotice=this.allzy.resultMsg;
-           	}
-        }),
-        this.ziYuanDate.AllzyPageSize =10;
-        fetchTaskZiyuan(this.$store, this.ziYuanDate).then(() => {
-           this.allzy = this.$store.getters.TaskZiyuanData.resultData;
-           if (this.allzy.resultCode === '1') {
-          	this.tableData = this.allzy.basePageObj.dataList;
-           	}else{
-           		//this.titleNotice=this.allzy.resultMsg;
-           	}
-        }),
-        this.ownLandCheck()
+    	bus.$on('caiShouList', (cs) => {
+    		cs=this.ziYuanDate;
+    		cs.AllzyType = '3';
+			fetchTaskZiyuan(this.$store, cs).then(() => {
+	           this.allzy = this.$store.getters.TaskZiyuanData.resultData;
+	           if (this.allzy.resultCode === '1') {
+	          	this.tableData = this.allzy.basePageObj.dataList;
+	          	this.pageTotle = this.allzy.basePageObj.totalRows;
+	           	}else{
+	           		//this.titleNotice=this.allzy.resultMsg;
+	           	}
+	        })
+	        this.ownLandCheck()
+	   	})
+    	
+        
     },
     methods: {
+    	
+    	closeDialogc(){
+    		this.$refs.ymAddResource.resetFields();
+    	},
+    	
     	
     	showCode(row, column, cell, event){
             let dom = _j(cell);
@@ -286,13 +310,12 @@ export default {
     	
     	ziYuanCheck(){
     		this.ziYuanDate.AllzyStatus= this.value5;
-    		this.ziYuanDate.AllzyPageSize = '';
+    		this.ziYuanDate.AllzyPageSize = 10;
     		fetchTaskZiyuan(this.$store, this.ziYuanDate).then(() => {
 	           this.allzy = this.$store.getters.TaskZiyuanData.resultData;
 	           if (this.allzy.resultCode === '1') {
-	           	this.pageTotle = this.allzy.basePageObj.dataList.length;
 	          	this.tableData = this.allzy.basePageObj.dataList;
-	          	
+	          	this.pageTotle = this.allzy.basePageObj.totalRows;
 	           	}else{
 	           		this.titleNotice=this.allzy.resultMsg;
 	           	}
@@ -302,7 +325,7 @@ export default {
         cancelDailog(){
         	this.isShowPlanDailog = false;
         	this.$refs.ymAddResource.resetFields();
-        	this.value1 = '';
+        	this.ymAddResource.zyTypes = '';
         },
     	
     	ymAdd(){
@@ -327,7 +350,8 @@ export default {
     		this.flag = false;
     		this.ymAddResource.zyNames = '';
 			this.ymAddResource.zyCodes = '';
-    		this.value1 = '';
+			this.ymAddResource.zyTypes = '';
+    		//this.value1 = '';
     		this.selectedOptions2 = [];
     		this.selectedOptions3 = [];
     		this.ziYuanDate.AllzyColumid = '';
@@ -393,7 +417,7 @@ export default {
     	
     	resourceTpye(value1){
     		if(value1){
-    			this.zyNum.zyTypes = this.value1;
+    			this.zyNum.zyTypes = this.ymAddResource.zyTypes;
     		fetchZiYuanNum(this.$store, this.zyNum).then(() => {
 	            this.zy = this.$store.getters.ZiYuanNumData.resultData;
 	            if (this.zy.resultCode === '1') {
@@ -409,29 +433,43 @@ export default {
     	},
     	
     	sendAddym(){
-    		this.ymAddResource.zyTypes = this.value1;
-    		this.flag = true;
+    		
+    		console.log("aaaaaaaaaaaaa")
     		console.log(this.ymAddResource)
-    		fetchAddResource(this.$store, this.ymAddResource).then(() => {
-	            this.zy = this.$store.getters.AddResourceData.resultData;
-	            if (this.zy.resultCode === '1') {
-	          		this.isShowPlanDailog = false;
-	          		this.flag = false;
-	          		
-	          		fetchTaskZiyuan(this.$store, this.ziYuanDate).then(() => {
-			           this.allzy = this.$store.getters.TaskZiyuanData.resultData;
-			           if (this.allzy.resultCode === '1') {
-			          	this.tableData = this.allzy.basePageObj.dataList;
+    		this.$refs.ymAddResource.validate((valid) => {
+		          if (valid) {
+		    		this.flag = true;
+		    		console.log("bbbbbbbbbbbbb")
+		    		console.log(this.ymAddResource)
+		    		fetchAddResource(this.$store, this.ymAddResource).then(() => {
+			            this.zy = this.$store.getters.AddResourceData.resultData;
+			            if (this.zy.resultCode === '1') {
+			          		this.isShowPlanDailog = false;
+			          		this.flag = false;
+			          		
+			          		fetchTaskZiyuan(this.$store, this.ziYuanDate).then(() => {
+					           this.allzy = this.$store.getters.TaskZiyuanData.resultData;
+					           if (this.allzy.resultCode === '1') {
+					          	this.tableData = this.allzy.basePageObj.dataList;
+					          	this.pageTotle = this.allzy.basePageObj.totalRows;
+					           	}else{
+					           		this.$message.error(this.allzy.resultMsg);
+					           	}
+					        });
+			          		
 			           	}else{
-			           		this.titleNotice=this.allzy.resultMsg;
+			           		this.flag = false;
+			           		this.$message.error(this.zy.resultMsg);
 			           	}
 			        });
-	          		
-	           	}else{
-	           		this.flag = false;
-	           		//this.titleNotice=this.zy.resultMsg;
-	           	}
-	        });
+		        
+		        } else {
+			            console.log('error submit!!');
+			            return false;
+			          }
+			    });
+    		
+	        
     	},
     	
     	
@@ -449,6 +487,7 @@ export default {
 	           this.allzy = this.$store.getters.TaskZiyuanData.resultData;
 	           if (this.allzy.resultCode === '1') {
 	          	this.tableData = this.allzy.basePageObj.dataList;
+	          	this.pageTotle = this.allzy.basePageObj.totalRows;
 	           	}else{
 	           		//this.titleNotice=this.allzy.resultMsg;
 	           	}
@@ -463,6 +502,7 @@ export default {
 	           this.allzy = this.$store.getters.TaskZiyuanData.resultData;
 	           if (this.allzy.resultCode === '1') {
 	          	this.tableData = this.allzy.basePageObj.dataList;
+	          	this.pageTotle = this.allzy.basePageObj.totalRows;
 	           	}else{
 	           		//this.titleNotice=this.allzy.resultMsg;
 	           	}
@@ -471,7 +511,7 @@ export default {
         
         delResource(){
         	
-        	this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+        	this.$confirm('此操作将删除该资源, 是否继续?', '提示', {
 	          confirmButtonText: '确定',
 	          cancelButtonText: '取消',
 	          type: 'warning'
@@ -489,6 +529,7 @@ export default {
 				           this.allzy = this.$store.getters.TaskZiyuanData.resultData;
 				           if (this.allzy.resultCode === '1') {
 				          	this.tableData = this.allzy.basePageObj.dataList;
+				          	this.pageTotle = this.allzy.basePageObj.totalRows;
 				           	}else{
 				           		this.titleNotice=this.allzy.resultMsg;
 				           	}

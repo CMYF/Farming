@@ -5,7 +5,7 @@
             <el-breadcrumb-item>资源管理</el-breadcrumb-item>
         </el-breadcrumb>
         <el-col :span="23" class="pro-content">
-            <el-tabs v-model="activeName2" type="card" @tab-click="handleClick">
+            <el-tabs v-model="activeName2" type="card" @tab-click="resourceClick">
                 <el-tab-pane label="育苗床" name="info">
                 	<ResourceGrow></ResourceGrow>
                 </el-tab-pane>
@@ -22,10 +22,14 @@
     </el-row>
 </template>
 <script>
+import _j from 'jquery'
+import bus from './../eventBus'
 import ResourceGrow from './../components/resourceYuMiao'
 import ResourcePlant from './../components/resourceZhongZhi'
 import TaskSendHarvest from './../components/resourceCaiShou'
+import store from './../store/index'
 export default {
+	store,
     components: {
         ResourceGrow,
         ResourcePlant,
@@ -33,12 +37,28 @@ export default {
     },
     data() {
         return {
-            activeName2: 'info'
+            activeName2: 'info',
+            ziYuanDate:{
+		        AllzyType: '',
+		        AllzyName: '',
+		        AllzyColumid: '',
+		        AllzyStatus: '',
+				AllzyPage: 1,
+				AllzyPageSize: ''
+	        }
         };
     },
     methods: {
-        handleClick(tab, event) {
-            console.log(tab, event);
+         resourceClick(tab) {
+        	if(tab.index == 0){
+        		bus.$emit('yuMiaoList', this.ziYuanDate)
+        	}else if(tab.index == 1){
+        		bus.$emit('zhongZhiList', this.ziYuanDate)
+        	}else if(tab.index == 2){
+        		bus.$emit('caiShouList', this.ziYuanDate)
+        	}
+        	
+        	
         }
     }
 };

@@ -23,16 +23,6 @@ import TaskListInfo from './../components/TaskListInfo'
 import TaskSendList from './../components/TaskSendList'
 import store from './../store/index'
 
-function fetchTask(store, opt) {
-    return store.dispatch('TASKLIST', {
-       num: opt.page_number,
-       size: opt.page_size,
-       states: opt.taskStates,
-       pici: opt.page_pici,
-       operater: opt.page_operater,
-       proName: opt.page_proName
-    });
-}
 
 export default {
 	store,
@@ -46,7 +36,7 @@ export default {
             page:{
         		page_number: 1,
                 page_size: 10,
-                taskStates:20,
+                taskStates: '',
                 page_pici: '',
                 page_operater: '',
                 page_proName: ''
@@ -58,7 +48,7 @@ export default {
     methods: {
         taskClick(tab) {
         	if(tab.index == 0){
-        		
+        		bus.$emit('sendList', this.page)
         	}else{
         		console.log('1234')
         		bus.$emit('tip', this.page)

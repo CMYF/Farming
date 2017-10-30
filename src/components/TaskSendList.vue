@@ -1,6 +1,6 @@
 <template >
     <el-row class="info-box">
-    	<el-col  class="product-box">
+    	<el-col  class="sendTaskList-box">
             <el-form :inline="true" :model="page" class="screen-form">
                 <el-form-item>
                     <el-input v-model="page.page_pici" placeholder="请输入批次号"></el-input>
@@ -8,11 +8,7 @@
                 <el-form-item>
                     <el-input v-model="page.page_proName" placeholder="请输入产品名称"></el-input>
                 </el-form-item>
-                <el-form-item>
-                    <el-select v-model="page.page_proName" placeholder="请选择生产环节">
-                        <el-option v-for="(opt, index) in this.taskStates" :key="index" :label="opt.label" :value="opt.value"></el-option>
-                    </el-select>
-                </el-form-item>
+               
                 <el-form-item>
                     <el-button class="screen-btn" @click="selectPiCi($event)">筛选</el-button>
                 </el-form-item>
@@ -20,7 +16,7 @@
                     <el-button class="screen-btn" @click="sendplan($event)"  v-bind:disabled="isTrue" >派发</el-button>
                 </el-form-item>
             </el-form>
-            <div class="product-tab-box">
+            <div class="sendTaskList-tab-box">
                 <el-table ref="singleTable" border :data="tableData"  highlight-current-row @current-change="showSend" style="width: 100%" >
                 	
                     <el-table-column type="index" label="序号" width="70">
@@ -44,15 +40,15 @@
                     <el-table-column property="statusName" label="任务状态" width="120">
                     </el-table-column>
                 </el-table>
-                <el-pagination class="page-box" :total="pageTotle" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="page.page_number" :page-sizes="[1,2,3,10]" :page-size="page.page_size" layout="total, sizes, prev, pager, next, jumper" >
+                <el-pagination class="page-box" :total="pageTotle" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="page.page_number" :page-sizes="[10,20,30,40,50]" :page-size="page.page_size" layout="sizes, prev, pager, next" >
                 </el-pagination>
             </div>
         </el-col>
         
         
-        <el-dialog class="dialog-box1"   title="派发任务" :visible.sync="isShowPlanDailog1">
-        	<el-form :model="planForm" :inline="true"  ref="planForm" class="plan-form">
-                <el-form-item label="生产环节">
+        <el-dialog class="dialog-box1"   title="派发任务" :visible.sync="isShowPlanDailog1" @close="closeDialogs">
+        	<el-form :model="planForm" :inline="true" :rules="rules"  ref="planForm" class="plan-form">
+                <el-form-item label="生产环节" prop="task_linkIds">
 				     <el-select v-model="planForm.task_linkIds" placeholder="请选择"  @change="selectChange($event)" >
 					    <el-option
 					      v-for="item in options"
@@ -62,20 +58,43 @@
 					    </el-option>
 					  </el-select>
 				</el-form-item>
-				<el-form-item :inline="true" label="此环节对接人"  class="colperson" >
+				<el-form-item :inline="true" label="此环节对接人"  class="cirperson" prop="task_abutments">
 					<el-col :span="10">
-				    	<el-input v-model.trim="task_abutmentOne"></el-input>
-				   </el-col>
-				   <el-col :span="10" :offset="1">
-				     <el-input v-model.trim="task_abutmentTwo"></el-input>
+						<el-form-item  class="taskPerson" >
+				    		<el-select v-model="task_abutmentOne" clearable placeholder="请选择"  @change="personalOne" >
+							    <el-option
+							      v-for="item in optionsPerson"
+							      :key="item.id"
+							      :label="item.name"
+							      :value="item.id">
+							    </el-option>
+						  	</el-select>
+				    	</el-form-item> 
 				    </el-col>
+					
+					<el-col class="line" :span="2"></el-col>
+					
+				    <el-col :span="10" :offset="1">
+				    	<el-form-item class="taskPerson">
+				     		<el-select v-model="task_abutmentTwo" clearable  placeholder="请选择"  @change="personalTwo" >
+							    <el-option
+							      v-for="item in optionsPerson"
+							      :key="item.id"
+							      :label="item.name"
+							      :value="item.id">
+							    </el-option>
+							 </el-select>
+				        </el-form-item> 
+				    </el-col>
+				    <div class='el-form-item__error taskError1'>环节对接人为空</div>
 				</el-form-item>
-				<el-form-item label="筛选资源" v-if="zyDisable">
+				<el-form-item label="筛选资源" v-if="zyDisable"  class="resoures">
 					  <el-checkbox-group  v-model="checkedCities1">
 					    <el-checkbox v-for="ziyuan in ziyuanId"  :label="ziyuan.id" :key="ziyuan.id"    @change="selets(ziyuan.id,ziyuan.names,$event)">{{ziyuan.names}}</el-checkbox>
 					  </el-checkbox-group>
+					  <div class='el-form-item__error taskError2'>环节对接人为空</div>
 				</el-form-item>
-				<el-form-item label="预估工时" >
+				<el-form-item label="预估工时" prop="task_hourTime">
 				    <el-input v-model="planForm.task_hourTime"></el-input>
 				</el-form-item>
 				
@@ -95,6 +114,7 @@
 </template>
 <script>
 import _j from 'jquery'
+import bus from './../eventBus'
 import { mapGetters } from 'vuex'
 import store from './../store/index'
 function fetchTask(store, opt) {
@@ -137,12 +157,40 @@ function fetchTaskZiyuan(store, opt) {
     })
 }
 
-
+function fetchAllUsers(store, opt){
+	return store.dispatch('GET_ALL_USERS', {
+      	token: opt.Usertoken,
+        beginPage: opt.UserbeginPage,
+        pageSize: opt.UserpageSize,
+        acc: opt.Useracc,
+		username: opt.Userusername
+    })
+}
 
 export default {
 	store,
     data() {
         return {
+        	
+        	rules: {
+	          task_linkIds: [
+	            { required: true, message: '请选择生产环节', trigger: 'change' }
+	          ],
+	          task_hourTime: [
+	            { required: true, message: '请输入预估工时' ,trigger: 'blur'}
+	          ]
+
+	        },
+        	
+        	taskPerson:{
+        		Usertoken: localStorage.token,
+        		UserbeginPage: 1,
+        		UserpageSize: '',
+        		Useracc: '',
+        		Userusername: ''
+        	},
+        	personalID: [],
+        	optionsPerson: [],
         	pageTotle: 1,
         	flag: false,
         	checkedCities1: [],
@@ -166,16 +214,7 @@ export default {
                 page_proName: ''
         	},
         	
-        	ruleForm: {
-	          name: '',
-	          joinPerson: '',
-	          time:'',
-	          delivery: false,
-	          type: [],
-	          resource: '',
-	          desc: ''
-	        },
-	        
+        
 	        ziYuanDate:{
 		        AllzyType: '',
 		        AllzyName: '',
@@ -197,7 +236,7 @@ export default {
                 task_linkIdNames: '',
                 task_hourTime: '',
                 task_abutments: '',
-                task_resoureinfos: []
+                task_resoureinfos: ''
             },
             isDisabled: true,
             formLabelWidth: '120px',
@@ -226,8 +265,19 @@ export default {
     }), 
     
     beforeMount() {
-
-    		fetchTask(this.$store, this.page).then(() => {
+		fetchTask(this.$store, this.page).then(() => {
+           this.lgd = this.$store.getters.TaskListData.resultData;
+           if (this.lgd.resultCode === '1') {
+              this.tableData = this.lgd.basePageObj.dataList;
+              this.pageTotle = this.lgd.basePageObj.totalRows
+           	}else{
+           		//this.titleNotice=this.lgd.resultMsg;
+           	}
+        })
+		
+		bus.$on('sendList', (test) => {
+			test.taskStates = 10;
+			fetchTask(this.$store, test).then(() => {
 	           this.lgd = this.$store.getters.TaskListData.resultData;
 	           if (this.lgd.resultCode === '1') {
 	              this.tableData = this.lgd.basePageObj.dataList;
@@ -236,49 +286,115 @@ export default {
 	           		//this.titleNotice=this.lgd.resultMsg;
 	           	}
 	        });
+	   })
     	
     	
     },
     methods: {
+    	
+    	closeDialogs(){
+    		this.$refs.planForm.resetFields();
+    		
+    	},
+    	
+    	
+    	personalOne(value){
+    		
+    		if(value){
+    			_j(".cirperson .taskError1").hide()
+    		}
+    		
+    	},
+    	personalTwo(value){
+    		if(value){
+    			_j(".cirperson .taskError1").hide()
+    		}
+    		
+    	},
+    
     	sendTaskComplete(e){
             this.planForm.task_linkIdNames = this.circleNames;
             this.planForm.task_resoureinfos = this.ziyuanAll.join("/");
-            if(this.task_abutmentOne != ''){
-            	this.planForm.task_abutments.push(this.task_abutmentOne);
-            }
-            if(this.task_abutmentTwo != ''){
-            	 this.planForm.task_abutments.push(this.task_abutmentTwo);
-            }
+             console.log( this.task_abutmentOne)
+            console.log( this.task_abutmentTwo)
             
-            if( this.task_abutmentTwo == '' && this.task_abutmentOne == ''){
-            	alert("请输入对接人")
-            	return;
+//          if( this.task_abutmentTwo == '' && this.task_abutmentOne == ''){
+//          	alert("请输入对接人")
+//          	return;
+//          }
+			
+			
+            
+            
+            if(this.task_abutmentTwo == '' && this.task_abutmentOne != ''){
+            	this.personalID.push(this.task_abutmentOne);
+            	this.planForm.task_abutments = this.personalID.join("/")+"/"
+            }else if(this.task_abutmentOne == '' && this.task_abutmentTwo != ''){
+            	this.personalID.push(this.task_abutmentTwo);
+            	this.planForm.task_abutments = this.personalID.join('')+"/";
+            	
+            }else if(this.task_abutmentOne != '' && this.task_abutmentTwo != ''){
+            	this.personalID.push(this.task_abutmentOne);
+            	this.personalID.push(this.task_abutmentTwo);
+            	this.planForm.task_abutments = this.personalID.join("/")+"/";
+            }else{
+            	_j(".cirperson .taskError1").show()
             }
-            console.log(this.value)
+            console.log(this.planForm.task_abutments.length)
             this.flag = true;
-            this.planForm.task_abutments=this.planForm.task_abutments.join("/");
             console.log("33333333333333333")
             console.log(this.planForm)
-	  		fetchSendTask(this.$store, this.planForm).then(() => {
-	           this.sem = this.$store.getters.TaskCircleData.resultData;
-	           if (this.sem.resultCode === '1') {
-					this.flag = false;
-	            	this.isShowPlanDailog1 = false;
-	            	fetchTask(this.$store, this.page).then(() => {
-			           this.lgd = this.$store.getters.TaskListData.resultData;
-			           if (this.lgd.resultCode === '1') {
-			              this.tableData = this.lgd.basePageObj.dataList;
-			           	}else{
-			           		this.titleNotice=this.lgd.resultMsg;
-			           	}
-			        });
-			       
-	            	
-	           }else{	           		
-	           		this.titleNotice=this.sem.resultMsg;
-                    this.flag = false;		
-	           	}
-	        });
+            
+              this.$refs.planForm.validate((valid) => {
+		          if (valid) {
+		            if(this.planForm.task_linkIds.indexOf("T") == -1 && this.planForm.task_resoureinfos.length == 0){
+		            	_j(".resoures .taskError2").show();
+		            	this.personalID = [];
+	            		this.planForm.task_abutments = '';
+		            	this.flag = false;
+		            }
+		            if(this.task_abutmentTwo == '' && this.task_abutmentOne == ''){
+		            	_j(".cirperson .taskError1").show();
+		            	 this.flag = false;
+		            }else{
+		            	this.flag = true;
+		            	 console.log("3555555555555553")
+	           			 console.log(this.planForm)
+	           			 
+	           			 fetchSendTask(this.$store, this.planForm).then(() => {
+				           this.sem = this.$store.getters.TaskCircleData.resultData;
+				           if (this.sem.resultCode === '1') {
+								this.flag = false;
+				            	this.isShowPlanDailog1 = false;
+				            	fetchTask(this.$store, this.page).then(() => {
+						           this.lgd = this.$store.getters.TaskListData.resultData;
+						           if (this.lgd.resultCode === '1') {
+						              this.tableData = this.lgd.basePageObj.dataList;
+									  this.pageTotle = this.lgd.basePageObj.totalRows;
+						           	}else{
+						           		
+						           	}
+						        });
+						       
+				            	
+				           }else{	           		
+				           		this.$message.error("派发失败");
+			                    this.flag = false;		
+				           	}
+				        });
+			           			 
+		            }
+		           
+	            
+		  		
+	        } else {
+	            console.log('error submit!!');
+	            this.flag = false;
+	            this.personalID = []
+	            this.planForm.task_abutments = ''
+	            return false;
+	        }
+	       })
 	    },
     	
     	selectPiCi(e){
@@ -297,8 +413,7 @@ export default {
     	
     	selectChange(e){
     		this.checkedCities1=[];
-    		this.task_abutmentOne = '';
-        	this.task_abutmentTwo = '';
+    		
     		this.planForm.task_hourTime = '';
     		this.planForm.task_linkIds  = e;
       		console.log(this.options)
@@ -307,9 +422,9 @@ export default {
     				this.circleNames=items.linkName;
     			}
     		})
-    		if(e == 'T001'){
+    		if(e.indexOf("T") > -1){
     			this.zyDisable = false;
-    			this.planForm.task_resoureinfos = [] ;
+    			this.planForm.task_resoureinfos = '' ;
     			this.ziyuanAll =[];
     			console.log(this.planForm.task_resoureinfos)
     		}else{
@@ -334,12 +449,20 @@ export default {
     	selets(ids,names,e){
     		if(e.target.checked == true){
     			this.ziyuanAll.push(ids)
+    			_j(".resoures .taskError2").hide()
     		}else{
+    			
+    			console.log("222222222")
+    			console.log(this.ziyuanAll)
     			this.ziyuanAll.forEach((item,index)=>{
     				if(item == ids){
 	    				this.ziyuanAll.splice(index,1)
+	    				
 	    				console.log(this.ziyuanAll)
     				}
+    				if(this.ziyuanAll.length == 0){
+		    			_j(".resoures .taskError2").show()
+		    		}
     			})
     			
     			
@@ -361,6 +484,7 @@ export default {
 	           this.lgd = this.$store.getters.TaskListData.resultData;
 	           if (this.lgd.resultCode === '1') {
 	              this.tableData = this.lgd.basePageObj.dataList;
+	              this.pageTotle = this.lgd.basePageObj.totalRows;
 	           	}else{
 	           		this.titleNotice=this.lgd.resultMsg;
 	           	}
@@ -376,6 +500,7 @@ export default {
 	           this.lgd = this.$store.getters.TaskListData.resultData;
 	           if (this.lgd.resultCode === '1') {
 	              this.tableData = this.lgd.basePageObj.dataList;
+	              this.pageTotle = this.lgd.basePageObj.totalRows;
 	           	}else{
 	           		this.titleNotice=this.lgd.resultMsg;
 	           	}
@@ -393,6 +518,7 @@ export default {
     		this.planForm.task_hourTime = '';
     		this.ziyuanAll = [];
     		this.circleNames = '';
+    		_j(".cirperson .taskError1").hide()
         	fetchTaskCircle(this.$store, this.circles).then(() => {
 	           this.pcm = this.$store.getters.TaskCircleData.resultData;
 	           if (this.pcm.resultCode === '1') {
@@ -411,6 +537,20 @@ export default {
 	           	}
 	        });
         	
+        	fetchAllUsers(this.$store, this.taskPerson).then(() => {
+		           this.pr = this.$store.getters.getUserDatas;
+		           if (this.pr.resultCode === '1') {
+		           	console.log(this.pr)
+		           	this.optionsPerson = [];
+		           	this.personalID = []
+		          	 this.pr.basePageObj.dataList.forEach((value) => {
+					    this.optionsPerson.push({id:value.ids,name:value.opername})
+					})
+					//console.log(this.ziyuanId)    
+		           	}else{
+		           		//this.titleNotice=this.pr.resultMsg;
+		           	}
+		        });
         	
         	
         },
@@ -434,30 +574,7 @@ export default {
         },
   
         
-        showLinkDetail(e) {
-            let dom = _j(e.target);
-            let subInfoBoxDom = '';
-            let tempDom = '';
-            let iconDom = _j('.detail-icon');
-            if (dom.hasClass('collapse-ex')) {
-                tempDom = dom;
-                subInfoBoxDom = tempDom.siblings('.sub-link-info-box');
-            } else {
-                tempDom = dom.parent('.collapse-ex');
-                subInfoBoxDom = tempDom.siblings('.sub-link-info-box');
-            }
-            if (subInfoBoxDom.hasClass('show')) {
-                iconDom.removeClass('detail-icon-show');
-                subInfoBoxDom.slideUp('500', function() {
-                    subInfoBoxDom.removeClass('show').addClass('hide')
-                })
-                return;
-            }
-            iconDom.addClass('detail-icon-show');
-            subInfoBoxDom.slideDown('500', function() {
-                subInfoBoxDom.removeClass('hide').addClass('show')
-            })
-        }
+        
     }
 }
 </script>
@@ -470,7 +587,7 @@ export default {
     background-color: #fff;
 }
 
-.product-box {
+.sendTaskList-box {
     padding-top: 20px;
     margin-top: 10px;
     background-color: #fff;
@@ -482,7 +599,7 @@ export default {
     padding-left: 20px;
 }
 
-.product-tab-box {
+.sendTaskList-tab-box {
     margin-top: 20px;
     padding-left: 20px;
     padding-right: 20px;
@@ -530,91 +647,7 @@ export default {
 }
 
 
-.dialog-box {
-    .el-dialog--small {
-        width: 885px;
-    }
-    .plan-form {
-        border-bottom: 1px solid #ccc;
-        .el-form-item {
-            width: 400px;
-            text-align: left;
-            .el-form-item__content,
-            .el-select {
-                width: 250px;
-            }
-        }
-    }
 
-    .el-dialog__header {
-        padding: 0;
-        border-bottom: 1px solid #cccccc;
-        .el-dialog__title {
-            width: 80%;
-            height: 35px;
-            line-height: 35px;
-            display: inline-block;
-            border-left: 6px solid #02bdad;
-            margin-top: 10px;
-            margin-bottom: 10px;
-            text-align: left;
-            text-indent: 20px;
-            float: left;
-        }
-        .el-dialog__headerbtn {
-            margin-top: 20px;
-            margin-right: 20px;
-            border-radius: 50%;
-            border: 1px solid #404040;
-            width: 20px;
-            height: 20px;
-            i {
-                color: #404040;
-                font-size: 12px;
-            }
-        }
-    }
-    .el-dialog__body {
-        max-height: 530px;
-        overflow-y: auto;
-    }
-    .product-link-box {
-        text-align: left;
-        margin-top: 20px;
-    }
-    .link-name {
-        //width: 165px !important;
-    }
-    .link-name2 {
-        width: 80px;
-    }
-    .link-date,
-    .link-time {
-        width: 50px;
-    }
-    .el-dialog__footer {
-        border-top: 1px solid #ccc;
-        box-shadow: 0px 0px 6px 0px #ccc;
-    }
-    .dialog-footer-box {
-        text-align: center;
-        padding-top: 20px;
-        padding-bottom: 20px;
-
-        .el-button {
-            width: 160px;
-            height: 38px;
-            color: #fff;
-            font-size: 15px;
-        }
-        .save-btn {
-            background: #02bdad;
-        }
-        .cancle-btn {
-            background: #bbbbbb;
-        }
-    }
-}
 
 .dialog-box1 {
     .el-dialog--small {
@@ -628,8 +661,25 @@ export default {
             .el-select {
                 width: 280px;
             }
+            
         }
+        .taskPerson{
+        	width: 150px;
+        	.el-form-item__content,
+            .el-select {
+                width: 120px;
+            }
+        }
+        .taskError1{
+	   	  display: none;
+	    }
+        .taskError2{
+        	display: none;
+        }
+        
     }
+    
+  
     
     .TaskBtn{
     	.el-button{
