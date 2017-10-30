@@ -8,8 +8,8 @@
                 <el-col :span="18" class="mack-box">
                     <div class="date-box">
                         <!--<el-date-picker v-model="params.beginTime" @change="startChange" format="yyyy-MM-dd" type="date" :picker-options="pickerOptions0" placeholder="选择开始日期"></el-date-picker>
-                                                        -
-                                                        <el-date-picker v-model="params.finishTime" @change="endChange" type="date" :picker-options="pickerOptions0" placeholder="选择结束日期"> </el-date-picker>-->
+                                                            -
+                                                            <el-date-picker v-model="params.finishTime" @change="endChange" type="date" :picker-options="pickerOptions0" placeholder="选择结束日期"> </el-date-picker>-->
                         <el-date-picker v-model="value6" type="daterange" range-separator=" / " @change="selectDate" :picker-options="pickerOptions0" placeholder="选择日期范围">
                         </el-date-picker>
                         <el-button class="select-btn" @click="getProductLines()">
@@ -30,7 +30,7 @@
                         <el-checkbox-group v-model="chnageTypes" @change="typeChange" :max="5">
                             <el-checkbox v-for="(item, idx) in vfTypes" :label="item.label" :key="idx">{{item.label}}</el-checkbox>
                             <!--<el-checkbox v-for="(item, index) in vfTypes" :key="index" :data-id="item.id " @change="selectProducts(item.id, $event)" :label="item.label" :true-label="item.id">{{ item.label }}
-                                                                                                                                                                            </el-checkbox>-->
+                                                                                                                                                                                </el-checkbox>-->
 
                         </el-checkbox-group>
                     </div>
@@ -542,6 +542,15 @@ export default {
                 padding-right: 8px;
                 line-height: 36px;
                 color: $m-black-9;
+            }
+            .el-checkbox__inner {
+                width: 14px;
+                height: 14px;
+            }
+            .el-checkbox__inner::after{
+                height: 6px;
+                left: 3px;
+                vertical-align: top;
             }
         }
         .show-all-box {
