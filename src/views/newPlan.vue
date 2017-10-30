@@ -1,9 +1,11 @@
 <template >
     <el-row class="pro-box">
         <el-breadcrumb separator="/" class="plan-box">
+        	<el-breadcrumb-item>
+                <span class="iconfont">&#xe771;</span>
+            </el-breadcrumb-item>
             <el-breadcrumb-item>计划管理</el-breadcrumb-item>
-            <el-breadcrumb-item>新建计划</el-breadcrumb-item>
-        </el-breadcrumb>
+        	</el-breadcrumb>
         <el-col :span="23" class="pro-content">
         	 
              <el-row class="info-box">
@@ -16,9 +18,14 @@
 		                    <el-input v-model="page.page_name" placeholder="请输入产品名称"></el-input>
 		                </el-form-item>
 		                <el-form-item>
-		                    <el-select v-model="planForm.state" placeholder="请选择计划状态">
-		                        <el-option v-for="(opt, index) in this.taskStates" :key="index" :label="opt.label" :value="opt.value"></el-option>
-		                    </el-select>
+		                   <el-select v-model="value10" clearable  placeholder="选择使用状态"  >
+							    <el-option
+							      v-for="item in zyState"
+							      :key="item.value"
+							      :label="item.label"
+							      :value="item.value">
+							    </el-option>
+							</el-select>
 		                </el-form-item>
 		                <el-form-item>
 		                    <el-button class="screen-btn" @click.stop="screenPlan">筛选</el-button>
@@ -53,9 +60,15 @@
 		                    <el-table-column property="shijienddatetime" label="实际结束时间" width="190">
 		                    </el-table-column>
 		                    <el-table-column property="zhixingzt" label="任务状态" width="120">
+		                    	<template scope="scope">
+		                    		<span v-if="scope.row.status=== 10" style="color: #ff0000">{{ scope.row.zhixingzt }}</span>
+			                        <span v-if="scope.row.status=== 20" style="color: #fecb00">{{ scope.row.zhixingzt }}</span>
+			                       <span v-if="scope.row.status=== 30" style="color: #00d6c4">{{ scope.row.zhixingzt }}</span>
+			                        <span v-if="scope.row.status=== 40" style="color: #82d111">{{ scope.row.zhixingzt }}</span>
+			            		 </template>
 		                    </el-table-column>
 		                </el-table>
-		                 <el-pagination class="page-box" :total="pageTotle" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="page.page_number" :page-sizes="[1,2,3,10]" :page-size="page.page_size" layout="total, sizes, prev, pager, next, jumper" >
+		                 <el-pagination class="page-box" :total="pageTotle" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="page.page_number" :page-sizes="[10,20,30,40,50]" :page-size="page.page_size" layout="sizes, prev, pager, next" >
                 		</el-pagination>
 		            </div>
 		        </el-col>
@@ -225,6 +238,25 @@ export default {
         	isTrue: true,
         	options5:[],
         	
+        	zyState: [              
+                  {
+                    label: '待派发',
+                    value: 10
+                },
+                {
+                    label: '已派发',
+                    value: 20
+                },
+                {
+                    label: '处理中',
+                    value: 30
+                },
+                {
+                    label: '已处理',
+                    value: 40
+                }
+            ],
+        	
         	selectedOptions2: [],
         	
         	rules: {
@@ -272,10 +304,10 @@ export default {
         	delplans:{
         		del_pici: ''
         	},
-        	
+        	value10: '',
         	page:{
         		page_number: 1,
-                page_size: '',
+                page_size: 10,
                 page_pici: '',
                 page_name: '',
                 page_status: ''
@@ -284,7 +316,7 @@ export default {
 			options:[],
 			products:{
 				products_number: 1,
-				products_size: 30,
+				products_size: '',
 				products_name: '',
 				products_id: ''
 			},
@@ -306,20 +338,7 @@ export default {
             formLabelWidth: '120px',
             currentPage4: 4,
             isShowPlanDailog: false,
-            taskStates: [
-                {
-                    label: '处理中',
-                    value: 1
-                },
-                {
-                    label: '已完成',
-                    value: 2
-                },
-                {
-                    label: '已派发',
-                    value: 3
-                }
-            ],
+            
             tableData: [],
 //          multipleSelection: [],
             ziYuanDate:{
@@ -346,20 +365,13 @@ export default {
         }
     },
     beforeMount() {
-		fetchPlanList(this.$store, this.page).then(() => {
-           this.jh = this.$store.getters.PlanData.resultData;
-           if (this.jh.resultCode === '1') {
-           	 this.pageTotle = this.jh.basePageObj.dataList.length;
-           	}else{
-           		//this.titleNotice=this.jh.resultMsg;
-           	}
-        });
-		this.page.page_size = 10;
+		
 		fetchPlanList(this.$store, this.page).then(() => {
            this.jh = this.$store.getters.PlanData.resultData;
            if (this.jh.resultCode === '1') {
            	console.log(this.jh)
               this.tableData = this.jh.basePageObj.dataList;
+              this.pageTotle = this.jh.basePageObj.totalRows;
               console.log(this.tableData)
            	}else{
            		//this.titleNotice=this.jh.resultMsg;
@@ -403,23 +415,48 @@ export default {
     		//this.delplans.del_pici = this.multipleSelection[0].picibianh;
     		//console.log(this.multipleSelection[0].picibianh)
     		console.log(this.delplans.del_pici)
-    		fetchDelPlan(this.$store, this.delplans).then(() => {
-	           this.jh = this.$store.getters.DelPlanData.resultData;
-	           console.log()
-	           if (this.jh.resultCode === '1' && this.jh.resultObj.argi_response_code === "1") {
-		           fetchPlanList(this.$store, this.page).then(() => {
-			           this.jh = this.$store.getters.PlanData.resultData;
-			           if (this.jh.resultCode === '1') {
-			           	console.log(this.jh)
-			              this.tableData = this.jh.basePageObj.dataList;
-			              console.log(this.tableData)
-			           	}else{
-			           		this.titleNotice=this.jh.resultMsg;
-			           	}
-			        });
-	           	}else{
-	           		alert(this.jh.resultObj.agri_response_msg)
-	           	}
+    		
+    		this.$confirm('此操作将删除该计划, 是否继续?', '提示', {
+	          confirmButtonText: '确定',
+	          cancelButtonText: '取消',
+	          type: 'warning'
+	        }).then(() => {
+    		
+    		
+	    		fetchDelPlan(this.$store, this.delplans).then(() => {
+		           this.jh = this.$store.getters.DelPlanData.resultData;
+		           console.log()
+		           if (this.jh.resultCode === '1' && this.jh.resultObj.argi_response_code === "1") {
+		           		 this.$message({
+					            type: 'success',
+					            message: '删除成功!'
+					          });
+		           	
+			           fetchPlanList(this.$store, this.page).then(() => {
+				           this.jh = this.$store.getters.PlanData.resultData;
+				           if (this.jh.resultCode === '1') {
+				           	console.log(this.jh)
+				              this.tableData = this.jh.basePageObj.dataList;
+				              this.pageTotle = this.jh.basePageObj.totalRows;
+				              console.log(this.tableData)
+				           	}else{
+				           		
+				           	}
+				        });
+		           	}else{
+		           		this.$message({
+				            type: 'error',
+				            message: '删除失败'
+				          });
+		           		
+		           	}
+		        });
+	        
+	         }).catch(() => {
+	          this.$message({
+	            type: 'info',
+	            message: '已取消删除'
+	          });          
 	        });
     	},
     	
@@ -533,7 +570,7 @@ export default {
 	             })
 	             console.log(this.productNames)
 	           	}else{
-	           		this.titleNotice=this.cp.resultMsg;
+	           		
 	           	}
 	        });
 	         this.ownLandCheck()
@@ -568,7 +605,7 @@ export default {
 				})
 				console.log(this.ziyuanId)    
 	           	}else{
-	           		this.titleNotice=this.allzy.resultMsg;
+	           		
 	           	}
 	        });
 	        
@@ -655,7 +692,7 @@ export default {
 	  				 _j(".ymBed .el-form-item__content").append("<div class='el-form-item__error'>请选择育苗床</div>");
 	  				 return;
 	  			}
-	  			
+	  			console.log(this.newPlan)
 				 this.$refs.newPlan.validate((valid) => {
 		          if (valid) {
 		            this.flag = true;
@@ -669,8 +706,9 @@ export default {
 					           this.jh = this.$store.getters.PlanData.resultData;
 					           if (this.jh.resultCode === '1') {
 					              this.tableData = this.jh.basePageObj.dataList;
+								  this.pageTotle = this.jh.basePageObj.totalRows;	
 					           	}else{
-					           		//console.log(this.jh.resultMsg)
+					           		
 					           	}
 					        });
 							
@@ -678,7 +716,7 @@ export default {
 			           	console.log(this.mess)
 			           	}else{
 			           		this.flag = false;
-			           		//console.log(this.mess.resultMsg)
+			           		this.$message.error(this.mess.resultMsg);
 			           	}
 			        });
 		            
@@ -721,30 +759,19 @@ export default {
     	
     	
         screenPlan() {
-        	this.page.page_size = '';
+        	if(this.value10 != ""){
+        		this.page.page_status= this.value10;
+        	}else{
+        		this.page.page_status = "";
+        	}
         	this.page.page_number = 1;
-			fetchPlanList(this.$store, this.page).then(() => {
-	           this.jh = this.$store.getters.PlanData.resultData;
-	           if (this.jh.resultCode === '1') {
-	           	console.log(this.jh)
-	           	 this.pageTotle = this.jh.basePageObj.dataList.length;
-	           	 console.log( '11111111111')
-	           	 console.log( this.pageTotle)
-	              //this.tableData = this.jh.basePageObj.dataList;
-	           	}else{
-	           		this.titleNotice=this.jh.resultMsg;
-	           	}
-	        });
-	        this.page.page_size = 10;
 	        fetchPlanList(this.$store, this.page).then(() => {
 	           this.jh = this.$store.getters.PlanData.resultData;
 	           if (this.jh.resultCode === '1') {
-	           	 //this.pageTotle = this.jh.basePageObj.dataList.length;
 	              this.tableData = this.jh.basePageObj.dataList;
-	               console.log( '113333333333333')
-	               console.log( this.pageTotle)
+	              this.pageTotle = this.jh.basePageObj.totalRows;
 	           	}else{
-	           		this.titleNotice=this.jh.resultMsg;
+	           		//this.titleNotice=this.jh.resultMsg;
 	           	}
 	        });
         },
@@ -759,9 +786,10 @@ export default {
 	           if (this.jh.resultCode === '1') {
 	           	console.log(this.jh)
 	              this.tableData = this.jh.basePageObj.dataList;
+	              this.pageTotle = this.jh.basePageObj.totalRows;
 	              console.log(this.tableData)
 	           	}else{
-	           		this.titleNotice=this.jh.resultMsg;
+	           		//this.titleNotice=this.jh.resultMsg;
 	           	}
 	        });
             
@@ -776,6 +804,7 @@ export default {
 	           if (this.jh.resultCode === '1') {
 	           	console.log(this.jh)
 	              this.tableData = this.jh.basePageObj.dataList;
+	              this.pageTotle = this.jh.basePageObj.totalRows;
 	              console.log(this.tableData)
 	           	}else{
 	           		this.titleNotice=this.jh.resultMsg;

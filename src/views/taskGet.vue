@@ -5,7 +5,7 @@
             <el-breadcrumb-item>任务接收</el-breadcrumb-item>
         </el-breadcrumb>
         <el-col :span="23" class="pro-content">
-            <el-tabs v-model="activeName2" type="card" @tab-click="handleClick">
+            <el-tabs v-model="activeName2" type="card" @tab-click="taskGetClick">
                 <el-tab-pane label="待处理任务" name="info">
                 	<TaskGetPending></TaskGetPending>
                 </el-tab-pane>
@@ -17,21 +17,38 @@
     </el-row>
 </template>
 <script>
+import _j from 'jquery'
+import bus from './../eventBus'
 import TaskGetComplete from './../components/TaskGetComplete'
 import TaskGetPending from './../components/TaskGetPending'
+import store from './../store/index'
 export default {
+	store,
     components: {
         TaskGetComplete,
         TaskGetPending
     },
     data() {
         return {
-            activeName2: 'info'
+            activeName2: 'info',
+            page:{
+        		page_number: 1,
+                page_size: 10,
+                taskStates: '',
+                page_pici: '',
+                page_operater: '',
+                page_proName: ''
+        	}
         };
     },
     methods: {
-        handleClick(tab, event) {
-            console.log(tab, event);
+        taskGetClick(tab) {
+            if(tab.index == 0){
+        		bus.$emit('getPengding', this.page)
+        	}else{
+        		console.log('1234')
+        		bus.$emit('getComplete', this.page)
+        	}
         }
     }
 };

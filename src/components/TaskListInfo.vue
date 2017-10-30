@@ -1,20 +1,25 @@
 <template >
     <el-row class="info-box">
     	<el-col  class="product-box">
-            <el-form :inline="true" :model="screenForm" class="screen-form">
+            <el-form :inline="true" :model="page" class="screen-form">
                 <el-form-item>
-                    <el-input v-model="screenForm.no" placeholder="请输入批次号"></el-input>
+                    <el-input v-model="page.page_pici" placeholder="请输入批次号"></el-input>
                 </el-form-item>
                 <el-form-item>
-                    <el-input v-model="screenForm.name" placeholder="请输入产品名称"></el-input>
+                    <el-input v-model="page.page_proName" placeholder="请输入产品名称"></el-input>
+                </el-form-item>
+               <el-form-item>
+                   <el-select v-model="value6" clearable  placeholder="选择使用状态"  >
+					    <el-option
+					      v-for="item in zyState"
+					      :key="item.value"
+					      :label="item.label"
+					      :value="item.value">
+					    </el-option>
+					</el-select>
                 </el-form-item>
                 <el-form-item>
-                    <el-select v-model="screenForm.state" placeholder="请选择计划状态">
-                        <el-option v-for="(opt, index) in this.taskStates" :key="index" :label="opt.label" :value="opt.value"></el-option>
-                    </el-select>
-                </el-form-item>
-                <el-form-item>
-                    <el-button class="screen-btn" @click="screenTask">筛选</el-button>
+                    <el-button class="screen-btn" @click="screenTasks">筛选</el-button>
                 </el-form-item>
                  <el-form-item style="float: right;">
                     <el-button class="screen-btn" @click="planBack"  :disabled="isTrue" >撤回</el-button>
@@ -50,9 +55,14 @@
                     <el-table-column property="abutmentname" label="责任人" width="100">
                     </el-table-column>
                     <el-table-column property="statusName" label="任务状态" width="100">
+                    	<template scope="scope">
+		                        <span v-if="scope.row.status=== 20" style="color: #fecb00">{{ scope.row.statusName }}</span>
+		                       <span v-if="scope.row.status=== 30" style="color: #00d6c4">{{ scope.row.statusName }}</span>
+		                        <span v-if="scope.row.status=== 40" style="color: #82d111">{{ scope.row.statusName }}</span>
+			             </template>
                     </el-table-column>
                 </el-table>
-                <el-pagination class="page-box" :total="pageTotle" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="page.page_number" :page-sizes="[1,2,3,10]" :page-size="page.page_size" layout="total, sizes, prev, pager, next, jumper" >
+                <el-pagination class="page-box" :total="pageTotle" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="page.page_number" :page-sizes="[10,20,30,40,50]" :page-size="page.page_size" layout="sizes, prev, pager, next" >
                 </el-pagination>
             </div>
         </el-col>
@@ -91,12 +101,28 @@ export default {
         	page:{
         		page_number: 1,
                 page_size: 10,
-                taskStates:20,
+                taskStates:"20,30,40",
                 page_pici: '',
                 page_operater: '',
                 page_proName: ''
         	},
         	
+        	zyState: [              
+                {
+                    label: '已派发',
+                    value: 20
+                },
+                 {
+                    label: '处理中',
+                    value: 30
+                },
+                {
+                    label: '已完成',
+                    value: 40
+                }
+            ],
+        	
+        	value6: '',
         	backPlan: {
         		piciBH: '',
         		piciSort: ''
@@ -119,20 +145,6 @@ export default {
             isDisabled: true,
             formLabelWidth: '120px',
             currentPage4: 4,
-            taskStates: [
-                {
-                    label: '处理中',
-                    value: 1
-                },
-                {
-                    label: '已完成',
-                    value: 2
-                },
-                {
-                    label: '已派发',
-                    value: 3
-                }
-            ],
             tableData: []
             
         }
@@ -142,18 +154,17 @@ export default {
     }), 
     beforeMount() {
     	bus.$on('tip', (el) => {
-    		console.log("111111111111111")
-    		console.log(el)
-
-					fetchTask(this.$store, el).then(() => {
-			           this.lgd = this.$store.getters.TaskListData.resultData;
-			           if (this.lgd.resultCode === '1') {
-			              this.tableData = this.lgd.basePageObj.dataList;
-			           	}else{
-			           		//this.titleNotice=this.lgd.resultMsg;
-			           	}
-			        });
-			   })
+    		 el.taskStates = "20,30,40";
+			fetchTask(this.$store, el).then(() => {
+	           this.lgd = this.$store.getters.TaskListData.resultData;
+	           if (this.lgd.resultCode === '1') {
+	              this.tableData = this.lgd.basePageObj.dataList;
+	              this.pageTotle = this.lgd.basePageObj.totalRows
+	           	}else{
+	           		
+	           	}
+	        });
+	   })
     	
     	
     },
@@ -163,22 +174,41 @@ export default {
     	
     	
     	planBack(){
-    		console.log("000000000000")
-    		console.log(this.backPlan)
-    		fetchPlanBack(this.$store, this.backPlan).then(() => {
-	           this.bk = this.$store.getters.PlanBackData.resultData;
-	           if (this.bk.resultCode === '1') {
-	              fetchTask(this.$store, this.page).then(() => {
-		           this.lgd = this.$store.getters.TaskListData.resultData;
-		           if (this.lgd.resultCode === '1') {
-		              this.tableData = this.lgd.basePageObj.dataList;
-		           	}else{
-		           		this.titleNotice=this.lgd.resultMsg;
-		           	}
-		          });
-	           	}else{
-	           		//this.titleNotice=this.bk.resultMsg;
-	           	}
+    		this.$confirm('此操作将会撤回任务, 是否继续?', '提示', {
+	          confirmButtonText: '确定',
+	          cancelButtonText: '取消',
+	          type: 'warning'
+	        }).then(() => {
+		    		fetchPlanBack(this.$store, this.backPlan).then(() => {
+			           this.bk = this.$store.getters.PlanBackData.resultData;
+			           if (this.bk.resultCode === '1') {
+			           	this.$message({
+				            type: 'success',
+				            message: '撤回成功!'
+				          });
+			           	this.page.taskStates = this.value6;
+			              fetchTask(this.$store, this.page).then(() => {
+				           this.lgd = this.$store.getters.TaskListData.resultData;
+				           if (this.lgd.resultCode === '1') {
+				              this.tableData = this.lgd.basePageObj.dataList;
+				              this.pageTotle = this.lgd.basePageObj.totalRows;
+				           	}else{
+				           		
+				           	}
+				          });
+			           	}else{
+			           		this.$message({
+				            type: 'error',
+				            message: '撤回失败'
+				          });
+			           	}
+			        });
+			        
+			 }).catch(() => {
+	          this.$message({
+	            type: 'info',
+	            message: '已取消删除'
+	          });          
 	        });
     	},
     	danXuanChange(val) {
@@ -196,25 +226,22 @@ export default {
 	        
 	      },
     	
-        screenTask() {
-			this.page.page_size = '';
-        	this.page.page_number = 1;
-    		fetchTask(this.$store, this.page).then(() => {
-	           this.lgd = this.$store.getters.TaskListData.resultData;
-	           if (this.lgd.resultCode === '1') {
-	              this.pageTotle = this.lgd.basePageObj.dataList.length;
-	           	}else{
-	           		//this.titleNotice=this.lgd.resultMsg;
-	           	}
-	        });
-	        
-	        this.page.page_size = 10;
+        screenTasks() {
+        	if(this.value6 != ""){
+        		this.page.taskStates= this.value6;
+        	}else{
+        		this.page.taskStates = "20,30,40"
+        	}
+        	
+			this.page.page_number = 1;
 	        fetchTask(this.$store, this.page).then(() => {
 	           this.lgd = this.$store.getters.TaskListData.resultData;
 	           if (this.lgd.resultCode === '1') {
 	              this.tableData = this.lgd.basePageObj.dataList;
+	               this.pageTotle = this.lgd.basePageObj.totalRows;
+	               
 	           	}else{
-	           		//this.titleNotice=this.lgd.resultMsg;
+	           		
 	           	}
 	        });
         },
@@ -228,8 +255,9 @@ export default {
 	           this.lgd = this.$store.getters.TaskListData.resultData;
 	           if (this.lgd.resultCode === '1') {
 	              this.tableData = this.lgd.basePageObj.dataList;
+	              this.pageTotle = this.lgd.basePageObj.totalRows;
 	           	}else{
-	           		this.titleNotice=this.lgd.resultMsg;
+	           		
 	           	}
 	        });
             
@@ -243,8 +271,9 @@ export default {
 	           this.lgd = this.$store.getters.TaskListData.resultData;
 	           if (this.lgd.resultCode === '1') {
 	              this.tableData = this.lgd.basePageObj.dataList;
+	              this.pageTotle = this.lgd.basePageObj.totalRows;
 	           	}else{
-	           		this.titleNotice=this.lgd.resultMsg;
+	           		
 	           	}
 	        });
         },
@@ -257,30 +286,6 @@ export default {
 //          this.isShowPlanDailog = true;
 //          _j('.plan-name-td').removeClass('plan-name-active');
 //          dom.addClass('plan-name-active');
-        },
-        showLinkDetail(e) {
-            let dom = _j(e.target);
-            let subInfoBoxDom = '';
-            let tempDom = '';
-            let iconDom = _j('.detail-icon');
-            if (dom.hasClass('collapse-ex')) {
-                tempDom = dom;
-                subInfoBoxDom = tempDom.siblings('.sub-link-info-box');
-            } else {
-                tempDom = dom.parent('.collapse-ex');
-                subInfoBoxDom = tempDom.siblings('.sub-link-info-box');
-            }
-            if (subInfoBoxDom.hasClass('show')) {
-                iconDom.removeClass('detail-icon-show');
-                subInfoBoxDom.slideUp('500', function() {
-                    subInfoBoxDom.removeClass('show').addClass('hide')
-                })
-                return;
-            }
-            iconDom.addClass('detail-icon-show');
-            subInfoBoxDom.slideDown('500', function() {
-                subInfoBoxDom.removeClass('hide').addClass('show')
-            })
         }
     }
 }

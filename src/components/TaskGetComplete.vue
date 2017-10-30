@@ -1,21 +1,18 @@
 <template >
     <el-row class="info-box">
     	<el-col  class="product-box">
-            <el-form :inline="true" :model="screenForm" class="screen-form">
+            <el-form :inline="true" :model="page" class="screen-form">
                 <el-form-item>
-                    <el-input v-model="screenForm.no" placeholder="请输入批次号"></el-input>
+                    <el-input v-model="page.page_pici" placeholder="请输入批次号"></el-input>
                 </el-form-item>
                 <el-form-item>
-                    <el-input v-model="screenForm.name" placeholder="请输入产品名称"></el-input>
+                    <el-input v-model="page.page_proName" placeholder="请输入产品名称"></el-input>
                 </el-form-item>
+               
                 <el-form-item>
-                    <el-select v-model="screenForm.state" placeholder="请选择计划状态">
-                        <el-option v-for="(opt, index) in this.taskStates" :key="index" :label="opt.label" :value="opt.value"></el-option>
-                    </el-select>
+                    <el-button class="screen-btn" @click="screenTasks">筛选</el-button>
                 </el-form-item>
-                <el-form-item>
-                    <el-button class="screen-btn" @click="screenProduct">筛选</el-button>
-                </el-form-item>
+                 
                 
             </el-form>
             <div class="product-tab-box">
@@ -49,7 +46,7 @@
                     <el-table-column property="statusName" label="任务状态" width="100">
                     </el-table-column>
                 </el-table>
-                <el-pagination class="page-box" :total="pageTotle" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="page.page_number" :page-sizes="[1,2,3,10]" :page-size="page.page_size" layout="total, sizes, prev, pager, next, jumper" >
+                <el-pagination class="page-box" :total="pageTotle" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="page.page_number" :page-sizes="[10,20,30,40,50]" :page-size="page.page_size" layout="sizes, prev, pager, next" >
                 </el-pagination>
             </div>
         </el-col>
@@ -58,6 +55,7 @@
 </template>
 <script>
 import _j from 'jquery'
+import bus from './../eventBus'
 import { mapGetters } from 'vuex'
 import store from './../store/index'
 function fetchTask(store, opt) {
@@ -71,6 +69,13 @@ function fetchTask(store, opt) {
     });
 }
 
+function fetchPlanBack(store, opt) {
+    return store.dispatch('PLANBACK', {
+       ypfPiCiBianH: opt.piciBH,
+       ypfSort: opt.piciSort
+    });
+}
+
 export default {
 	store,
     data() {
@@ -79,11 +84,17 @@ export default {
         	isTrue: true,
         	page:{
         		page_number: 1,
-                page_size: '',
+                page_size: 10,
                 taskStates:40,
                 page_pici: '',
                 page_operater: '',
                 page_proName: ''
+        	},
+        	
+        	value10: '',
+        	backPlan: {
+        		piciBH: '',
+        		piciSort: ''
         	},
         	
             screenForm: {
@@ -103,20 +114,6 @@ export default {
             isDisabled: true,
             formLabelWidth: '120px',
             currentPage4: 4,
-            taskStates: [
-                {
-                    label: '处理中',
-                    value: 1
-                },
-                {
-                    label: '已完成',
-                    value: 2
-                },
-                {
-                    label: '已派发',
-                    value: 3
-                }
-            ],
             tableData: []
             
         }
@@ -125,24 +122,21 @@ export default {
         taskListData: 'TaskListData'
     }), 
     beforeMount() {
-    	fetchTask(this.$store, this.page).then(() => {
-	           this.lgd = this.$store.getters.TaskListData.resultData;
-	           if (this.lgd.resultCode === '1') {
-	              this.pageTotle = this.lgd.basePageObj.dataList.length;
-	              console.log(this.pageTotle)
-	           	}else{
-	           		this.titleNotice=this.lgd.resultMsg;
-	           	}
-	        });
-   			this.page.page_size = 10;
-    		fetchTask(this.$store, this.page).then(() => {
+    	
+    	
+    	bus.$on('getComplete', (el) => {
+    		 el.taskStates = 40;
+			fetchTask(this.$store, el).then(() => {
 	           this.lgd = this.$store.getters.TaskListData.resultData;
 	           if (this.lgd.resultCode === '1') {
 	              this.tableData = this.lgd.basePageObj.dataList;
+	              this.pageTotle = this.lgd.basePageObj.totalRows
 	           	}else{
-	           		this.titleNotice=this.lgd.resultMsg;
+	           		
 	           	}
 	        });
+	   })
+    	
     	
     },
     methods: {
@@ -163,8 +157,19 @@ export default {
 	        
 	      },
     	
-        screenProduct() {
-
+        screenTasks() {
+			this.page.page_number = 1;
+	        fetchTask(this.$store, this.page).then(() => {
+	           this.lgd = this.$store.getters.TaskListData.resultData;
+	           if (this.lgd.resultCode === '1') {
+	              this.tableData = this.lgd.basePageObj.dataList;
+	               this.pageTotle = this.lgd.basePageObj.totalRows;
+	               this.page.taskStates = 40
+	               
+	           	}else{
+	           		
+	           	}
+	        });
         },
         handleSizeChange(val) {
         	console.log(val)
@@ -176,8 +181,9 @@ export default {
 	           this.lgd = this.$store.getters.TaskListData.resultData;
 	           if (this.lgd.resultCode === '1') {
 	              this.tableData = this.lgd.basePageObj.dataList;
+	              this.pageTotle = this.lgd.basePageObj.totalRows;
 	           	}else{
-	           		this.titleNotice=this.lgd.resultMsg;
+	           		
 	           	}
 	        });
             
@@ -191,8 +197,9 @@ export default {
 	           this.lgd = this.$store.getters.TaskListData.resultData;
 	           if (this.lgd.resultCode === '1') {
 	              this.tableData = this.lgd.basePageObj.dataList;
+	              this.pageTotle = this.lgd.basePageObj.totalRows;
 	           	}else{
-	           		this.titleNotice=this.lgd.resultMsg;
+	           		
 	           	}
 	        });
         },
@@ -205,30 +212,6 @@ export default {
 //          this.isShowPlanDailog = true;
 //          _j('.plan-name-td').removeClass('plan-name-active');
 //          dom.addClass('plan-name-active');
-        },
-        showLinkDetail(e) {
-            let dom = _j(e.target);
-            let subInfoBoxDom = '';
-            let tempDom = '';
-            let iconDom = _j('.detail-icon');
-            if (dom.hasClass('collapse-ex')) {
-                tempDom = dom;
-                subInfoBoxDom = tempDom.siblings('.sub-link-info-box');
-            } else {
-                tempDom = dom.parent('.collapse-ex');
-                subInfoBoxDom = tempDom.siblings('.sub-link-info-box');
-            }
-            if (subInfoBoxDom.hasClass('show')) {
-                iconDom.removeClass('detail-icon-show');
-                subInfoBoxDom.slideUp('500', function() {
-                    subInfoBoxDom.removeClass('show').addClass('hide')
-                })
-                return;
-            }
-            iconDom.addClass('detail-icon-show');
-            subInfoBoxDom.slideDown('500', function() {
-                subInfoBoxDom.removeClass('hide').addClass('show')
-            })
         }
     }
 }
