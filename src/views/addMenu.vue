@@ -38,7 +38,7 @@
                     </div>
                 </div>
             </el-col>
-            <el-col :span="8" v-if="this.isShowEdit">
+            <el-col :span="8" class="edit-menu-ri-box" v-if="this.isShowEdit">
                 <h2 class="model-title">编辑菜单</h2>
                 <div class="form-box">
                     <el-form :model="ruleForm" ref="ruleForm" label-width="100px" class="menu-edit-form">
@@ -358,7 +358,7 @@ export default {
 }
 
 .show-menu-box {
-    width: 300px;
+    width: 100%;
     height: 600px;
     max-height: 600px;
     overflow-y: auto;
@@ -393,7 +393,9 @@ export default {
         color: #ccc;
     }
 }
-
+.edit-menu-ri-box{
+    margin-left: 20px;
+}
 .menu-active {
     color: #20a0ff;
 }

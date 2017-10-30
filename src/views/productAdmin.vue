@@ -23,33 +23,33 @@
                     </el-select>
                 </el-form-item>
                 <el-form-item>
-                    <el-button class="screen-btn" @click="screenProduct">筛选</el-button>
+                    <el-button class="screen-btn" @click.native="screenProduct">筛选</el-button>
                 </el-form-item>
             </el-form>
             <div class="product-tab-box">
-                <el-table ref="singleTable" border :data="this.proDatas.datas" style="width: 100%" @cell-click="showPlanInfo">
-                    <el-table-column type="index" label="序号" width="70">
+                <el-table ref="singleTable" border :data="this.screenForm.datas" style="width: 100%" @cell-click="showPlanInfo">
+                    <el-table-column type="index" label="序号" width="65">
                     </el-table-column>
-                    <el-table-column property="planName" label="计划名称"  className="plan-name-td">
+                    <el-table-column property="planName" label="计划名称" className="plan-name-td" width="180">
                     </el-table-column>
-                    <el-table-column property="planNo" label="批次编号" >
+                    <el-table-column property="planNo" label="批次编号" width="180">
                     </el-table-column>
-                    <el-table-column property="proName" label="产品名称" >
+                    <el-table-column property="proName" label="产品名称" width="180">
                     </el-table-column>
                     <el-table-column property="proLink" label="生产环节" width="100">
                     </el-table-column>
-                    <el-table-column property="planStarTime" label="主划开始时间" >
+                    <el-table-column property="planStarTime" label="主划开始时间" width="180">
                     </el-table-column>
-                    <el-table-column property="planEndTime" label="计划结束时间" >
+                    <el-table-column property="planEndTime" label="计划结束时间" width="180">
                     </el-table-column>
-                    <el-table-column property="factStarTime" label="实际开始时间" >
+                    <el-table-column property="factStarTime" label="实际开始时间" width="180">
                     </el-table-column>
-                    <el-table-column property="factEndTime" label="实际结束时间" >
+                    <el-table-column property="factEndTime" label="实际结束时间" width="180">
                     </el-table-column>
-                    <el-table-column property="taskState" label="任务状态" >
+                    <el-table-column property="taskState" label="任务状态">
                     </el-table-column>
                 </el-table>
-                <el-pagination class="page-box" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="this.proDatas.currentPage" :page-sizes="[10, 20, 30, 40, 50]" :page-size="this.proDatas.pageSize" layout="total, sizes, prev, pager, next, jumper" :total="this.proDatas.totalRows">
+                <el-pagination class="page-box" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="screenForm.currentPage" :page-sizes="[10, 20, 30, 40, 50]" :page-size="screenForm.pageSize" layout="sizes, prev, pager, next" :total="screenForm.totalRows">
                 </el-pagination>
             </div>
         </el-col>
@@ -144,7 +144,11 @@ export default {
                 state: '',
                 token: localStorage.token,
                 beginPage: 1,
-                pageSize: 10
+                pageSize: 10,
+                currentPage: 1,
+                totalRows: 0,
+                totalPage: 0,
+                datas: []
             },
             planForm: { // 弹层产品数据
                 name: '',
@@ -184,141 +188,6 @@ export default {
                     value: 40
                 }
             ],
-            tableData: [
-                {
-                    id: 1,
-                    planName: '2017番茄普及大计划',
-                    planNo: '1023154',
-                    proName: '番茄',
-                    proLink: '保值',
-                    planStarTime: '2017-05-09',
-                    planEndTime: '2017-05-09',
-                    factStarTime: '2017-05-09',
-                    factEndTime: '2017-05-09',
-                    taskState: '已完成'
-                },
-                {
-                    planName: '2017番茄普及大计划',
-                    planNo: '1023154',
-                    proName: '番茄',
-                    proLink: '保值',
-                    planStarTime: '2017-05-09',
-                    planEndTime: '2017-05-09',
-                    factStarTime: '2017-05-09',
-                    factEndTime: '2017-05-09',
-                    taskState: '已完成'
-                },
-                {
-                    planName: '2017番茄普及大计划',
-                    planNo: '1023154',
-                    proName: '番茄',
-                    proLink: '保值',
-                    planStarTime: '2017-05-09',
-                    planEndTime: '2017-05-09',
-                    factStarTime: '2017-05-09',
-                    factEndTime: '2017-05-09',
-                    taskState: '已完成'
-                },
-                {
-                    planName: '2017番茄普及大计划',
-                    planNo: '1023154',
-                    proName: '番茄',
-                    proLink: '保值',
-                    planStarTime: '2017-05-09',
-                    planEndTime: '2017-05-09',
-                    factStarTime: '2017-05-09',
-                    factEndTime: '2017-05-09',
-                    taskState: '已完成'
-                },
-                {
-                    planName: '2017番茄普及大计划',
-                    planNo: '1023154',
-                    proName: '番茄',
-                    proLink: '保值',
-                    planStarTime: '2017-05-09',
-                    planEndTime: '2017-05-09',
-                    factStarTime: '2017-05-09',
-                    factEndTime: '2017-05-09',
-                    taskState: '已完成'
-                },
-                {
-                    planName: '2017番茄普及大计划',
-                    planNo: '1023154',
-                    proName: '番茄',
-                    proLink: '保值',
-                    planStarTime: '2017-05-09',
-                    planEndTime: '2017-05-09',
-                    factStarTime: '2017-05-09',
-                    factEndTime: '2017-05-09',
-                    taskState: '已完成'
-                },
-                {
-                    planName: '2017番茄普及大计划',
-                    planNo: '1023154',
-                    proName: '番茄',
-                    proLink: '保值',
-                    planStarTime: '2017-05-09',
-                    planEndTime: '2017-05-09',
-                    factStarTime: '2017-05-09',
-                    factEndTime: '2017-05-09',
-                    taskState: '已完成'
-                },
-                {
-                    planName: '2017番茄普及大计划',
-                    planNo: '1023154',
-                    proName: '番茄',
-                    proLink: '保值',
-                    planStarTime: '2017-05-09',
-                    planEndTime: '2017-05-09',
-                    factStarTime: '2017-05-09',
-                    factEndTime: '2017-05-09',
-                    taskState: '已完成'
-                },
-                {
-                    planName: '2017番茄普及大计划',
-                    planNo: '1023154',
-                    proName: '番茄',
-                    proLink: '保值',
-                    planStarTime: '2017-05-09',
-                    planEndTime: '2017-05-09',
-                    factStarTime: '2017-05-09',
-                    factEndTime: '2017-05-09',
-                    taskState: '已完成'
-                },
-                {
-                    planName: '2017番茄普及大计划',
-                    planNo: '1023154',
-                    proName: '番茄',
-                    proLink: '保值',
-                    planStarTime: '2017-05-09',
-                    planEndTime: '2017-05-09',
-                    factStarTime: '2017-05-09',
-                    factEndTime: '2017-05-09',
-                    taskState: '已完成'
-                },
-                {
-                    planName: '2017番茄普及大计划',
-                    planNo: '1023154',
-                    proName: '番茄',
-                    proLink: '保值',
-                    planStarTime: '2017-05-09',
-                    planEndTime: '2017-05-09',
-                    factStarTime: '2017-05-09',
-                    factEndTime: '2017-05-09',
-                    taskState: '已完成'
-                },
-                {
-                    planName: '2017番茄普及大计划',
-                    planNo: '1023154',
-                    proName: '番茄',
-                    proLink: '保值',
-                    planStarTime: '2017-05-09',
-                    planEndTime: '2017-05-09',
-                    factStarTime: '2017-05-09',
-                    factEndTime: '2017-05-09',
-                    taskState: '已完成'
-                }
-            ],
             endLinks: []
         }
     },
@@ -330,12 +199,12 @@ export default {
             this.getProductInfo();
         },
         handleSizeChange(val) {
-            this.proDatas.pageSize = val;
+            this.screenForm.pageSize = val;
             this.getProductInfo();
         },
         handleCurrentChange(val) {
-            this.proDatas.beginPage = val;
-            this.proDatas.currentPage = val;
+            this.screenForm.beginPage = val;
+            this.screenForm.currentPage = val;
             this.getProductInfo();
         },
         showPlanInfo(row, column, cell, event) {
@@ -351,8 +220,6 @@ export default {
             // let planNo = 'b9de97a4fab5489899738f23bc7feabf';
             fetchProductByNo(this.$store, { no: planNo, token: localStorage.token }).then(() => {
                 let tempData = this.$store.getters.getProductDetail;
-                console.log('--------------------------');
-                console.log(this.$store);
                 if (tempData.resultCode === '1') {
                     let dataObj = tempData.resultObj;
                     let proInfo = dataObj.productInfo;
@@ -364,6 +231,7 @@ export default {
                     this.planForm.name = proInfo.chanpmc;
                     this.planForm.pluck = proInfo.caiszq;
                     this.planForm.planType = proInfo.guisdname;
+                    this.endLinks.length = 0;
                     let tempLink = {}, lLen = links.length, tempLinkData = {};
                     for (let i = 0; i < lLen; i++) {
                         tempLink = links[i];
@@ -372,14 +240,12 @@ export default {
                             state: tempLink.status,
                             startTime: tempLink.receivetime,
                             endTime: tempLink.finishtime,
-                            desc: tempLink.desc,
+                            desc: tempLink.beizhu,
                             isDisabled: true,
                             isHasDescs: false
                         };
                         let tempDescs = tempLink.templateform;
                         this.endLinks.push(tempLinkData);
-                        console.log('=============================');
-                        console.log(tempDescs);
                         if (tempDescs && tempDescs.length > 0) {
                             this.endLinks[i].linkDescs = [];
                             this.endLinks[i].isHasDescs = true;
@@ -387,17 +253,15 @@ export default {
                             let tTempItem = {};
                             for (let j = 0; j < tLen; j++) {
                                 tTempItem = tempDescs[j];
-                                if (tTempItem) {
+                                if (tTempItem && tTempItem.key) {
                                     this.endLinks[i].linkDescs.push({
-                                        key: tTempItem.resourceskey,
-                                        value: tTempItem.resources
+                                        key: tTempItem.key,
+                                        value: tTempItem.value
                                     });
                                 }
                             }
                         }
                     }
-                    console.log('环节有吗？');
-                    console.log(this.links);
                 }
             });
             this.isShowPlanDailog = true;
@@ -408,7 +272,6 @@ export default {
             let dom = _j(e.target);
             let subInfoBoxDom = '';
             let tempDom = '';
-            let iconDom = _j('.detail-icon');
             if (dom.hasClass('collapse-ex')) {
                 tempDom = dom;
                 subInfoBoxDom = tempDom.siblings('.sub-link-info-box');
@@ -416,6 +279,7 @@ export default {
                 tempDom = dom.parent('.collapse-ex');
                 subInfoBoxDom = tempDom.siblings('.sub-link-info-box');
             }
+            let iconDom = tempDom.children('.detail-icon');
             if (subInfoBoxDom.hasClass('show')) {
                 iconDom.removeClass('detail-icon-show');
                 subInfoBoxDom.slideUp('500', function() {
@@ -434,25 +298,31 @@ export default {
                 let tempData = this.$store.getters.getProductLists;
                 if (tempData.resultCode === '1') {
                     let dataObj = tempData.basePageObj;
-                    this.proDatas.currentPage = dataObj.currentPage;
-                    this.proDatas.totalPage = dataObj.totalPage;
-                    this.proDatas.totalRows = dataObj.totalRows;
                     let tempList = dataObj.dataList;
+                    this.screenForm.datas.length = 0;
+                    if (tempList.length <= 0) { // 对于筛选后，死循环请求策略
+                        this.screenForm.currentPage = 1;
+                        this.screenForm.totalPage = 1;
+                        this.screenForm.totalRows = 0;
+                        return;
+                    }
+                    this.screenForm.currentPage = dataObj.currentPage;
+                    this.screenForm.totalPage = dataObj.totalPage;
+                    this.screenForm.totalRows = dataObj.totalRows;
                     let len = tempList.length;
                     let tempItem = {};
-                    this.proDatas.datas.length = 0;
                     for (let i = 0; i < len; i++) {
                         tempItem = tempList[i];
-                        this.proDatas.datas.push({
+                        this.screenForm.datas.push({
                             id: tempItem.chanpinid,
                             planName: tempItem.jihuamc,
                             planNo: tempItem.picibianh,
                             proName: tempItem.chanpinmc,
                             proLink: tempItem.linkidname,
-                            planStarTime: tempItem.jihuajsrq,
-                            planEndTime: tempItem.jihuaksrq,
-                            factStarTime: tempItem.shijienddatetime,
-                            factEndTime: tempItem.shijistartdatetime,
+                            planStarTime: tempItem.jihuaksrq,
+                            planEndTime: tempItem.jihuajsrq,
+                            factStarTime: tempItem.shijistartdatetime,
+                            factEndTime: tempItem.shijienddatetime,
                             taskState: tempItem.zhixingzt
                         });
                     }

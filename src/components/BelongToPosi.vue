@@ -211,13 +211,7 @@ export default {
         }
     },
     beforeMount() {
-        fetchKuaidials(this.$store).then(() => {
-            let tempData = this.$store.getters.getKuaidialInfos;
-            if (tempData.resultCode === '1') {
-                let dataObj = tempData.resultObj;
-                this.posiDatas = dataObj;
-            }
-        })
+        this.getKuaidials();
 
     },
     mounted() {
@@ -230,6 +224,15 @@ export default {
 
     },
     methods: {
+        getKuaidials() {
+            fetchKuaidials(this.$store).then(() => {
+                let tempData = this.$store.getters.getKuaidialInfos;
+                if (tempData.resultCode === '1') {
+                    let dataObj = tempData.resultObj;
+                    this.posiDatas = dataObj;
+                }
+            })
+        },
         bindPosiEvent: function() {
             let self = this;
             _j('.posi-item').unbind('click').on('click', function(e) {
@@ -285,6 +288,7 @@ export default {
                 let tempData = this.$store.getters.delKuaidial;
                 if (tempData.resultCode) {
                     this._showMessage('success', '删除成功！');
+                    this.getKuaidials();
                 } else {
                     this._showMessage('error', tempData.resultMsg);
                 }
@@ -295,6 +299,7 @@ export default {
                 let tempData = this.$store.getters.addKuaidial;
                 if (tempData.resultCode === '1') {
                     this._showMessage('success', '操作成功！');
+                    this.getKuaidials();
                 } else {
                     this._showMessage('error', tempData.resultMsg);
                 }
@@ -462,7 +467,8 @@ export default {
         }
     }
 }
-.mar-box{
+
+.mar-box {
     display: block;
     height: 10px;
     margin-top: 10px;

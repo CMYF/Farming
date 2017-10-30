@@ -23,13 +23,13 @@
             </el-table-column>
             <el-table-column type="index" label="序号" width="80" align="center" show-overflow-tooltip>
             </el-table-column>
-            <el-table-column label="产品名称" prop="name" align="center" >
+            <el-table-column label="产品名称" prop="name" align="center">
             </el-table-column>
             <el-table-column prop="addressName" label="归属地" align="center" width="450">
             </el-table-column>
             <el-table-column prop="productionLink" label="生产环节(个)" align="center" show-overflow-tooltip>
             </el-table-column>
-            <el-table-column prop="pluck" label="采收周期(天)" align="center"  show-overflow-tooltip>
+            <el-table-column prop="pluck" label="采收周期(天)" align="center" show-overflow-tooltip>
             </el-table-column>
             <el-table-column prop="germinate" label="发芽率%" align="center" show-overflow-tooltip>
             </el-table-column>
@@ -39,10 +39,10 @@
             </el-table-column>
         </el-table>
         <el-row class="page-box">
-            <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="this.getProducts.currentPage" :page-sizes="[10, 20, 30, 40, 50]" :page-size="this.getProducts.pageSize" layout="total, sizes, prev, pager, next, jumper" :total="this.getProducts.totalRows">
+            <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="this.getProducts.currentPage" :page-sizes="[10, 20, 30, 40, 50]" :page-size="this.getProducts.pageSize" layout="sizes, prev, pager, next" :total="this.getProducts.totalRows">
             </el-pagination>
         </el-row>
-        <el-dialog class="product-dialog-box" title="收货地址" :visible.sync="dialogFormVisible">
+        <el-dialog class="product-dialog-box" title="新增产品" :visible.sync="dialogFormVisible">
             <el-form :model="form" :inline="true" ref="form" :rules="rules" class="product-form">
                 <el-form-item label="产品名称" :label-width="formLabelWidth" prop="name">
                     <el-input v-model="form.name" auto-complete="off" placeholder="请输入产品名称"></el-input>
@@ -83,7 +83,7 @@
                             <el-input class="link-time" v-model="domain.hours"></el-input> 小时
                         </el-form-item>
                         <el-form-item label="安全间隔期提醒" v-show="!domain.isShowPeriod" :label-width="formLabelWidth2">
-                            <el-input class="link-date" v-model="domain.days"></el-input> 天
+                            <el-input class="link-date" v-model="domain.days"> </el-input> 天
                         </el-form-item>
                         <el-form-item label="此环节责任人" :label-width="formLabelWidth">
                             <el-select v-model="domain.liablePerson" placeholder="请选择">
@@ -102,8 +102,8 @@
                 </div>
             </el-form>
             <div slot="footer" class="dialog-footer dialog-footer-box">
-                <el-button class="save-btn" @click="saveProductLinkInfo">确 定</el-button>
-                <el-button class="cancle-btn" @click="dialogFormVisible = false">取 消</el-button>
+                <el-button class="save-btn" @click="saveProductLinkInfo('form')">确 定</el-button>
+                <el-button class="cancle-btn" @click="cancleLinkInfo('form')">取 消</el-button>
             </div>
         </el-dialog>
     </el-row>
@@ -139,7 +139,7 @@ export default {
             productNameIds: [],
             productInfo: '',
             selectedOptions: [],
-            token:localStorage.token,
+            token: localStorage.token,
             options: [],  // 归属地
             getProducts: { // 产品数据
                 currentPage: 1,
@@ -185,9 +185,9 @@ export default {
                 name: [
                     { required: true, message: '请输入产品名称', trigger: 'blur' }
                 ],
-                address: [
-                    { required: true, message: '请选择归属地', trigger: 'blur' }
-                ],
+                /*address: [
+                    { required: true, message: '请选择归属地', trigger: 'change' }
+                ],*/
                 germinate: [
                     { required: true, message: '请输入发芽率', trigger: 'blur' }
                 ],
@@ -208,9 +208,7 @@ export default {
     },
     beforeMount() {
         this.getProducts.token = this.token;
-        fetchGetProducts(this.$store, this.getProducts).then(() => {
-            this.dec_data();
-        });
+        this.loadProducts();
         fetchKuaidials(this.$store).then(() => {
             this.dec_kuaidialDatas();
         })
@@ -225,6 +223,11 @@ export default {
             } else {
                 this.$refs.multipleTable.clearSelection();
             }
+        },
+        loadProducts() {
+            fetchGetProducts(this.$store, this.getProducts).then(() => {
+                this.dec_data();
+            });
         },
         // dec product data
         dec_data() {
@@ -270,7 +273,7 @@ export default {
                 this._showMessage('error', '删除除失败，目前只支持一次一条数据');
                 return;
             }
-            if (productIds.length <=0 ) {
+            if (productIds.length <= 0) {
                 this._showMessage('error', '请选中要删除的数据！');
                 return;
             }
@@ -402,49 +405,76 @@ export default {
             });
         },
         // save link info
-        saveProductLinkInfo() {
-            let tempDomains = this.dyProductLink.domains,
-                tempLinks = [],
-                tempLinkItem = {
-
-                },
-                tempItem = {},
-                len = tempDomains.length;
-            if (len > 0) {
-                for (let i = 0; i < len; i++) {
-                    tempItem = tempDomains[i];
-                    tempLinkItem = {
-                        "linkId": tempItem.linkId,
-                        "linkName": tempItem.linkName,
-                        "days": tempItem.days,
-                        "hours": tempItem.hours,
-                        "liablePerson": tempItem.liablePerson,
-                        "beizhu": tempItem.desc,
-                        "linkTempleId": tempItem.linkTempleId
+        saveProductLinkInfo(formName) {
+            this.$refs[formName].validate((valid) => {
+                if (valid) {
+                    let tempDomains = this.dyProductLink.domains,
+                        tempLinks = [],
+                        tempLinkItem = {
+                        },
+                        tempItem = {},
+                        len = tempDomains.length;
+                    if (this.form.address.length <= 0) {
+                        this._showMessage('error', '请选择归属地！');
+                        return;
                     }
-                    tempLinks.push(tempLinkItem);
-                }
-            }
-            let tempLinksToStr = JSON.stringify(tempLinks);
-            let tempKua = this.form.address.join(',');
-            let opts = {
-                name: this.form.name,
-                address: tempKua,
-                germinate: this.form.germinate,
-                transplant: this.form.transplant,
-                weight: this.form.weight,
-                pluck: this.form.pluck,
-                links: tempLinksToStr
-            }
-            fetchSaveProductLink(this.$store, opts).then(() => {
-                let tempData = this.$store.getters.getSaveProLink;
-                if (tempData.resultCode === '1') {
-                    this._showMessage('success', '保存成功！');
+                    if (len > 0) {
+                        for (let i = 0; i < len; i++) {
+                            tempItem = tempDomains[i];
+                            if (!tempItem.linkId) {
+                                this._showMessage('error', '环节信息不能为空！');
+                                return;
+                            }
+                            tempLinkItem = {
+                                "linkId": tempItem.linkId,
+                                "linkName": tempItem.linkName,
+                                "days": tempItem.days,
+                                "hours": tempItem.hours,
+                                "liablePerson": tempItem.liablePerson,
+                                "beizhu": tempItem.desc,
+                                "linkTempleId": tempItem.linkTempleId
+                            }
+                            tempLinks.push(tempLinkItem);
+                        }
+                    }
+                    if (tempLinks.length <= 0) {
+                        this._showMessage('error', '请添加生产环节！');
+                        return;
+                    }
+                    let tempLinksToStr = JSON.stringify(tempLinks);
+                    let tempKua = this.form.address.join(',');
+                    let opts = {
+                        name: this.form.name,
+                        address: tempKua,
+                        germinate: this.form.germinate,
+                        transplant: this.form.transplant,
+                        weight: this.form.weight,
+                        pluck: this.form.pluck,
+                        links: tempLinksToStr
+                    }
+                    fetchSaveProductLink(this.$store, opts).then(() => {
+                        let tempData = this.$store.getters.getSaveProLink;
+                        if (tempData.resultCode === '1') {
+                            this._showMessage('success', '保存成功！');
+                            this.loadProducts();
+                        } else {
+                            this._showMessage('error', tempData.resultMsg);
+                        }
+                    })
+                    this.dialogFormVisible = false;
+
+
                 } else {
-                    this._showMessage('error', tempData.resultMsg);
+
+                    return;
                 }
-            })
+            });
+
+        },
+        cancleLinkInfo(formName) {
+            this.$refs[formName].resetFields();
             this.dialogFormVisible = false;
+
         },
         // filter product link
         filterProductInfo() {
@@ -570,7 +600,7 @@ export default {
     margin-bottom: 25px;
 }
 
-.product-dialog-box{
+.product-dialog-box {
     .el-dialog--small {
         width: 885px;
     }

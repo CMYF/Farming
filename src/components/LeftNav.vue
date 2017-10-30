@@ -1,7 +1,7 @@
 <template>
     <div>
         <div class="home-logo-box">
-            <img src="./../assets/images/logo.jpg" alt="">
+            <img src="./../assets/images/logo@2x.jpg" alt="">
         </div>
         <div class="user-pic-box">
             <span class="iconfont user-pic-icon">&#xe794;</span>
@@ -61,12 +61,17 @@ export default {
     }),
     mounted() {
         let tempInfo = localStorage.uinfo;
-        let userInfo = JSON.parse(tempInfo);
-        this.userInfo.name = userInfo.opername;
+        if (tempInfo) {
+            let userInfo = JSON.parse(tempInfo);
+            this.userInfo.name = userInfo.opername;
+        }
 
     },
     beforeMount() {
         let token = localStorage.token;
+        if (!token) {
+            return;
+        }
         fetchNav(this.$store, token).then(() => {
             var tempData = this.$store.getters.getNavData.data;
             if (tempData.resultCode === '1') {
@@ -94,7 +99,7 @@ export default {
         toNavSix: function() {
             this.$router.push('/createuser')
         },
-         // show success or error message
+        // show success or error message
         _showMessage(type, msg) {
             this.$message({
                 showClose: true,
@@ -123,13 +128,13 @@ export default {
     img {
         min-width: 100%;
         max-width: 100%;
-        height: 60px;
+        height: 50px;
     }
 }
 
 .el-menu--horizontal .el-submenu .el-submenu__title {
-    height: 50px;
-    line-height: 50px;
+    height: 40px;
+    line-height: 40px;
 }
 
 .el-menu-item,
@@ -142,8 +147,8 @@ export default {
 .el-menu-item a,
 .el-submenu__title,
 .el-submenu .el-submenu__title {
-    height: 50px !important;
-    line-height: 50px !important;
+    height: 40px !important;
+    line-height: 40px !important;
     text-align: left !important;
     color: #fff !important;
     font-size: 16px;
