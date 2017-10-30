@@ -1,6 +1,6 @@
 <template>
     <el-row>
-        <el-col :span="23" class="pro-content">
+        <el-col :span="23" class="home-pro-content">
             <el-row class="chart-header-box">
                 <el-col :span="4" class="title-box">
                     <h1>预估产量</h1>
@@ -8,8 +8,8 @@
                 <el-col :span="18" class="mack-box">
                     <div class="date-box">
                         <!--<el-date-picker v-model="params.beginTime" @change="startChange" format="yyyy-MM-dd" type="date" :picker-options="pickerOptions0" placeholder="选择开始日期"></el-date-picker>
-                            -
-                            <el-date-picker v-model="params.finishTime" @change="endChange" type="date" :picker-options="pickerOptions0" placeholder="选择结束日期"> </el-date-picker>-->
+                                                        -
+                                                        <el-date-picker v-model="params.finishTime" @change="endChange" type="date" :picker-options="pickerOptions0" placeholder="选择结束日期"> </el-date-picker>-->
                         <el-date-picker v-model="value6" type="daterange" range-separator=" / " @change="selectDate" :picker-options="pickerOptions0" placeholder="选择日期范围">
                         </el-date-picker>
                         <el-button class="select-btn" @click="getProductLines()">
@@ -30,7 +30,7 @@
                         <el-checkbox-group v-model="chnageTypes" @change="typeChange" :max="5">
                             <el-checkbox v-for="(item, idx) in vfTypes" :label="item.label" :key="idx">{{item.label}}</el-checkbox>
                             <!--<el-checkbox v-for="(item, index) in vfTypes" :key="index" :data-id="item.id " @change="selectProducts(item.id, $event)" :label="item.label" :true-label="item.id">{{ item.label }}
-                                                                                                                                                </el-checkbox>-->
+                                                                                                                                                                            </el-checkbox>-->
 
                         </el-checkbox-group>
                     </div>
@@ -89,6 +89,10 @@
                 <div class="title-box product-title-box">
                     <h1>批次进度表</h1>
                 </div>
+                <div class="select-box">
+                    <el-date-picker class="progress-date-box" @change="changeProgressDate" v-model="value6" type="daterange" range-separator=" / " placeholder="选择批次日期范围"></el-date-picker>
+                    <el-button class="progress-select-btn" @click="filterProgressData">筛选</el-button>
+                </div>
                 <el-row class="progress-box">
                     <div class="progress-items">
                         <span class="progress-item">10</span>
@@ -113,8 +117,8 @@
                     <el-col :span="19">
                         <ul class="batch-table">
                             <li class="batch-bar-item" v-for="(gress, index) in batchDatas.progress" :key="index">
-                                <span class="batch-bar bar-item gobj-progress" :class="gress > 50 ? 'not-gobj-progress':'gobj-progress'" :title="gress +'%'" :style="{width:  gress + '%' }"></span>
-                                <span class="batch-txt bar-item" v-show="gress == 100 ? false : true">{{ gress }}%</span>
+                                <span class="batch-bar bar-item gobj-progress" :class="gress > 50 ? 'gobj-progress':'not-gobj-progress'" :title="gress +'%'" :style="{width:  gress + '%' }"></span>
+                                <span class="batch-txt bar-item" :class="gress > 50 ? 'item-gobj' : 'item-not-gobj'" v-show="gress == 100 ? false : true">{{ gress }}%</span>
                             </li>
                             <span class="line"></span>
                         </ul>
@@ -222,10 +226,23 @@ export default {
     methods: {
         typeChange() {
         },
+        changeProgressDate(val) {
+            if (val) {
+                let date = val.split('/');
+                this.batchParams.startTime = date[0];
+                this.batchParams.endTime = date[1];
+            } else {
+                this.batchParams.startTime = '';
+                this.batchParams.endTime = '';
+            }
+        },
+        filterProgressData() {
+            this.getBatchSchedule();
+        },
         selectDate(d) {
-           let tempDate = d.split('/');
-           this.params.beginTime = tempDate[0];
-           this.params.finishTime = tempDate[1];
+            let tempDate = d.split('/');
+            this.params.beginTime = tempDate[0];
+            this.params.finishTime = tempDate[1];
         },
         // 切换tab页
         handleClick(tab, event) {
@@ -251,7 +268,7 @@ export default {
             let productNameBox = _j('.type-item-box');
             if (dom.hasClass('is-show')) {
                 productNameBox.animate({
-                    'min-height': '30px'
+                    'min-height': '36px'
                 }, 500);
                 dom.children('.show-icon').removeClass('is-show');
                 dom.removeClass('is-show');
@@ -392,6 +409,8 @@ export default {
             fetchBatchSchedules(this.$store, this.batchParams).then(() => {
                 let tempData = this.$store.getters.getBatchSchedules;
                 if (tempData.resultCode === '1') {
+                    this.batchDatas.progress.length = 0;
+                    this.batchDatas.names.length = 0;
                     let tempObj = tempData.resultObj;
                     let len = tempObj.length;
                     let tempItem = {};
@@ -411,6 +430,8 @@ export default {
                         });
                         this.batchDatas.progress.push(tempItem.bacth);
                     }
+                } else {
+                    this._showMessage('info', tempData.resultMsg + '!');
                 }
             });
         },
@@ -426,9 +447,10 @@ export default {
 }
 </script>
 <style lang="scss">
-.pro-content {
-    background-color: #fff;
-    margin-top: 10px;
+@import './../assets/scss/cmy-variable.scss';
+.home-pro-content {
+    background-color: $white;
+    margin-top: 15px;
     padding-left: 20px;
     padding-bottom: 20px;
     min-height: 510px;
@@ -436,10 +458,11 @@ export default {
 }
 
 .title-box h1 {
-    font-size: 22px;
+    font-size: $font-base-sm-title;
     font-weight: 100;
     line-height: 62px;
     text-align: left;
+    color: $m-black-3;
 }
 
 .product-title-box h1 {
@@ -453,19 +476,23 @@ export default {
         .date-box {
             width: auto;
             display: inline-block;
+            .el-input__inner {
+                height: 30px;
+            }
         }
         .day-box {
             float: right;
-            border: 1px solid #02bdad;
-            height: 34px;
+            border: 1px solid $m-main--b;
+            height: 30px;
             border-radius: 4px;
-            width: 210px;
-            line-height: 34px;
+            width: 180px;
+            line-height: 30px;
             margin-left: 30px;
             margin-top: 13px;
+            font-size: $font-base-sm-s;
             .day-item {
                 text-align: center;
-                width: 70px;
+                width: 60px;
                 display: inline-block;
                 float: left;
                 color: #02bdad;
@@ -478,12 +505,13 @@ export default {
         }
         .select-btn {
             float: right;
-            width: 100px;
-            height: 34px;
+            width: 72px;
+            height: 30px;
             border: none;
             color: #fff;
+            padding: 0px;
             text-align: center;
-            font-size: 18px;
+            font-size: $font-base-sm-s;
             margin-top: 13px;
             margin-left: 30px;
             background-color: #02bdad;
@@ -499,27 +527,30 @@ export default {
         .type-ex {
             width: 100px;
             float: left;
-            line-height: 30px;
+            line-height: 36px;
+            color: $m-black-9;
         }
         .type-item-box {
             float: left;
             width: 60%;
-            height: 30px;
+            height: 36px;
             text-align: left;
             overflow: hidden;
             .el-checkbox {
                 margin-left: 0px;
                 padding-left: 8px;
                 padding-right: 8px;
-                line-height: 30px;
+                line-height: 36px;
+                color: $m-black-9;
             }
         }
         .show-all-box {
-            line-height: 30px;
+            line-height: 36px;
             width: 100px;
             float: left;
             margin-left: 100px;
             cursor: pointer;
+            color: $m-black-9;
             .show-icon {
                 display: inline-block;
                 transform: rotate(-90deg);
@@ -547,11 +578,24 @@ export default {
     width: 100%;
 }
 
+.el-tabs__item.is-active {
+    color: $m-black-3;
+}
+
+.el-table th>.cell {
+    font-size: $font-base-sm-s;
+    color: $m-black-3;
+}
+
+.el-table tr td>.cell {
+    font-size: $font-base-sm-s;
+    color: $m-black-9;
+}
+
 .task-table-box,
 .progress-table-box {
     background-color: #fff;
-    margin-top: 10px;
-    padding-top: 20px;
+    margin-top: 15px;
     padding-bottom: 20px;
     .el-tabs__header {
         padding-left: 20px;
@@ -561,6 +605,30 @@ export default {
 .progress-table-box {
     padding-bottom: 40px;
     margin-bottom: 80px;
+    .select-box {
+        margin-bottom: 20px;
+    }
+    .progress-date-box {
+        margin-left: 20px;
+        .el-input__inner {
+            height: 30px;
+        }
+    }
+    .select-box {
+        text-align: left;
+    }
+    .progress-select-btn {
+        width: 72px;
+        height: 30px;
+        border: none;
+        color: #fff;
+        padding: 0px;
+        text-align: center;
+        font-size: $font-base-sm-s;
+        margin-top: 13px;
+        margin-left: 30px;
+        background-color: #02bdad;
+    }
 }
 
 .progress-box {
@@ -596,13 +664,21 @@ export default {
         position: relative;
         .bar-item {
             display: inline-block;
-            height: 30px;
-            line-height: 30px;
+            height: 24px;
+            line-height: 24px;
             float: left;
         }
+
         .batch-txt {
             color: #999;
             padding-left: 5px;
+            font-size: $font-base-sm-s;
+        }
+        .item-gobj {
+            color: #71bfff;
+        }
+        .item-not-gobj {
+            color: #ffd75d;
         }
         .line {
             position: absolute;
@@ -618,8 +694,8 @@ export default {
         clear: both;
         padding-top: 20px;
         li {
-            height: 30px;
-            line-height: 30px;
+            height: 24px;
+            line-height: 24px;
             margin-top: 15px;
         }
     }

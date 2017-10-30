@@ -5,6 +5,7 @@ import axios from 'axios'
 import VueAxios from 'vue-axios'
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-default/index.css'
+import './assets/scss/cmy-variable.scss'
 //import '../theme/index.css' // 重置Element-ui主题
 import App from './App'
 import router from './router'

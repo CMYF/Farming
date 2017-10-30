@@ -1,7 +1,7 @@
 <template>
     <div>
         <div class="home-logo-box">
-            <img src="./../assets/images/logo.jpg" alt="">
+            <img src="./../assets/images/logo@2x.jpg" alt="">
         </div>
         <div class="user-pic-box">
             <span class="iconfont user-pic-icon">&#xe794;</span>
@@ -128,13 +128,13 @@ export default {
     img {
         min-width: 100%;
         max-width: 100%;
-        height: 60px;
+        height: 50px;
     }
 }
 
 .el-menu--horizontal .el-submenu .el-submenu__title {
-    height: 50px;
-    line-height: 50px;
+    height: 40px;
+    line-height: 40px;
 }
 
 .el-menu-item,
@@ -147,8 +147,8 @@ export default {
 .el-menu-item a,
 .el-submenu__title,
 .el-submenu .el-submenu__title {
-    height: 50px !important;
-    line-height: 50px !important;
+    height: 40px !important;
+    line-height: 40px !important;
     text-align: left !important;
     color: #fff !important;
     font-size: 16px;

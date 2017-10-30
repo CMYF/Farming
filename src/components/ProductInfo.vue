@@ -39,7 +39,7 @@
             </el-table-column>
         </el-table>
         <el-row class="page-box">
-            <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="this.getProducts.currentPage" :page-sizes="[10, 20, 30, 40, 50]" :page-size="this.getProducts.pageSize" layout="total, sizes, prev, pager, next, jumper" :total="this.getProducts.totalRows">
+            <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="this.getProducts.currentPage" :page-sizes="[10, 20, 30, 40, 50]" :page-size="this.getProducts.pageSize" layout="sizes, prev, pager, next" :total="this.getProducts.totalRows">
             </el-pagination>
         </el-row>
         <el-dialog class="product-dialog-box" title="新增产品" :visible.sync="dialogFormVisible">
@@ -208,9 +208,7 @@ export default {
     },
     beforeMount() {
         this.getProducts.token = this.token;
-        fetchGetProducts(this.$store, this.getProducts).then(() => {
-            this.dec_data();
-        });
+        this.loadProducts();
         fetchKuaidials(this.$store).then(() => {
             this.dec_kuaidialDatas();
         })
@@ -225,6 +223,11 @@ export default {
             } else {
                 this.$refs.multipleTable.clearSelection();
             }
+        },
+        loadProducts() {
+            fetchGetProducts(this.$store, this.getProducts).then(() => {
+                this.dec_data();
+            });
         },
         // dec product data
         dec_data() {
@@ -453,6 +456,7 @@ export default {
                         let tempData = this.$store.getters.getSaveProLink;
                         if (tempData.resultCode === '1') {
                             this._showMessage('success', '保存成功！');
+                            this.loadProducts();
                         } else {
                             this._showMessage('error', tempData.resultMsg);
                         }
