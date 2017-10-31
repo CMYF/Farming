@@ -1,10 +1,11 @@
 <template >
     <el-row class="info-box">
         <el-col :span="7" class="select-info-box">
-            <el-select v-model="productInfo" @change="filterProductInfo" filterable placeholder="请选择">
+            <!--<el-select v-model="productInfo" @change="filterProductInfo" filterable placeholder="请选择">
                 <el-option v-for="item in productNameIds" :key="item.value" :label="item.label" :value="item.id + ':' + item.value">
                 </el-option>
-            </el-select>
+            </el-select>-->
+            <el-input v-model="getProducts.productName" class="pro-name-inp" placeholder="请输入产品名称"></el-input>
             <el-button type="success" @click="filterProducts">筛选</el-button>
         </el-col>
         <el-col :span="11">
@@ -577,6 +578,11 @@ export default {
 
 .select-info-box {
     text-align: left;
+    .pro-name-inp{
+        width: 220px;
+        height: 30px;
+    
+    }
 }
 
 .add-product-info {
