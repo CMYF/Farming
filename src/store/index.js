@@ -7,8 +7,8 @@ import HomePage from './modules/homepage'
 import Login from './modules/login'
 import UserAdmin from './modules/useradmin'
 import RoleManagement from './modules/rolemanagement'
-import TaskList from './modules/TaskList'
-import TaskGet from './modules/TaskGet'
+import WorksList from './modules/worksList'
+import WorksGet from './modules/worksGet'
 import Product from './modules/product'
 import Resourceconfig from './modules/resourceconfig'
 import Kuaidial from './modules/kuaidial'
@@ -33,8 +33,8 @@ export default new Vuex.Store({
        Login,
        UserAdmin,
        RoleManagement,
-       TaskList,
-       TaskGet,
+       WorksList,
+       WorksGet,
        Product,
        Resourceconfig,
        Kuaidial,

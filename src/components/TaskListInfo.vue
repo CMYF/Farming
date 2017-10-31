@@ -30,25 +30,25 @@
                 <el-table ref="singleTable" border :data="tableData" highlight-current-row style="width: 100%"  @current-change="danXuanChange">
                     <el-table-column type="index" label="序号" width="70">
                     </el-table-column>
-                    <el-table-column property="picibianhName" label="计划名称" width="160" className="plan-name-td">
+                    <el-table-column property="picibianhName" label="计划名称" width="150" className="plan-name-td">
                     </el-table-column>
-                    <el-table-column property="picibianh" label="批次编号" width="100">
+                    <el-table-column property="picibianh" label="批次编号" width="155">
                     </el-table-column>
-                    <el-table-column property="productName" label="产品名称" width="120">
+                    <el-table-column property="productName" label="产品名称" width="130">
                     </el-table-column>
-                    <el-table-column property="linkIdName" label="生产环节" width="100">
+                    <el-table-column property="linkIdName" label="生产环节" width="120">
                     </el-table-column>
-                    <el-table-column property="planstartdatetime" label="计划开始时间" width="130">
+                    <el-table-column property="planstartdatetime" label="计划开始时间" width="170">
                     </el-table-column>
-                    <el-table-column property="planenddatetime" label="计划结束时间" width="130">
+                    <el-table-column property="planenddatetime" label="计划结束时间" width="170">
                     </el-table-column>
-                    <el-table-column property="createtime" label="任务新建时间" width="130">
+                    <el-table-column property="createtime" label="任务新建时间" width="170">
                     </el-table-column>
-                    <el-table-column property="distributetime" label="任务派发时间" width="130">
+                    <el-table-column property="distributetime" label="任务派发时间" width="170">
                     </el-table-column>
-                    <el-table-column property="receivetime" label="任务接收时间" width="100">
+                    <el-table-column property="receivetime" label="任务接收时间" width="170">
                     </el-table-column>
-                    <el-table-column property="finishtime" label="任务完成时间" width="100">
+                    <el-table-column property="finishtime" label="任务完成时间" width="170">
                     </el-table-column>
                     <el-table-column property="creator" label="新建者" width="100">
                     </el-table-column>

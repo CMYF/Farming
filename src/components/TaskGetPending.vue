@@ -30,29 +30,33 @@
                     </el-table-column>
                     <el-table-column property="picibianhName" label="计划名称" width="160" className="plan-name-td">
                     </el-table-column>
-                    <el-table-column property="picibianh" label="批次编号" width="100">
+                    <el-table-column property="picibianh" label="批次编号" width="150">
                     </el-table-column>
-                    <el-table-column property="productName" label="产品名称" width="120">
+                    <el-table-column property="productName" label="产品名称" width="140">
                     </el-table-column>
-                    <el-table-column property="linkIdName" label="生产环节" width="100">
+                    <el-table-column property="linkIdName" label="生产环节" width="120">
                     </el-table-column>
-                    <el-table-column property="planstartdatetime" label="计划开始时间" width="130">
+                    <el-table-column property="planstartdatetime" label="计划开始时间" width="170">
                     </el-table-column>
-                    <el-table-column property="planenddatetime" label="计划结束时间" width="130">
+                    <el-table-column property="planenddatetime" label="计划结束时间" width="170">
                     </el-table-column>
-                    <el-table-column property="createtime" label="任务新建时间" width="130">
+                    <el-table-column property="createtime" label="任务新建时间" width="170">
                     </el-table-column>
-                    <el-table-column property="distributetime" label="任务派发时间" width="130">
+                    <el-table-column property="distributetime" label="任务派发时间" width="170">
                     </el-table-column>
-                    <el-table-column property="receivetime" label="任务接收时间" width="100">
+                    <el-table-column property="receivetime" label="任务接收时间" width="170">
                     </el-table-column>
-                    <el-table-column property="finishtime" label="任务完成时间" width="100">
+                    <el-table-column property="finishtime" label="任务完成时间" width="170">
                     </el-table-column>
                     <el-table-column property="creator" label="新建者" width="100">
                     </el-table-column>
                     <el-table-column property="abutmentname" label="责任人" width="100">
                     </el-table-column>
                     <el-table-column property="statusName" label="任务状态" width="100">
+                    	<template scope="scope">
+		                        <span v-if="scope.row.status=== 20" style="color: #fecb00">{{ scope.row.statusName }}</span>
+		                       <span v-if="scope.row.status=== 30" style="color: #00d6c4">{{ scope.row.statusName }}</span>
+			            </template>
                     </el-table-column>
                 </el-table>
                 <el-pagination class="page-box" :total="pageTotle" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="page.page_number" :page-sizes="[10,20,30,40,50]" :page-size="page.page_size" layout="sizes, prev, pager, next" >
