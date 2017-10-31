@@ -8,8 +8,8 @@
                 <el-col :span="18" class="mack-box">
                     <div class="date-box">
                         <!--<el-date-picker v-model="params.beginTime" @change="startChange" format="yyyy-MM-dd" type="date" :picker-options="pickerOptions0" placeholder="选择开始日期"></el-date-picker>
-                                                                -
-                                                                <el-date-picker v-model="params.finishTime" @change="endChange" type="date" :picker-options="pickerOptions0" placeholder="选择结束日期"> </el-date-picker>-->
+                                                                    -
+                                                                    <el-date-picker v-model="params.finishTime" @change="endChange" type="date" :picker-options="pickerOptions0" placeholder="选择结束日期"> </el-date-picker>-->
                         <el-date-picker v-model="value6" type="daterange" range-separator=" / " @change="selectDate" :picker-options="pickerOptions0" placeholder="选择日期范围">
                         </el-date-picker>
                         <el-button class="select-btn" @click="getProductLines()">
@@ -30,7 +30,7 @@
                         <el-checkbox-group v-model="chnageTypes" @change="typeChange" :max="5">
                             <el-checkbox v-for="(item, idx) in vfTypes" :label="item.label" :key="idx">{{item.label}}</el-checkbox>
                             <!--<el-checkbox v-for="(item, index) in vfTypes" :key="index" :data-id="item.id " @change="selectProducts(item.id, $event)" :label="item.label" :true-label="item.id">{{ item.label }}
-                                                                                                                                                                                    </el-checkbox>-->
+                                                                                                                                                                                        </el-checkbox>-->
 
                         </el-checkbox-group>
                     </div>
@@ -597,6 +597,9 @@ export default {
     .el-tabs__header {
         padding-left: 20px;
     }
+    .el-tabs__item.is-active {
+        color: $m-black-3;
+    }
 }
 
 .progress-table-box {
@@ -719,9 +722,7 @@ export default {
 .tomo-task-box {
     padding-left: 20px;
     padding-right: 20px;
-    .el-tabs__item.is-active {
-        color: $m-black-3;
-    }
+
 
     .el-table th>.cell {
         font-size: $font-base-sm-s;
