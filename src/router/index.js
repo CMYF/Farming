@@ -8,8 +8,8 @@ import RoleManagement from '@/views/RoleManagement'
 import AddMenu from '@/views/addMenu'
 import UserAdmin from '@/views/userAdmin'
 import SetProduct from '@/views/setproduct'
-import TaskList from '@/views/TaskList'
-import GetTasks from '@/views/TaskGet'
+import WorksGet from '@/views/worksGet'
+import WorksList from '@/views/worksList'
 import ProductAdmin from '@/views/productAdmin'
 import NewPlanTask from '@/views/newPlan'
 import ResourceConfig from '@/views/resourceConfig'
@@ -64,14 +64,14 @@ export default new Router({
           path: '/tasklists',
           name: 'Task',
           components: {
-            rightContent: TaskList
+            rightContent: WorksList
           }
         },
         {
           path: '/gettasks',
           name: 'Task',
           components: {
-            rightContent: GetTasks
+            rightContent: WorksGet
           }
         },
         {
