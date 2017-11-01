@@ -10,6 +10,9 @@ import './assets/scss/cmy-variable.scss'
 import App from './App'
 import router from './router'
 Vue.config.productionTip = false
+console.log('BASE_URL=====================================');
+console.log(BASE_URL);
+axios.defaults.baseURL = BASE_URL;
 Vue.use(VueAxios, axios);
 Vue.use(ElementUI)
   /* eslint-disable no-new */

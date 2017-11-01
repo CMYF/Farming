@@ -3,11 +3,14 @@ import qs from 'qs'
 export function fetchHomePage() {
     return Vue.axios.get('/api/index-all-data')
 }
-
+//console.log(BASE_URL);
 export function fetchGetNav(token) {
-    return Vue.axios.post('http://10.1.2.151/ctower-mall-c//sys/login/loadMenus.do', qs.stringify({
+    return Vue.axios.post('/sys/login/loadMenus.do', qs.stringify({
       'loginedtoken': token
     }))
+    /* return Vue.axios.post('http://10.1.2.151/ctower-mall-c//sys/login/loadMenus.do', qs.stringify({
+      'loginedtoken': token
+    })) */
 }
 
 export function fetchGetSubNavById(idx) {
