@@ -117,6 +117,7 @@
 import _j from 'jquery'
 import { mapGetters } from 'vuex'
 import store from './../store/index'
+import { getByteLen } from './../assets/js/strLength'
 function fetchKuaidials(store, opts) {
     return store.dispatch('GET_KUAIDIALS', {
         token: localStorage.token
@@ -280,6 +281,7 @@ export default {
                     self.editForm.parentId = parentId;
                     self.editForm.name = name;
                 }
+
                 self.isShowEditDailog = true;
             });
         },
@@ -309,6 +311,11 @@ export default {
             if (!this.editForm.name) {
                 this._showMessage('error', '请输入归属地名称！');
                 return false;
+            }
+            let len = getByteLen(this.editForm.name);
+            if (len > 20) {
+                this._showMessage('error', '归属地名字长度不能大于20个字符，中文算两个字符！');
+                return;
             }
             this.addOrModifyKuaiFetch();
             this.isShowEditDailog = false;
