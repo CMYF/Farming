@@ -9,14 +9,14 @@
             <el-col :span="11" class="nav-btn-box">
                 <el-col :span="24" class="">
                     <el-input class="inp-box" :style="{display: 'none'}" placeholder="请输入关键字" icon="search" v-model="input2" :on-icon-click="handleIconClick"></el-input>
-                    <el-badge :value="15" class="badge-item">
+                    <el-badge :value="15" class="badge-item" :style="{display: 'none'}">
                         <span class=" icon-box msg-icon-box">
                             <i class="iconfont msg-icon">&#xe779;</i>
                         </span>
                     </el-badge>
 
                     <el-dropdown  @command="selectMenuItem">
-                        <span class="el-dropdown-link dropdown-btn-box icon-box">
+                        <span class="el-dropdown-link dropdown-btn-box icon-box" >
                             <i class="iconfont user-info-icon  el-icon--right">&#xe794;</i>
                         </span>
                         <el-dropdown-menu slot="dropdown">
