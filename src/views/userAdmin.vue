@@ -17,7 +17,7 @@
       <h1 class="form-title">角色列表</h1>
       <el-table ref="multipleTable" v-loading="isShowLoading" element-loading-txt="加载中..." class="table-box" :default-sort="{prop: 'date', order: 'descending'}" :fit="true" :data="this.users.lists" border max-height="550" tooltip-effect="dark" style="width: 100%" @selection-change="handleSelectionChange">
         <el-table-column label="操作" width="80">
-          <template slot-scope="scope">
+          <template scope="scope">
             <el-button type="text" size="small" @click="showEditDialog($event)">
               <i class="iconfont">&#xe7c3;</i>
             </el-button>

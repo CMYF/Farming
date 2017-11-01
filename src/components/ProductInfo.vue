@@ -2,9 +2,9 @@
     <el-row class="info-box">
         <el-col :span="7" class="select-info-box">
             <!--<el-select v-model="productInfo" @change="filterProductInfo" filterable placeholder="请选择">
-                <el-option v-for="item in productNameIds" :key="item.value" :label="item.label" :value="item.id + ':' + item.value">
-                </el-option>
-            </el-select>-->
+                                                                <el-option v-for="item in productNameIds" :key="item.value" :label="item.label" :value="item.id + ':' + item.value">
+                                                                </el-option>
+                                                            </el-select>-->
             <el-input v-model="getProducts.productName" class="pro-name-inp" placeholder="请输入产品名称"></el-input>
             <el-button type="success" @click="filterProducts">筛选</el-button>
         </el-col>
@@ -43,7 +43,7 @@
             <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="this.getProducts.currentPage" :page-sizes="[10, 20, 30, 40, 50]" :page-size="this.getProducts.pageSize" layout="sizes, prev, pager, next" :total="this.getProducts.totalRows">
             </el-pagination>
         </el-row>
-        <el-dialog class="product-dialog-box" title="新增产品" :visible.sync="dialogFormVisible">
+        <el-dialog class="product-dialog-box" @close="resetFormInput('form')" title="新增产品" :visible.sync="dialogFormVisible">
             <el-form :model="form" :inline="true" ref="form" :rules="rules" class="product-form">
                 <el-form-item label="产品名称" :label-width="formLabelWidth" prop="name">
                     <el-input v-model="form.name" auto-complete="off" placeholder="请输入产品名称"></el-input>
@@ -52,7 +52,7 @@
                     <el-cascader :options="options" v-model="form.address" @change="handleKuaidialChange"></el-cascader>
                 </el-form-item>
                 <el-form-item label="发芽率%" :label-width="formLabelWidth" prop="germinate">
-                    <el-input v-model="form.germinate" auto-complete="off" placeholder="请输入发芽率"></el-input>
+                    <el-input v-model="form.germinate" placeholder="请输入发芽率"></el-input>
                 </el-form-item>
                 <el-form-item label="移栽成苗率%" :label-width="formLabelWidth" prop="transplant">
                     <el-input v-model="form.transplant" auto-complete="off" placeholder="请输入移栽成苗率"></el-input>
@@ -104,7 +104,7 @@
             </el-form>
             <div slot="footer" class="dialog-footer dialog-footer-box">
                 <el-button class="save-btn" @click="saveProductLinkInfo('form')">确 定</el-button>
-                <el-button class="cancle-btn" @click="cancleLinkInfo('form')">取 消</el-button>
+                <el-button class="cancle-btn" @click="cancleLinkInfo">取 消</el-button>
             </div>
         </el-dialog>
     </el-row>
@@ -132,10 +132,52 @@ function fetchDelProductInfo(store, opts) {
 }
 import store from './../store/index'
 import _j from 'jquery'
+import { checkFloats, checkZeroToFive, checkFive } from './../assets/js/reg'
+import { getByteLen } from './../assets/js/strLength'
+
 export default {
     name: 'ProductInfo',
     store,
     data() {
+        let checkLinkName = (rules, val, callback) => {
+            if (!val) {
+                return callback('该段不能为空！');
+            } else {
+                let len = getByteLen(val);
+                if (len > 15) {
+                    return callback('该字段不能允许超过15个字符！');
+                } else {
+                    callback();
+                }
+            }
+        }
+        let checkFloat = (rules, val, callback) => {
+            if (!val) {
+                return callback(new Error('该字段不允许为空！'));
+            } else if (!checkFloats.test(val)) {
+                return callback(new Error('该字段最大值是10位整数或者带1位小数！'));
+            } else {
+                callback();
+            }
+        };
+        let checkZeroToFives = (rules, val, callback) => {
+            if (!val) {
+                return callback(new Error('该字段不允许为空！'));
+            } else if (!checkZeroToFive.test(val)) {
+                return callback(new Error('该字段最大值是5位整数或者带1位小数！'));
+            } else {
+                callback();
+            }
+        };
+        let checkFives = (rules, val, callback) => {
+            if (!val) {
+                return callback(new Error('该字段不允许为空！'));
+            } else if (!checkFive.test(val)) {
+                return callback(new Error('该字段最大值是5位整数！'));
+            } else {
+                callback();
+            }
+        };
         return {
             productNameIds: [],
             productInfo: '',
@@ -184,22 +226,19 @@ export default {
             },
             rules: {
                 name: [
-                    { required: true, message: '请输入产品名称', trigger: 'blur' }
+                    { validator: checkLinkName, trigger: 'blur' }
                 ],
-                /*address: [
-                    { required: true, message: '请选择归属地', trigger: 'change' }
-                ],*/
                 germinate: [
-                    { required: true, message: '请输入发芽率', trigger: 'blur' }
+                    { validator: checkFloat, trigger: 'blur' },
                 ],
                 transplant: [
-                    { required: true, message: '请输入移栽成苗率', trigger: 'blur' }
+                    { validator: checkFloat, trigger: 'blur' },
                 ],
                 weight: [
-                    { required: true, message: '请输入重量', trigger: 'blur' }
+                    { validator: checkZeroToFives, trigger: 'blur' },
                 ],
                 pluck: [
-                    { required: true, message: '请输入采摘周期', trigger: 'blur' }
+                    { validator: checkFives, trigger: 'blur' },
                 ]
             },
             dialogFormVisible: false,
@@ -339,6 +378,7 @@ export default {
         },
         // add link 
         addProductLinkInfo(e) {
+
             let dom = _j(e.currentTarget);
             this.dyProductLink.domains.push({
                 value: '',
@@ -472,10 +512,11 @@ export default {
             });
 
         },
-        cancleLinkInfo(formName) {
-            this.$refs[formName].resetFields();
+        cancleLinkInfo() {
             this.dialogFormVisible = false;
-
+        },
+        resetFormInput(formName) {
+            this.$refs[formName].resetFields();
         },
         // filter product link
         filterProductInfo() {
@@ -578,10 +619,9 @@ export default {
 
 .select-info-box {
     text-align: left;
-    .pro-name-inp{
+    .pro-name-inp {
         width: 220px;
         height: 30px;
-    
     }
 }
 
@@ -652,6 +692,9 @@ export default {
     .el-dialog__body {
         max-height: 530px;
         overflow-y: auto;
+        .product-form {
+            .el-form-item {}
+        }
     }
     .el-textarea__inner {
         width: 800px;

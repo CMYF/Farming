@@ -90,7 +90,7 @@
                     <h1>批次进度表</h1>
                 </div>
                 <div class="select-box">
-                    <el-date-picker class="progress-date-box" @change="changeProgressDate" v-model="value6" type="daterange" range-separator=" / " placeholder="选择批次日期范围"></el-date-picker>
+                    <el-date-picker class="progress-date-box" @change="changeProgressDate" v-model="value7" type="daterange" range-separator=" / " placeholder="选择批次日期范围"></el-date-picker>
                     <el-button class="progress-select-btn" @click="filterProgressData">筛选</el-button>
                 </div>
                 <el-row class="progress-box">
@@ -158,6 +158,7 @@ export default {
                 }
             },
             value6: '',
+            value7: '',
             params: { // 点击查询参数
                 beginTime: '',
                 finishTime: '',
@@ -419,8 +420,8 @@ export default {
                     for (let i = 0; i < len; i++) {
                         tempItem = tempObj[i];
                         tempName = tempItem.name;
-                        if (tempName.length > 9) {
-                            subStr = tempName.substr(0, 9) + '...'
+                        if (tempName.length > 7) {
+                            subStr = tempName.substr(0, 7) + '...'
                         } else {
                             subStr = tempName;
                         }
