@@ -71,7 +71,7 @@
         <el-dialog class="dialog-boxym" title="新增资源" :visible.sync="isShowPlanDailog" @close="closeDialogs">
 		            <el-form :model="ymAddResource" :inline="true" :rules="rules"  ref="ymAddResource" class="plan-form" >
 		                <el-form-item label="资源名称" :label-width="formLabelWidth" prop = "zyNames">
-		                    <el-input v-model="ymAddResource.zyNames"  auto-complete="off"></el-input>
+		                    <el-input v-model="ymAddResource.zyNames" @keyup.native="nameProving"  auto-complete="off"></el-input>
 		                </el-form-item>
 		                <el-form-item label="归属地" :label-width="formLabelWidth" prop = "zyColumids">
 		                    <div class="block" >
@@ -97,13 +97,13 @@
 		                    <el-input v-model="ymAddResource.zyCodes" :disabled="true"   auto-complete="off"></el-input>
 		                </el-form-item>
 		                <el-form-item label="育苗盘数量" :label-width="formLabelWidth" prop = "zyAmounts">
-		                    <el-input v-model.number="ymAddResource.zyAmounts" :maxlength="10"  auto-complete="off"></el-input>
+		                    <el-input v-model="ymAddResource.zyAmounts" @keyup.native="numProving" :maxlength="10"  auto-complete="off"></el-input>
 		                </el-form-item>
 		                <el-form-item label="育苗盘孔数" :label-width="formLabelWidth" prop = "zyHoless">
-		                    <el-input v-model.number="ymAddResource.zyHoless" :maxlength="10" auto-complete="off"></el-input>
+		                    <el-input v-model="ymAddResource.zyHoless" @keyup.native="numProving" :maxlength="10" auto-complete="off"></el-input>
 		                </el-form-item>
 		                <el-form-item label="育苗面积" :label-width="formLabelWidth" prop = "zyAreass">
-		                    <el-input v-model.number="ymAddResource.zyAreass" :maxlength="10"  auto-complete="off"></el-input>
+		                    <el-input v-model="ymAddResource.zyAreass" @keyup.native="numProving" :maxlength="10"  auto-complete="off"></el-input>
 		                </el-form-item>
 		                 <el-form-item label="创建时间" :label-width="formLabelWidth" >
 		                    <el-input v-model="ymAddResource.zyTimes" :disabled="true"  auto-complete="off"></el-input>
@@ -190,17 +190,14 @@ export default {
 	          ],
 			
 	          zyAmounts: [
-	           { required: true, message: '请输入育苗盘数量' },
-	           { type: 'number', message: '必须为数字值'}
+	           { required: true, message: '请输入育苗盘数量' }
 	          ],
 	        
 	          zyHoless: [
-	            { required: true, message: '请输入育苗盘孔数'},
-	            { type: 'number', message: '必须为数字值'}
+	            { required: true, message: '请输入育苗盘孔数'}
 	          ],
 			  zyAreass: [
-	            { required: true, message: '请输入育苗面积'},
-	            { type: 'number', message: '必须为数字值'}
+	            { required: true, message: '请输入育苗面积'}
 	          ]
 	        },
         	
@@ -324,6 +321,17 @@ export default {
     },
     methods: {
     	
+    	nameProving(){
+    		this.ymAddResource.zyNames=this.ymAddResource.zyNames.replace(/[^\a-\z\A-\Z0-9\u4E00-\u9FA5]/g,'')
+    	},
+    	
+    	numProving(){
+    		this.ymAddResource.zyAmounts=this.ymAddResource.zyAmounts.replace(/[^0-9]/g,'')
+    		this.ymAddResource.zyHoless=this.ymAddResource.zyHoless.replace(/[^0-9]/g,'')
+    		this.ymAddResource.zyAreass=this.ymAddResource.zyAreass.replace(/[^0-9]/g,'')
+    	},
+    	
+    	
     	closeDialogs(){
     		this.$refs.ymAddResource.resetFields();
     	},
@@ -336,10 +344,12 @@ export default {
            }
             _j('.yumiao-name-td').removeClass('yumiao-name-active');
             dom.addClass('yumiao-name-active');
-            //this.imglink = 'http://'+window.location.host+'/'+row.qrcode
-            this.imglink = 'http://10.1.2.151/'+row.qrcode;
-            console.log(this.imglink)
+            this.imglink = 'http://'+window.location.host+'/'+row.qrcode
+            //this.imglink = 'http://10.1.2.151/'+row.qrcode;
             console.log("2222222222")
+            console.log(window.location.host)
+            console.log(this.imglink)
+            
     	},
     	
     	
@@ -615,30 +625,7 @@ export default {
 	      },
 	   
 
-        showLinkDetail(e) {
-            let dom = _j(e.target);
-            let subInfoBoxDom = '';
-            let tempDom = '';
-            let iconDom = _j('.detail-icon');
-            if (dom.hasClass('collapse-ex')) {
-                tempDom = dom;
-                subInfoBoxDom = tempDom.siblings('.sub-link-info-box');
-            } else {
-                tempDom = dom.parent('.collapse-ex');
-                subInfoBoxDom = tempDom.siblings('.sub-link-info-box');
-            }
-            if (subInfoBoxDom.hasClass('show')) {
-                iconDom.removeClass('detail-icon-show');
-                subInfoBoxDom.slideUp('500', function() {
-                    subInfoBoxDom.removeClass('show').addClass('hide')
-                })
-                return;
-            }
-            iconDom.addClass('detail-icon-show');
-            subInfoBoxDom.slideDown('500', function() {
-                subInfoBoxDom.removeClass('hide').addClass('show')
-            })
-        }
+        
     }
 }
 </script>

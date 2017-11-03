@@ -1,9 +1,11 @@
-import { fetchAllUsers, fetchUserById, fetchUpateUserById } from './../../fetch/api'
+import { fetchAllUsers, fetchUserById, fetchUpateUserById,fetchAddUsers ,fetchDelUsers} from './../../fetch/api'
 
 let state = {
     UserLists: {},
     user: {},
-    upUser: {}
+    upUser: {},
+    AddUser:{},
+    delUser:{}
 }
 
 let actions = {
@@ -15,6 +17,12 @@ let actions = {
     },
     UPDATE_USER_BY_ID: ({ commit, state }, opts) => {
         return fetchUpateUserById(opts).then(updateUser => commit ('UPDATE_USER_BYID',{ updateUser }))
+    },
+    ADD_USER: ({ commit, state }, opts) => {
+        return fetchAddUsers(opts).then(addUsers => commit ('GET_ADD_USER',{ addUsers }))
+    },
+    DEL_USER: ({ commit, state }, opts) => {
+        return fetchDelUsers(opts).then(delUsers => commit ('GET_DEL_USER',{ delUsers }))
     }
 }
 
@@ -27,6 +35,12 @@ let mutations = {
     },
     UPDATE_USER_BYID: (state, { updateUser }) => {
         state.upUser = updateUser.data;
+    },
+    GET_ADD_USER: (state, { addUsers }) => {
+        state.AddUser = addUsers.data;
+    },
+    GET_DEL_USER: (state, { delUsers }) => {
+        state.delUser = delUsers.data;
     }
 }
 
@@ -39,6 +53,12 @@ let getters = {
     },
     getUpdateUserInfo(state) {
         return state.upUser;
+    },
+    getAddUser(state) {
+        return state.AddUser;
+    },
+    getDelUser(state) {
+        return state.delUser;
     }
 }
 
