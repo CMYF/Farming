@@ -92,7 +92,7 @@
 					  <el-checkbox-group  v-model="checkedCities1">
 					    <el-checkbox v-for="ziyuan in ziyuanId"  :label="ziyuan.id" :key="ziyuan.id"    @change="selets(ziyuan.id,ziyuan.names,$event)">{{ziyuan.names}}</el-checkbox>
 					  </el-checkbox-group>
-					  <div class='el-form-item__error taskError2'>环节对接人为空</div>
+					  <div class='el-form-item__error taskError2'>资源选择为空</div>
 				</el-form-item>
 				<el-form-item label="预估工时" prop="task_hourTime">
 				    <el-input v-model="planForm.task_hourTime"></el-input>
@@ -519,6 +519,7 @@ export default {
     		this.ziyuanAll = [];
     		this.circleNames = '';
     		_j(".cirperson .taskError1").hide()
+    		_j(".resoures .taskError2").hide()
         	fetchTaskCircle(this.$store, this.circles).then(() => {
 	           this.pcm = this.$store.getters.TaskCircleData.resultData;
 	           if (this.pcm.resultCode === '1') {

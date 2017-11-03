@@ -69,7 +69,7 @@
         <el-dialog class="dialog-box" title="新增资源" :visible.sync="isShowPlanDailog" @close="closeDialogc">
 		            <el-form :model="ymAddResource" :inline="true" :rules="rules" ref="ymAddResource" class="plan-form" >
 		                <el-form-item label="资源名称" :label-width="formLabelWidth" prop = "zyNames">
-		                    <el-input v-model="ymAddResource.zyNames"   auto-complete="off"></el-input>
+		                    <el-input v-model="ymAddResource.zyNames" @keyup.native="nameProving"   auto-complete="off"></el-input>
 		                </el-form-item>
 		                <el-form-item label="归属地" :label-width="formLabelWidth" prop = "zyColumids">
 		                    <div class="block" >
@@ -289,6 +289,10 @@ export default {
     },
     methods: {
     	
+    	nameProving(){
+    		this.ymAddResource.zyNames=this.ymAddResource.zyNames.replace(/[^\a-\z\A-\Z0-9\u4E00-\u9FA5]/g,'')
+    	},
+    	
     	closeDialogc(){
     		this.$refs.ymAddResource.resetFields();
     	},
@@ -301,8 +305,9 @@ export default {
            }
             _j('.caishou-name-td').removeClass('caishou-name-active');
             dom.addClass('caishou-name-active');
-            //this.imglink = 'http://'+window.location.host+'/'+row.qrcode
-            this.imglink = 'http://10.1.2.151/'+row.qrcode;
+            
+            this.imglink = 'http://'+window.location.host+'/'+row.qrcode
+            //this.imglink = 'http://10.1.2.151/'+row.qrcode;
             console.log(this.imglink)
             console.log("2222222222")
     	},
@@ -317,7 +322,7 @@ export default {
 	          	this.tableData = this.allzy.basePageObj.dataList;
 	          	this.pageTotle = this.allzy.basePageObj.totalRows;
 	           	}else{
-	           		this.titleNotice=this.allzy.resultMsg;
+	           		
 	           	}
 	        });
     	},
@@ -531,7 +536,7 @@ export default {
 				          	this.tableData = this.allzy.basePageObj.dataList;
 				          	this.pageTotle = this.allzy.basePageObj.totalRows;
 				           	}else{
-				           		this.titleNotice=this.allzy.resultMsg;
+				           		//this.titleNotice=this.allzy.resultMsg;
 				           	}
 				        }); 
 				          
@@ -570,30 +575,7 @@ export default {
 	      },
 	   
 
-        showLinkDetail(e) {
-            let dom = _j(e.target);
-            let subInfoBoxDom = '';
-            let tempDom = '';
-            let iconDom = _j('.detail-icon');
-            if (dom.hasClass('collapse-ex')) {
-                tempDom = dom;
-                subInfoBoxDom = tempDom.siblings('.sub-link-info-box');
-            } else {
-                tempDom = dom.parent('.collapse-ex');
-                subInfoBoxDom = tempDom.siblings('.sub-link-info-box');
-            }
-            if (subInfoBoxDom.hasClass('show')) {
-                iconDom.removeClass('detail-icon-show');
-                subInfoBoxDom.slideUp('500', function() {
-                    subInfoBoxDom.removeClass('show').addClass('hide')
-                })
-                return;
-            }
-            iconDom.addClass('detail-icon-show');
-            subInfoBoxDom.slideDown('500', function() {
-                subInfoBoxDom.removeClass('hide').addClass('show')
-            })
-        }
+        
     }
 }
 </script>

@@ -71,6 +71,29 @@ export function fetchAllUsers(opts) {
         _lk_opername: opts.username
     }));
 }
+
+export function fetchAddUsers(opts) {
+    return Vue.axios.post('http://10.1.2.151/ctower-mall-c/sys/operatorInsertRow.do', qs.stringify({
+        loginedtoken: opts.token,
+        opercode: opts.code,
+        opername: opts.name,
+        opergender: opts.gender,
+        operphone: opts.phone,
+        consultantno: opts.consultantno,
+        operstatus: opts.status,
+        roleids: opts.ids,
+        operpwd: opts.pwd
+    }));
+}
+
+export function fetchDelUsers(opts) {
+    return Vue.axios.post('http://10.1.2.151/ctower-mall-c/sys/operatorDelRoles.do', qs.stringify({
+        loginedtoken: opts.token,
+        ids: opts.id
+    }));
+}
+
+
 export function fetchUserById(opts) {
     return Vue.axios.post('http://10.1.2.151/ctower-mall-c/sys/operatorLookRow.do', qs.stringify({
         loginedtoken: opts.token,

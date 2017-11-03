@@ -41,7 +41,7 @@
                     </el-col>
                 </el-row>
                 <el-row class="never-pass">
-                    <router-link class="never-txt" :to="{}">忘记密码？</router-link>
+                    <router-link class="never-txt" :to="{}"></router-link>
                 </el-row>
                 <el-row class="inp-button">
                     <el-col :span="18" :offset="3" class="login_btn">

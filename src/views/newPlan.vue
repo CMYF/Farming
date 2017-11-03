@@ -75,7 +75,7 @@
 		        <el-dialog class="dialog-box" title="新增计划" :visible.sync="isShowPlanDailog" @close="closeDialog">
 		            <el-form :model="newPlan" :inline="true" :rules="rules" ref="newPlan" class="plan-form">
 		                <el-form-item label="计划名称" :label-width="formLabelWidth" prop="Names">
-		                    <el-input v-model="newPlan.Names" :maxlength="35"  auto-complete="off"></el-input>
+		                    <el-input v-model="newPlan.Names" :maxlength="35" @keyup.native="nameProving"   auto-complete="off"></el-input>
 		                </el-form-item>
 		                <el-form-item label="归属地" :label-width="formLabelWidth" prop="LandId">
 		                    <div class="block" >
@@ -124,17 +124,17 @@
 						  <div class='el-form-item__error error3'>结束日期为空</div>
 						  <div class='el-form-item__error error4'>结束日期小于开始时间</div>
 		                </el-form-item>
-		                <el-form-item label="目标采收量" :label-width="formLabelWidth" prop="Target">
-		                    <el-input  v-model.number="newPlan.Target"  :maxlength="7" auto-complete="off" ></el-input>
+		                <el-form-item label="目标采收量" :label-width="formLabelWidth" prop="Targets">
+		                    <el-input  v-model="newPlan.Targets" @keyup.native="numProving"  :maxlength="7" auto-complete="off" ></el-input>
 		                </el-form-item>
 		                <el-form-item label="选择育苗床" :label-width="formLabelWidth"  class="ymBed">
 		                    <el-input v-model= "zyArrays" :disabled="isFlag"  @focus="zyData($event)"  auto-complete="off"></el-input>
 		                </el-form-item>
 		                <el-form-item label="定植数" :label-width="formLabelWidth" prop="DingZhi" >
-		                    <el-input v-model.number="newPlan.DingZhi" :maxlength="7"  auto-complete="off"></el-input>
+		                    <el-input v-model="newPlan.DingZhi" @keyup.native="numProving" :maxlength="7"  auto-complete="off"></el-input>
 		                </el-form-item>
 		                <el-form-item label="育苗盘数" :label-width="formLabelWidth" prop="YuMiaoNum" >
-		                    <el-input v-model.number="newPlan.YuMiaoNum" :maxlength="7"  auto-complete="off"></el-input>
+		                    <el-input v-model="newPlan.YuMiaoNum" @keyup.native="numProving" :maxlength="7"  auto-complete="off"></el-input>
 		                </el-form-item>
 		                 <el-form-item label="" :label-width="formLabelWidth" >
 		                   
@@ -185,7 +185,7 @@ function fetchPlanNew(store, opt) {
         jhLandName: opt.LandName,
 		jhProductId: opt.ProductId,
 		jhProductName: opt.ProductName,
-		jhTarget: opt.Target,
+		jhTarget: opt.Targets,
 		jhBed: opt.Bed,
 		jhDingZhi: opt.DingZhi,
 		jhYuMiaoNum: opt.YuMiaoNum,
@@ -271,18 +271,15 @@ export default {
 	            { required: true, message: '请产品名称', trigger: 'change' }
 	          ],
 			
-	          Target: [
-	           { required: true, message: '请输入目标采收量' },
-	           { type: 'number', message: '必须为数字值'}
+	          Targets: [
+	           { required: true, message: '请输入目标采收量' }
 	          ],
 	        
 	          DingZhi: [
-	            { required: true, message: '请输入定植数'},
-	            { type: 'number', message: '必须为数字值'}
+	            { required: true, message: '请输入定植数'}
 	          ],
 			  YuMiaoNum: [
-	            { required: true, message: '请输入育苗盘数'},
-	            { type: 'number', message: '必须为数字值'}
+	            { required: true, message: '请输入育苗盘数'}
 	          ]
 	        },
         	
@@ -293,7 +290,7 @@ export default {
         		LandName: '',
         		ProductId: '',
         		ProductName: '',
-        		Target: '',
+        		Targets: '',
         		Bed: '',
         		DingZhi: '',
         		YuMiaoNum: '',
@@ -383,6 +380,16 @@ export default {
     
     
     methods: {
+    	
+    	nameProving(){
+    		this.newPlan.Names=this.newPlan.Names.replace(/[^\a-\z\A-\Z0-9\u4E00-\u9FA5]/g,'')
+    	},
+    	numProving(){
+    		this.newPlan.Targets=this.newPlan.Targets.replace(/[^0-9]/g,'')
+    		this.newPlan.DingZhi=this.newPlan.DingZhi.replace(/[^0-9]/g,'')
+    		this.newPlan.YuMiaoNum=this.newPlan.YuMiaoNum.replace(/[^0-9]/g,'')
+    	},
+    	
     	closeDialog(){
     		this.$refs.newPlan.resetFields();
     	},

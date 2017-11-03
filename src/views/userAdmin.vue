@@ -1,7 +1,7 @@
 <template>
   <el-row>
     <el-col :span="23" class="user-main-box">
-      <h1 class="form-title">角色查询</h1>
+      <h1 class="form-title">用户查询</h1>
       <el-form :inline="true" :model="opts" class="demo-form-inline form-box">
         <el-form-item label="登录帐号">
           <el-input v-model="opts.acc" placeholder="请输入登录账号"></el-input>
@@ -14,8 +14,20 @@
           <el-button type="primary" @click="reset">重置</el-button>
         </el-form-item>
       </el-form>
-      <h1 class="form-title">角色列表</h1>
-      <el-table ref="multipleTable" v-loading="isShowLoading" element-loading-txt="加载中..." class="table-box" :default-sort="{prop: 'date', order: 'descending'}" :fit="true" :data="this.users.lists" border max-height="550" tooltip-effect="dark" style="width: 100%" @selection-change="handleSelectionChange">
+      <h1 class="form-title1" style="width: 20%; font-size: 18px; text-align: left; float: left;">用户列表</h1>
+       <el-col style="width: 8%; float: right; ">
+      	 <el-button type="primary" @click="delateUser" :disabled="flagsd">删除</el-button>
+      </el-col>
+      <el-col style="width: 5%; float: right; ">
+      	 <el-button type="primary" @click="addUser">添加</el-button>
+      </el-col>
+     
+       <el-col class="form-lines">
+       	
+       	</el-col>
+      
+      
+      <el-table ref="multipleTable" @current-change="handleCurrentChanges" highlight-current-row v-loading="isShowLoading" element-loading-txt="加载中..." class="table-box" :default-sort="{prop: 'date', order: 'descending'}" :fit="true" :data="this.users.lists" border max-height="550" tooltip-effect="dark" style="width: 100%" @selection-change="handleSelectionChange">
         <el-table-column label="操作" width="80">
           <template scope="scope">
             <el-button type="text" size="small" @click="showEditDialog($event)">
@@ -53,12 +65,18 @@ import EditUserPup from './../components/EditUserPup'
 function fetchAllUserLists(store, opts) {
   return store.dispatch('GET_ALL_USERS', opts)
 }
+
+function fetchDelUsers(store, delUser) {
+  return store.dispatch('DEL_USER', delUser)
+}
+
 export default {
   components: {
     EditUserPup
   },
   data() {
     return {
+    	flagsd:true,
       currentPage4: 4,
       dialogFormVisible: false,
       isShowDialog: false,
@@ -79,7 +97,12 @@ export default {
         currentRow: 0,
         isHasNextPage: 　true,
       },
-      multipleSelection: []
+      multipleSelection: [],
+      delUser:{
+      	id: '',
+      	token:localStorage.token
+      }
+      
     }
   },
   created() {
@@ -89,8 +112,38 @@ export default {
     fetchAllUserLists(this.$store, this.opts).then(() => {
       this.decDatas(this.$store, this.opts);
     });
+    
+    bus.$on('userList', () =>{
+             fetchAllUserLists(this.$store, this.opts).then(() => {
+					      this.decDatas(this.$store, this.opts);
+					    });
+        })
+    
   },
   methods: {
+  	
+  	delateUser(){
+  		 fetchDelUsers(this.$store, this.delUser).then(() => {
+  		 	this.del = this.$store.getters.getDelUser;
+  		 	console.log(this.$store.getters)
+		      if (this.del.resultCode === '1') {
+	           this.$message({
+			          message: this.del.resultMsg,
+			          type: 'success'
+			        });
+			        
+			        fetchAllUserLists(this.$store, this.opts).then(() => {
+					      this.decDatas(this.$store, this.opts);
+					    });
+			        
+	        }else{
+	        	this.$message.error(this.del.resultMsg);
+	        }
+				});
+  	},
+  	
+  	
+  	
     selectUrser(e) {
       fetchAllUserLists(this.$store, this.opts).then(() => {
         this.decDatas(this.$store, this.opts);
@@ -147,6 +200,19 @@ export default {
         this.decDatas(this.$store, this.opts);
       })
     },
+    
+    handleCurrentChanges(val) {
+    	if(val){
+    		this.flagsd = false; 
+	    	this.delUser.id = val.id; 
+	    	
+	    }else{
+	    	this.flagsd = true; 
+        return;
+	    }
+    },
+    	
+    
     showEditDialog: (e) => {
       let dom = _j(e.currentTarget);
       let ids = dom.parents('td').next('td').find('.cell').text();
@@ -154,6 +220,10 @@ export default {
         bus.$emit('show-edit-dialog', ids);
       }
     },
+    addUser(){
+    	 bus.$emit('show-addUser-dialog', '');
+    },
+    
     _showMessage(type, msg) {
       this.$message({
         type: type,
@@ -174,18 +244,38 @@ export default {
   text-align: left;
   padding-top: 20px;
   padding-left: 20px;
+  padding-bottom: 20px;
 }
 
 .form-title {
   font-size: 18px;
-  margin-bottom: 20px;
+  margin-bottom: 40px;
   padding-bottom: 15px;
   width: 97%;
   margin-left: 20px;
   padding-top: 20px;
   border-bottom: 1px solid #eee;
   text-align: left;
+  float: left;
 }
+
+.form-title1{
+	font-size: 18px;
+  width: 20%;
+  margin-top: 10px;
+  margin-left: 20px;
+  text-align: left;
+  float: left;
+}
+
+.form-lines {
+  margin-bottom: 20px;
+  margin-top: 10px;
+  width: 97%;
+  margin-left: 20px;
+  border-bottom: 1px solid #eee;
+}
+
 
 .hide {
   display: none;
