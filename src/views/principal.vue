@@ -8,8 +8,8 @@
                 <el-col :span="18" class="mack-box">
                     <div class="date-box">
                         <!--<el-date-picker v-model="params.beginTime" @change="startChange" format="yyyy-MM-dd" type="date" :picker-options="pickerOptions0" placeholder="选择开始日期"></el-date-picker>
-                                                                -
-                                                                <el-date-picker v-model="params.finishTime" @change="endChange" type="date" :picker-options="pickerOptions0" placeholder="选择结束日期"> </el-date-picker>-->
+                                                                        -
+                                                                        <el-date-picker v-model="params.finishTime" @change="endChange" type="date" :picker-options="pickerOptions0" placeholder="选择结束日期"> </el-date-picker>-->
                         <el-date-picker v-model="value6" type="daterange" range-separator=" / " @change="selectDate" :picker-options="pickerOptions0" placeholder="选择日期范围">
                         </el-date-picker>
                         <el-button class="select-btn" @click="getProductLines()">
@@ -30,7 +30,7 @@
                         <el-checkbox-group v-model="chnageTypes" @change="typeChange" :max="5">
                             <el-checkbox v-for="(item, idx) in vfTypes" :label="item.label" :key="idx">{{item.label}}</el-checkbox>
                             <!--<el-checkbox v-for="(item, index) in vfTypes" :key="index" :data-id="item.id " @change="selectProducts(item.id, $event)" :label="item.label" :true-label="item.id">{{ item.label }}
-                                                                                                                                                                                    </el-checkbox>-->
+                                                                                                                                                                                            </el-checkbox>-->
 
                         </el-checkbox-group>
                     </div>
@@ -64,19 +64,21 @@
                         </el-table-column>
                         <el-table-column prop="productName" align="left" label="产品" width="200">
                         </el-table-column>
-                        <el-table-column prop="distributeTime" align="left" width="240" label="任务派发时间">
+                        <el-table-column prop="distributeTime" align="left" width="200" label="任务派发时间">
                         </el-table-column>
-                        <el-table-column prop="proLinks" align="left" label="生产环节" width="120">
+                        <el-table-column prop="proLinks" align="left" label="生产环节" width="100">
                         </el-table-column>
                         <el-table-column prop="address" align="left" label="资源位置" width="150">
                         </el-table-column>
-                        <el-table-column prop="manHours" align="left" label="总人工时" width="200">
+                        <el-table-column prop="manHours" align="left" label="总人工时" width="170">
+                        </el-table-column>
+                        <el-table-column prop="todoTime" align="left" label="提醒时间" width="150">
                         </el-table-column>
                         <el-table-column prop="outputs" align="left" label="生产量">
                         </el-table-column>
                         <el-table-column prop="state" align="left" label="任务状态" width="150">
                         </el-table-column>
-                        <el-table-column prop="liable" align="left" label="责任人" width="150">
+                        <el-table-column prop="liable" align="left" label="责任人" width="140">
                         </el-table-column>
                     </el-table>
                     <el-pagination class="page-box" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="taskList.currentPage" :page-size="taskList.pageSize" layout="total, prev, pager, next" :total="taskList.totalRows">
@@ -90,7 +92,7 @@
                     <h1>批次进度表</h1>
                 </div>
                 <div class="select-box">
-                    <el-date-picker class="progress-date-box" @change="changeProgressDate" v-model="value6" type="daterange" range-separator=" / " placeholder="选择批次日期范围"></el-date-picker>
+                    <el-date-picker class="progress-date-box" @change="changeProgressDate" v-model="value7" type="daterange" range-separator=" / " placeholder="选择批次日期范围"></el-date-picker>
                     <el-button class="progress-select-btn" @click="filterProgressData">筛选</el-button>
                 </div>
                 <el-row class="progress-box">
@@ -109,20 +111,22 @@
                         </span>
                     </div>
                     <div class="clear-float"></div>
-                    <el-col :span="3">
-                        <ul class="batch-name-box">
-                            <li class="batch-item" v-for="(item, index) in batchDatas.names" :title="item.name" :key="index">{{ item.subName }}</li>
-                        </ul>
-                    </el-col>
-                    <el-col :span="19">
-                        <ul class="batch-table">
-                            <li class="batch-bar-item" v-for="(gress, index) in batchDatas.progress" :key="index">
-                                <span class="batch-bar bar-item gobj-progress" :class="gress > 50 ? 'gobj-progress':'not-gobj-progress'" :title="gress +'%'" :style="{width:  gress + '%' }"></span>
-                                <span class="batch-txt bar-item" :class="gress > 50 ? 'item-gobj' : 'item-not-gobj'" v-show="gress == 100 ? false : true">{{ gress }}%</span>
-                            </li>
-                            <span class="line"></span>
-                        </ul>
-                    </el-col>
+                    <div class="scroll-box">
+                        <el-col :span="3">
+                            <ul class="batch-name-box">
+                                <li class="batch-item" v-for="(item, index) in batchDatas.names" :title="item.name" :key="index">{{ item.subName }}</li>
+                            </ul>
+                        </el-col>
+                        <el-col :span="19">
+                            <ul class="batch-table">
+                                <li class="batch-bar-item" v-for="(gress, index) in batchDatas.progress" :key="index">
+                                    <span class="batch-bar bar-item gobj-progress" :class="gress > 50 ? 'gobj-progress':'not-gobj-progress'" :title="gress +'%'" :style="{width:  gress + '%' }"></span>
+                                    <span class="batch-txt bar-item" :class="gress > 50 ? 'item-gobj' : 'item-not-gobj'" v-show="gress == 100 ? false : true">{{ gress }}%</span>
+                                </li>
+                                <span class="line"></span>
+                            </ul>
+                        </el-col>
+                    </div>
                 </el-row>
             </el-row>
         </el-col>
@@ -158,6 +162,7 @@ export default {
                 }
             },
             value6: '',
+            value7: '',
             params: { // 点击查询参数
                 beginTime: '',
                 finishTime: '',
@@ -306,12 +311,6 @@ export default {
         loadProductLines(isClick) {
             let startTime = this.params.beginTime;
             let endTime = this.params.finishTime;
-            /*if (isClick) {
-                if ((!startTime && endTime) || (!endTime && startTime)) {
-                    this._showMessage('error', '开始日期和结束日期都是必须的！');
-                    return;
-                }
-            }*/
             let opts = {
                 token: localStorage.token,
                 startTime: startTime,
@@ -373,6 +372,7 @@ export default {
         },
         // 获取生产总览数据
         getProductDatas() {
+            let dayType = this.taskList.flag;
             fetchTaskInfoLists(this.$store, this.taskList).then(() => {
                 let tempData = this.$store.getters.getTakInfoLists;
                 if (tempData.resultCode === '1') {
@@ -396,7 +396,8 @@ export default {
                             proLinks: tempItem.linkIdName, // 生产环节
                             address: tempItem.resourceId, // 资源地址
                             manHours: tempItem.costTime, // 人工时
-                            outputs: tempItem.harverst, // 产量
+                            outputs: tempItem.harvest, // 产量
+                            todoTime: dayType === '2' ? tempItem.todoTime : '当日不提醒', // 提醒时间
                             state: tempItem.statusName, // 状态
                             liable: tempItem.abutmentName // 责任人
                         });
@@ -419,8 +420,8 @@ export default {
                     for (let i = 0; i < len; i++) {
                         tempItem = tempObj[i];
                         tempName = tempItem.name;
-                        if (tempName.length > 9) {
-                            subStr = tempName.substr(0, 9) + '...'
+                        if (tempName.length > 7) {
+                            subStr = tempName.substr(0, 7) + '...'
                         } else {
                             subStr = tempName;
                         }
@@ -450,7 +451,7 @@ export default {
 @import './../assets/scss/cmy-variable.scss';
 .home-pro-content {
     background-color: $white;
-    margin-top: 15px;
+    margin-top: 5px;
     padding-left: 20px;
     padding-bottom: 20px;
     min-height: 510px;
@@ -597,6 +598,9 @@ export default {
     .el-tabs__header {
         padding-left: 20px;
     }
+    .el-tabs__item.is-active {
+        color: $m-black-3;
+    }
 }
 
 .progress-table-box {
@@ -634,7 +638,7 @@ export default {
     .progress-items {
         width: 79.166667%;
         float: left;
-        margin-left: 12.5%;
+        margin-left: 12.32%;
         border-bottom: 1px solid #ccc;
         .progress-item {
             width: 10%;
@@ -715,13 +719,16 @@ export default {
 .clear-float {
     clear: both;
 }
-
+.scroll-box{
+    max-height: 500px;
+    overflow-y: auto;
+    padding-bottom: 20px;
+    overflow-x: hidden;
+}
 .tomo-task-box {
     padding-left: 20px;
     padding-right: 20px;
-    .el-tabs__item.is-active {
-        color: $m-black-3;
-    }
+
 
     .el-table th>.cell {
         font-size: $font-base-sm-s;
