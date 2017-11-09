@@ -451,7 +451,7 @@ export default {
 @import './../assets/scss/cmy-variable.scss';
 .home-pro-content {
     background-color: $white;
-    margin-top: 5px;
+    margin-top: 15px;
     padding-left: 20px;
     padding-bottom: 20px;
     min-height: 510px;

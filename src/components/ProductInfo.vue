@@ -212,9 +212,9 @@ export default {
                         value: '',
                         name_desc: '',
                         name: '',
-                        days: '',
+                        days: '0',
                         isShowPeriod: true,
-                        hours: '',
+                        hours: '0',
                         liablePerson: '',
                         desc: '',
                         linkId: '',
@@ -278,7 +278,6 @@ export default {
                 let tempInfos = baseObj.dataList;
                 this.getProducts.totalRows = baseObj.totalRows;
                 this.productInfos.length = 0;
-
                 let tempNameIds = [];
                 if (tempInfos.length > 0) {
                     const len = tempInfos.length;
@@ -384,9 +383,9 @@ export default {
                 value: '',
                 name_desc: '',
                 name: '',
-                days: '',
+                days: '0',
                 isShowPeriod: true,
-                hours: '',
+                hours: '0',
                 liablePerson: '',
                 desc: '',
                 linkId: '',

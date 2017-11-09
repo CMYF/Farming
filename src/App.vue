@@ -76,7 +76,7 @@ a:hover {
   min-height: 600px;
   height: auto;
   overflow: hidden;
-  margin-top: 60px;
+  margin-top: 50px;
   width: 86.5%;
   min-width: 1150px; 
   margin-left: 13.3%;
