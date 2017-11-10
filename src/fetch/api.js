@@ -5,9 +5,7 @@ export function fetchHomePage() {
 }
 
 export function fetchGetNav(token) {
-    return Vue.axios.post('http://10.1.2.151/ctower-mall-c//sys/login/loadMenus.do', qs.stringify({
-      'loginedtoken': token
-    }))
+    return Vue.axios.post('sys/login/loadMenus.do')
 }
 
 export function fetchGetSubNavById(idx) {
@@ -15,18 +13,18 @@ export function fetchGetSubNavById(idx) {
 }
 
 export function fetchLogin(opt) {
-    return Vue.axios.post('http://10.1.2.151/ctower-mall-c/sys/login/login.do', qs.stringify({
+    return Vue.axios.post('sys/login/login.do', qs.stringify({
         'id': opt.id,
         'pwd': opt.pwd
     }));
 }
 
 export function fetchEditMenu() {
-    return Vue.axios.post('http://10.1.2.151/ctower-mall-c/sys/menumanagementMenus.do?parentId=-1')
+    return Vue.axios.post('sys/menumanagementMenus.do?parentId=-1')
 }
 
 export function fetchUpdateMenu(opts) {
-    return Vue.axios.post('http://10.1.2.151/ctower-mall-c/sys/menumanagementUpdateNode.do', qs.stringify({
+    return Vue.axios.post('sys/menumanagementUpdateNode.do', qs.stringify({
         ids: opts.id,
         menuname: opts.name,
         parentids: opts.parentId,
@@ -34,37 +32,33 @@ export function fetchUpdateMenu(opts) {
         menusort: opts.sore,
         menudesc: opts.desc,
         menustart: 1,
-        menuicon: opts.menuicon,
-        loginedtoken: opts.token
+        menuicon: opts.menuicon
     }));
 }
 export function fetchAddMenu(opts) {
-    return Vue.axios.post('http://10.1.2.151/ctower-mall-c/sys/menumanagementNewNode.do', qs.stringify({
+    return Vue.axios.post('sys/menumanagementNewNode.do', qs.stringify({
         menuname: opts.name,
         parentids: opts.parentId,
         menuaction: opts.path,
         menusort: opts.sore,
         menudesc: opts.desc,
         menustart: 1,
-        menuicon: opts.menuicon,
-        loginedtoken: opts.token
+        menuicon: opts.menuicon
     }));
 }
 export function fetchDeleteMenu(opts) {
-    return Vue.axios.post('http://10.1.2.151/ctower-mall-c/sys/menumanagementDeleteNode.do', qs.stringify({
+    return Vue.axios.post('sys/menumanagementDeleteNode.do', qs.stringify({
         ids: opts.id,
         menuname: opts.name,
         parentids: opts.parentId,
         menuaction: opts.path,
         menusort: opts.sore,
-        menudesc: opts.desc,
-        loginedtoken: opts.token
+        menudesc: opts.desc
     }));
 }
 
 export function fetchAllUsers(opts) {
-    return Vue.axios.post('http://10.1.2.151/ctower-mall-c/sys/operatorDataGrid.do', qs.stringify({
-        loginedtoken: opts.token,
+    return Vue.axios.post('sys/operatorDataGrid.do', qs.stringify({
         beginPage: opts.beginPage,
         pageSize: opts.pageSize,
         _lk_opercode: opts.acc,
@@ -72,14 +66,12 @@ export function fetchAllUsers(opts) {
     }));
 }
 export function fetchUserById(opts) {
-    return Vue.axios.post('http://10.1.2.151/ctower-mall-c/sys/operatorLookRow.do', qs.stringify({
-        loginedtoken: opts.token,
+    return Vue.axios.post('sys/operatorLookRow.do', qs.stringify({
         ids: opts.id
     }));
 }
 export function fetchUpateUserById(opts) {
-    return Vue.axios.post('http://10.1.2.151/ctower-mall-c/sys/operatorUpdateRow.do', qs.stringify({
-        loginedtoken: opts.token,
+    return Vue.axios.post('sys/operatorUpdateRow.do', qs.stringify({
         opercode: opts.acc,
         opername: opts.username,
         ids: opts.id,
@@ -92,23 +84,20 @@ export function fetchUpateUserById(opts) {
 }
 
 export function fetchAllRoles(opts) {
-    return Vue.axios.post('http://10.1.2.151/ctower-mall-c/sys/rolemanagementDataGrid.do', qs.stringify({
-        loginedtoken: opts.token,
+    return Vue.axios.post('sys/rolemanagementDataGrid.do', qs.stringify({
         beginPage: opts.beginPage,
         pageSize: opts.pageSize,
         _lk_rolename: opts.roleName
     }));
 }
 export function fetchDelByIds(opts) {
-    return Vue.axios.post('http://10.1.2.151/ctower-mall-c/sys/rolemanagementDeleteRow.do', qs.stringify({
-        loginedtoken: opts.token,
+    return Vue.axios.post('sys/rolemanagementDeleteRow.do', qs.stringify({
         deleteIds: opts.roleIds
     }));
 }
 
 export function fetchAddRole(opts) {
-    return Vue.axios.post('http://10.1.2.151/ctower-mall-c/sys/rolemanagementInsertRow.do', qs.stringify({
-        loginedtoken: opts.token,
+    return Vue.axios.post('sys/rolemanagementInsertRow.do', qs.stringify({
         rolename: opts.name,
         rolestatus: opts.region,
         roledesc: opts.desc,
@@ -117,14 +106,12 @@ export function fetchAddRole(opts) {
 }
 
 export function fetchGetRoleById(opts) {
-    return Vue.axios.post('http://10.1.2.151/ctower-mall-c/sys/rolemanagementLookRow.do', qs.stringify({
-        loginedtoken: opts.token,
+    return Vue.axios.post('sys/rolemanagementLookRow.do', qs.stringify({
         ids: opts.id
     }));
 }
 export function fetchUpdateById(opts) {
-    return Vue.axios.post('http://10.1.2.151/ctower-mall-c/sys/rolemanagementUpdateRow.do', qs.stringify({
-        loginedtoken: opts.token,
+    return Vue.axios.post('sys/rolemanagementUpdateRow.do', qs.stringify({
         ids: opts.id,
         rolename: opts.name,
         rolestatus: opts.region,
@@ -134,7 +121,7 @@ export function fetchUpdateById(opts) {
 }
 
 export function fetchTask(opts) {
-    return Vue.axios.post('http://10.1.2.151/ctower-mall-c/agriculture/taskInfo/queryTaskInfoLists.do', qs.stringify({
+    return Vue.axios.post('agriculture/taskInfo/queryTaskInfoLists.do', qs.stringify({
         'queryTaskInfoListsRequest.page_number': opts.num,
         'queryTaskInfoListsRequest.page_size': opts.size,
         'queryTaskInfoListsRequest.taskStatus': opts.states,
@@ -146,7 +133,7 @@ export function fetchTask(opts) {
 }
 
 export function fetchSendTask(opts) {
-    return Vue.axios.post('http://10.1.2.151/ctower-mall-c/agriculture/taskInfo/distributeTaskInfo.do', qs.stringify({
+    return Vue.axios.post('agriculture/taskInfo/distributeTaskInfo.do', qs.stringify({
         'distributeTaskInfoRequest.piCiBianH': opts.picNum,
         'distributeTaskInfoRequest.sort': opts.sorts,
         'distributeTaskInfoRequest.linkId': opts.linkIds,
@@ -158,13 +145,13 @@ export function fetchSendTask(opts) {
 }
 
 export function fetchTaskCircle(opts) {
-    return Vue.axios.post('http://10.1.2.151/ctower-mall-c/agriculture/taskInfo/queryDistributeTaskLinks.do', qs.stringify({
+    return Vue.axios.post('agriculture/taskInfo/queryDistributeTaskLinks.do', qs.stringify({
         'queryDistributeTaskLinksRequest.piCiBianH': opts.pcbh,
     }));
 }
 
 export function fetchTaskZiyuan(opts) {
-    return Vue.axios.post('http://10.1.2.151/ctower-mall-c/agriculture/resource/dataGrid.do', qs.stringify({
+    return Vue.axios.post('agriculture/resource/dataGrid.do', qs.stringify({
         _in_type: opts.zyType,
         _lk_names: opts.zyName,
         columid:opts.zyColumid,
@@ -176,7 +163,7 @@ export function fetchTaskZiyuan(opts) {
 }
 
 export function fetchPlanList(opts) {
-    return Vue.axios.post('http://10.1.2.151/ctower-mall-c/agriculture/planInfo/queryPlanInfoList.do', qs.stringify({
+    return Vue.axios.post('agriculture/planInfo/queryPlanInfoList.do', qs.stringify({
        'queryPlanInfoListRequest.page_number': opts.jhPageNum,
        'queryPlanInfoListRequest.page_size': opts.jhPageSize,
        'queryPlanInfoListRequest.picibianh': opts.jhPiCi,
@@ -186,7 +173,7 @@ export function fetchPlanList(opts) {
 }
 
 export function fetchPlanNew(opts) {
-    return Vue.axios.post('http://10.1.2.151/ctower-mall-c/agriculture/planInfo/addPlanInfo.do', qs.stringify({
+    return Vue.axios.post('agriculture/planInfo/addPlanInfo.do', qs.stringify({
         'addPlanInfoRequest.jihuamc': opts.jhNames,
         'addPlanInfoRequest.guishud': opts.jhLandId,
         'addPlanInfoRequest.guishudName': opts.jhLandName,
@@ -203,13 +190,13 @@ export function fetchPlanNew(opts) {
 }
 
 export function fetchDelPlan(opts) {
-    return Vue.axios.post('http://10.1.2.151/ctower-mall-c/agriculture/planInfo/deletePlanInfo.do', qs.stringify({
+    return Vue.axios.post('agriculture/planInfo/deletePlanInfo.do', qs.stringify({
        'deletePlanInfoRequest.piCiBianH': opts.picis
     }));
 }
 
 export function fetchProductList(opts) {
-    return Vue.axios.post('http://10.1.2.151/ctower-mall-c/agriculture/productInfo/queryProductInfoList.do', qs.stringify({
+    return Vue.axios.post('agriculture/productInfo/queryProductInfoList.do', qs.stringify({
        'queryProductInfoListRequest.page_number': opts.cpPageNum,
        'queryProductInfoListRequest.page_size': opts.cpPageSize,
        'queryProductInfoListRequest.productName': opts.cpName,
@@ -218,13 +205,11 @@ export function fetchProductList(opts) {
 }
 
 export function fetchOwnLand(opts) {
-    return Vue.axios.post('http://10.1.2.151/ctower-mall-c/agriculture/column/dataGrid.do', qs.stringify({
-       loginedtoken: opts.landtToken
-    }));
+    return Vue.axios.post('agriculture/column/dataGrid.do');
 }
 
 export function fetchGetProducts(opts) {
-    return Vue.axios.post('http://10.1.2.151/ctower-mall-c/agriculture/productInfo/queryProductInfoList.do', qs.stringify({
+    return Vue.axios.post('agriculture/productInfo/queryProductInfoList.do', qs.stringify({
         'queryProductInfoListRequest.page_number': opts.currentPage,
         'queryProductInfoListRequest.page_size': opts.pageSize,
         'queryProductInfoListRequest.productName': opts.productName,
@@ -232,7 +217,7 @@ export function fetchGetProducts(opts) {
     }));
 }
 export function fetchSaveProductLinks(opts) {
-    return Vue.axios.post('http://10.1.2.151/ctower-mall-c/agriculture/productInfo/addProductInfo.do', qs.stringify({
+    return Vue.axios.post('agriculture/productInfo/addProductInfo.do', qs.stringify({
         'addProductInfoRequest.chanpmc': opts.name,
         'addProductInfoRequest.guisd': opts.address,
         'addProductInfoRequest.fayl': opts.germinate,
@@ -244,30 +229,27 @@ export function fetchSaveProductLinks(opts) {
     }));
 }
 export function fetchKuaidials(opts) {
-    return Vue.axios.post('http://10.1.2.151/ctower-mall-c/agriculture/column/dataGrid.do', qs.stringify({
-        loginedtoken: opts.token
-    }));
+    return Vue.axios.post('agriculture/column/dataGrid.do');
 }
 
 export function fetchLinkTemp(opts) {
-    return Vue.axios.post('http://10.1.2.151/ctower-mall-c/agriculture/productInfo/queryWorkLink.do', qs.stringify({
+    return Vue.axios.post('agriculture/productInfo/queryWorkLink.do', qs.stringify({
         'queryWorkLinkRequest.preLinkId': opts.linkId
     }));
 }
 export function fetchLinkNames() {
-    return Vue.axios.post('http://10.1.2.151/ctower-mall-c/agriculture/linkInfo/queryLinks.do');
+    return Vue.axios.post('agriculture/linkInfo/queryLinks.do');
 }
 
 export function delProductInfo(opts) {
-    return Vue.axios.post('http://10.1.2.151/ctower-mall-c/agriculture/productInfo/deleteProductInfo.do', qs.stringify({
+    return Vue.axios.post('agriculture/productInfo/deleteProductInfo.do', qs.stringify({
         'deleteProductInfoRequest.productID': opts.id
     }));
 }
 
 // ---------------------------------------------------------------生产管理-----------------------------------------------------
 export function fetchProductLists(opts) {
-    return Vue.axios.post('http://10.1.2.151/ctower-mall-c/agriculture/production/dataGrid.do', qs.stringify({
-        loginedtoken: opts.token,
+    return Vue.axios.post('agriculture/production/dataGrid.do', qs.stringify({
         beginPage: opts.beginPage,
         pageSize: opts.pageSize,
         _lk_picibianh: opts.no,
@@ -278,17 +260,15 @@ export function fetchProductLists(opts) {
 }
 
 export function fetchProductDetail(opts) {
-    return Vue.axios.post('http://10.1.2.151/ctower-mall-c/agriculture/production/showInfo.do', qs.stringify({
-        picibianh: opts.no,
-        loginedtoken: opts.token
+    return Vue.axios.post('agriculture/production/showInfo.do', qs.stringify({
+        picibianh: opts.no
     }));
 }
 // ##------------------------------------------------------------------------------------------------------------------------------
 
 // ---------------------------------------------------------------归属地-----------------------------------------------------
 export function fetchAddKuaidial(opts) {
-    return Vue.axios.post('http://10.1.2.151/ctower-mall-c//agriculture/column/addOrUpdateData.do', qs.stringify({
-        loginedtoken: opts.token,
+    return Vue.axios.post('/agriculture/column/addOrUpdateData.do', qs.stringify({
         names: opts.name,
         parentid: opts.parentId,
         id: opts.id
@@ -296,15 +276,13 @@ export function fetchAddKuaidial(opts) {
 }
 
 export function fetchModifyKuaidial(opts) {
-    return Vue.axios.post('http://10.1.2.151/ctower-mall-c/agriculture/column/addOrUpdateData.do', qs.stringify({
-        loginedtoken: opts.token,
+    return Vue.axios.post('agriculture/column/addOrUpdateData.do', qs.stringify({
         names: opts.name,
         parentid: opts.parentId,
     }));
 }
 export function fetchDelKuaidial(opts) {
-    return Vue.axios.post('http://10.1.2.151/ctower-mall-c/agriculture/column/deleteData.do', qs.stringify({
-        loginedtoken: opts.token,
+    return Vue.axios.post('agriculture/column/deleteData.do', qs.stringify({
         id: opts.id
     }));
 }
@@ -312,8 +290,7 @@ export function fetchDelKuaidial(opts) {
 
 //----------------------------------------------------主页----------------------------------------------------------------------------
 export function fetchLinkData(opts) {
-    return Vue.axios.post('http://10.1.2.151/ctower-mall-c/agriculture/index/output.do', qs.stringify({
-        loginedtoken: opts.token,
+    return Vue.axios.post('agriculture/index/output.do', qs.stringify({
         _lk_createtime: opts.startTime,
          _gk_createtime: opts.endTime,
          spaceday: opts.day,
@@ -321,24 +298,20 @@ export function fetchLinkData(opts) {
     }));
 }
 export function fetchProducts(opts) {
-    return Vue.axios.post('http://10.1.2.151/ctower-mall-c/agriculture/index/queryProductInfo.do ', qs.stringify({
-        loginedtoken: opts.token
-    }));
+    return Vue.axios.post('agriculture/index/queryProductInfo.do');
 }
 
 export function fetchGetTaskInfoLists(opts){
     console.log('opts是什么？');
     console.log(opts);
-    return Vue.axios.post('http://10.1.2.151/ctower-mall-c/agriculture/index/queryProductionOverview.do', qs.stringify({
-        loginedtoken: opts.token,
+    return Vue.axios.post('agriculture/index/queryProductionOverview.do', qs.stringify({
         dateFlag: opts.flag,
         beginPage: opts.beginPage,
         pageSize: opts.pageSize
     }));
 }
 export function fetchBatchScheduleDatas(opts) {
-    return Vue.axios.post('http://10.1.2.151/ctower-mall-c/agriculture/index/batchSchedule.do', qs.stringify({
-        loginedtoken: opts.token,
+    return Vue.axios.post('agriculture/index/batchSchedule.do', qs.stringify({
         _lk_createdatetime: opts.startTime,
         _gk_createdatetime: opts.endTime
     }));
@@ -346,8 +319,7 @@ export function fetchBatchScheduleDatas(opts) {
 // ##------------------------------------------------------------------------------------------------------------------------------------
 
 export function fetchAddResource(opts){
-    return Vue.axios.post('http://10.1.2.151/ctower-mall-c/agriculture/resource/addResource.do', qs.stringify({
-        loginedtoken: opts.zyToken,
+    return Vue.axios.post('agriculture/resource/addResource.do', qs.stringify({
         columid: opts.zyColumid,
         columname: opts.zyColumname,
 		names: opts.zyName,		
@@ -363,20 +335,19 @@ export function fetchAddResource(opts){
 
 
 export function fetchZiYuanNum(opts){
-    return Vue.axios.post('http://10.1.2.151/ctower-mall-c/agriculture/resource/genCodeRule.do', qs.stringify({
+    return Vue.axios.post('agriculture/resource/genCodeRule.do', qs.stringify({
         _in_type: opts.zyType
     }));
 }
 
 export function fetchDeleteZiYuan(opts){
-    return Vue.axios.post('http://10.1.2.151/ctower-mall-c/agriculture/resource/deleteResource.do', qs.stringify({
-        loginedtoken: opts.token,
+    return Vue.axios.post('agriculture/resource/deleteResource.do', qs.stringify({
         id: opts.ids
     }));
 }
 
 export function fetchPlanBack(opts){
-    return Vue.axios.post('http://10.1.2.151/ctower-mall-c/agriculture/taskInfo/withdrawTaskInfo.do', qs.stringify({
+    return Vue.axios.post('agriculture/taskInfo/withdrawTaskInfo.do', qs.stringify({
         'withdrawTaskInfoRequest.piCiBianH': opts.ypfPiCiBianH,
         'withdrawTaskInfoRequest.sort': opts.ypfSort
     }));

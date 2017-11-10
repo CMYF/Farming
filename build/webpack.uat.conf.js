@@ -12,7 +12,6 @@ var OptimizeCSSPlugin = require('optimize-css-assets-webpack-plugin')
 var env = process.env.NODE_ENV === 'testing'
   ? require('../config/test.env')
   : config.build.env
-
 var webpackConfig = merge(baseWebpackConfig, {
   module: {
     rules: utils.styleLoaders({
@@ -45,7 +44,7 @@ var webpackConfig = merge(baseWebpackConfig, {
     // Compress extracted CSS. We are using this plugin so that possible
     // duplicated CSS from different components can be deduped.
     new OptimizeCSSPlugin({
-      cssProcessorOptions: {  
+      cssProcessorOptions: {
         safe: true
       }
     }),

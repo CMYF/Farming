@@ -89,6 +89,7 @@
     "shelljs": "^0.7.6",
     "sinon": "^2.1.0",
     "sinon-chai": "^2.8.0",
+    "store": "^2.0.12",
     "style-loader": "^0.18.2",
     "toposort": "^1.0.4",
     "type-is": "^1.6.15",
