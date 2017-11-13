@@ -29,7 +29,7 @@ var webpackConfig = merge(baseWebpackConfig, {
     // http://vuejs.github.io/vue-loader/en/workflow/production.html
     new webpack.DefinePlugin({
       'process.env': env,
-      BASE_URL: JSON.stringify('http://10.1.2.151/ctower-mall-c/')
+      BASE_URL: JSON.stringify('http://10.1.7.231/ctower-mall-c/')
     }),
     new webpack.optimize.UglifyJsPlugin({
       compress: {
