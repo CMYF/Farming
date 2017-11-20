@@ -135,8 +135,6 @@
 <script>
 import _j from 'jquery'
 import Chart from 'chart.js'
-import SameDay from './../components/SameDay'
-import TomorrowTask from './../components/TomorrowTask'
 function fetchGetLinePicData(store, opts) {
     return store.dispatch('GET_LINE_DATAS', opts);
 }
@@ -151,8 +149,6 @@ function fetchBatchSchedules(store, opts) {
 }
 export default {
     components: {
-        SameDay,
-        TomorrowTask
     },
     data() {
         return {

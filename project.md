@@ -37,11 +37,36 @@ CMY-Farming
 ├───src                              # 源代码
 ├───────assets                       # 静态资源，相对的资源路径，将由Webpack解析为模块依赖。
 ├───────components                   # 组件
+├─────────BelongToPosi.vue             # 归属地组件
+├─────────EditUserPup.vue              # 用户管理弹层
+├─────────Header.vue                   # 头部组件
+├─────────LeftNav.vue                  # 左边导航组件
+├─────────ProductInfo.vue              # 产品信息组件
+├─────────resourceCaiShou.vue          # 采收筐组件
+├─────────resourceYuMiao.vue           # 育苗床组件
+├─────────resourceZhongZhi.vue         # 种植架组件
+├─────────RoleManagePup.vue            # 角色管理弹层
+├─────────TaskGetComplete.vue          # 已完成任务组件
+├─────────TaskGetPending.vue           # 待处理任务组件
+├─────────TaskListInfo.vue             # 已派发任务组件
+├─────────TaskSendList.vue             # 带派发任务组件
 ├───────fetch                        # 编写请求
 ├───────lib                          # 第三方库
 ├───────router                       # 路由
 ├───────store                        # vuex
 ├───────views                        # 项目页面
+├─────────addMenu.vue                  # 菜单管理
+├─────────HomePage.vue                 # 页面结构
+├─────────Login.vue                    # 登陆页面
+├─────────newPlan.vue                  # 计划管理
+├─────────principal.vue                # 主页
+├─────────productAdmin.vue             # 生产管理
+├─────────resourceConfig.vue           # 资源管理
+├─────────RoleManagement.vue           # 角色管理
+├─────────setProduct.vue               # 生产配置
+├─────────userAdmin.vue                # 用户管理
+├─────────worksGet.vue                 # 任务接受
+├─────────worksList.vue                # 任务列表
 ├───static                           # 静态文件 绝对资源路径，不会被 Webpack 处理，它们会直接被复制到最终目录
 ├───test                             # 测试
 ├───node_test2.rar                   # 本地模拟服务器
@@ -90,4 +115,8 @@ CMY-Farming
 - [vue](https://cn.vuejs.org/v2/guide/)
 - [scss](https://www.sass.hk/guide/)
 - [element-ui](http://element.eleme.io/#/zh-CN/component/installation)
-
+- [vue-router](https://router.vuejs.org/zh-cn/)
+- [vuex](https://vuex.vuejs.org/zh-cn/)
+- [webpack](https://doc.webpack-china.org)
+- [chart.js](http://www.bootcss.com/p/chart.js/)
+- [axios](http://www.jianshu.com/p/df464b26ae58)
